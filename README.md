@@ -60,25 +60,5 @@ Dripshop Pro is a **self-hosted Enterprise Resource Planning (ERP) system** desi
 - Process orders and generate invoices automatically.
 - Monitor analytics and manage disputes/refunds.
 
-## Testing
-Run test cases with:
-```sh
-python manage.py test
-```
-
-## Future Enhancements
-- Stripe/PayPal payment gateway integration.
-- Advanced AI-driven sales insights.
-- Multi-currency and multi-language support.
-
-## License
-This project is licensed under the MIT License.
-
-## Contributing
-Pull requests are welcome. For major changes, open an issue first to discuss proposed improvements.
-
-## Contact
-For queries or contributions, reach out via GitHub issues.
-
 ---
 Developed with Django & MySQL to empower dropshipping businesses with an integrated ERP solution.

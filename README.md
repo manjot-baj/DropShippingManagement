@@ -82,4 +82,3 @@ For queries or contributions, reach out via GitHub issues.
 
 ---
 Developed with Django & MySQL to empower dropshipping businesses with an integrated ERP solution.
-

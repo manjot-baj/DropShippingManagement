@@ -1,0 +1,21 @@
+# Ignore all compiled Python files and cache directories
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore migration files but keep the folder and __init__.py
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# ignore environment
+.env
+
+# ignore dqlite file
+db.sqlite3
+
+# files
+*.img
+*.png
+*.jpg
+*.jpeg
+*/media/*

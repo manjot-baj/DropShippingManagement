@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 from decouple import config
 
@@ -41,7 +42,7 @@ INSTALLED_APPS = [
 ]
 
 MY_APPS = [
-    "user_account",
+    "authentication",
 ]
 
 THIRD_PARTY_APPS = []
@@ -134,3 +135,37 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Logging
+LOG_DIR = BASE_DIR / "logs"  # Define logs directory path
+
+# Ensure the logs directory exists
+LOG_DIR.mkdir(exist_ok=True)  # Creates the directory if it doesn't exist
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False if DEBUG else True,
+    "formatters": {
+        "simple": {
+            "format": "%(levelname)s %(asctime)s %(module)s.%(funcName)s:%(lineno)s- %(message)s"
+        },
+    },
+    "handlers": {
+        "error": {
+            "level": "ERROR",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/error.log"),
+            "maxBytes": 300 * 1024 * 1024,
+            "backupCount": 50,
+            "formatter": "simple",
+            "encoding": "utf-8",
+        },
+    },
+    "loggers": {
+        "error_log": {
+            "handlers": ["error"],
+            "level": "ERROR",
+            "propagate": True,
+        },
+    },
+}

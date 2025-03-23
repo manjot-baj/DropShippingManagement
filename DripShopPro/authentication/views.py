@@ -1,15 +1,14 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
-from django.contrib.auth.forms import AuthenticationForm
-from .forms import RegistrationForm
+from .forms import UserRegistrationForm, LoginForm
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
     if request.user.is_authenticated:
         return redirect("dashboard")
-    return redirect("login")
+    return render(request, "home.html")
 
 
 @login_required
@@ -19,31 +18,40 @@ def dashboard(request):
 
 def register(request):
     if request.method == "POST":
-        form = RegistrationForm(request.POST)
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, "Registration successful.")
-            return redirect("dashboard")
+            form.save()
+            messages.success(
+                request, "Registration successful. Please wait for admin approval."
+            )
+            return redirect("login")
     else:
-        form = RegistrationForm()
+        form = UserRegistrationForm()
+
     return render(request, "register.html", {"form": form})
 
 
-def login_view(request):
+def user_login(request):
     if request.method == "POST":
-        form = AuthenticationForm(data=request.POST)
+        form = LoginForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
-            login(request, user)
-            messages.success(request, "Login successful.")
-            return redirect("dashboard")
+            if user.is_active:
+                login(request, user)
+                messages.success(request, "You are now logged in.")
+                return redirect("dashboard")
+            else:
+                messages.error(request, "Your account is not approved yet.")
+        else:
+            messages.error(request, "Invalid username or password.")
+
     else:
-        form = AuthenticationForm()
+        form = LoginForm()
+
     return render(request, "login.html", {"form": form})
 
 
-def logout_view(request):
+def user_logout(request):
     logout(request)
-    messages.success(request, "Logged out successfully.")
+    messages.success(request, "You have been logged out.")
     return redirect("login")

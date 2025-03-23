@@ -1,15 +1,9 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-<h2>Welcome, {{ user.username }}!</h2>
-<p>Your role: {{ user.role }}</p>
-{% if user.role == 'admin' %}
-    <p><a href="/admin-dashboard/">Go to Admin Dashboard</a></p>
-{% elif user.role == 'merchant' %}
-    <p><a href="/merchant-dashboard/">Go to Merchant Dashboard</a></p>
-{% elif user.role == 'vendor' %}
-    <p><a href="/vendor-dashboard/">Go to Vendor Dashboard</a></p>
-{% elif user.role == 'customer' %}
-    <p><a href="/customer-dashboard/">Go to Customer Dashboard</a></p>
-{% endif %}
+<div class="container">
+    <h2>Welcome, {{ user.username }}!</h2>
+    <a href="{% url 'logout' %}" class="btn btn-danger">Sign Out</a>
+</div>
+
 {% endblock %}

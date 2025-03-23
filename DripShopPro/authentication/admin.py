@@ -1,48 +1,11 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import User
+from .models import UserProfile
 
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('username', 'email_id', 'role', 'mobile_no', 'is_approved')
+    list_filter = ('role', 'is_approved')
+    search_fields = ('username', 'email_id', 'mobile_no')
+    ordering = ('username',)
+    readonly_fields = ('user',)  # Ensures the linked User model cannot be edited
 
-class CustomUserAdmin(UserAdmin):
-    list_display = ("username", "email", "role", "is_active", "is_staff")
-    list_filter = ("role", "is_active", "is_staff", "is_superuser")
-    search_fields = ("username", "email", "role")
-    ordering = ("username",)
-    fieldsets = (
-        (None, {"fields": ("username", "email", "password")}),
-        ("Personal Info", {"fields": ("first_name", "last_name", "phone", "address")}),
-        (
-            "Permissions",
-            {
-                "fields": (
-                    "is_active",
-                    "is_staff",
-                    "is_superuser",
-                    "groups",
-                    "user_permissions",
-                )
-            },
-        ),
-        ("Roles", {"fields": ("role",)}),
-    )
-    add_fieldsets = (
-        (
-            None,
-            {
-                "classes": ("wide",),
-                "fields": (
-                    "username",
-                    "email",
-                    "password1",
-                    "password2",
-                    "role",
-                    "is_active",
-                    "is_staff",
-                    "is_superuser",
-                ),
-            },
-        ),
-    )
-
-
-admin.site.register(User, CustomUserAdmin)
+admin.site.register(UserProfile, UserProfileAdmin)

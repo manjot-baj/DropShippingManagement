@@ -129,12 +129,29 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
+# STATIC_URL = "static/"
+
+# Static files settings
+STATIC_URL = "/static/"
+
+# Collect all static files in one place (for production)
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+# Specify directories where Django will look for static files
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static"),  # Custom static directory
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Set session expiration time to 12 hours (43200 seconds)
+SESSION_COOKIE_AGE = 43200
+
+# Ensure session extends when the user is active (optional)
+SESSION_SAVE_EVERY_REQUEST = True
 
 # Logging
 LOG_DIR = BASE_DIR / "logs"  # Define logs directory path

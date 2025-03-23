@@ -1,10 +1,28 @@
 {% extends 'base.html' %}
 {% block title %}Register{% endblock %}
 {% block content %}
-<h2>Register</h2>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
-</form>
+<section class="py-5" id="auth">
+    <div class="container">
+        <div class="row justify-content-center">
+            <!-- Registration Card -->
+            <div class="col-md-6 col-lg-5 mb-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body p-4">
+                        <h3 class="text-center mb-4">Create Account</h3>
+                        <form id="registerForm" form method="POST" action="{% url 'register' %}">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-custom w-100">Get Started</button>
+                        </form>
+                        <div class="text-center mt-3">
+                            <span class="text-muted">Already have an account? </span>
+                            <a href="{% url 'login' %}" class="text-decoration-none" style="color: var(--primary);">Sign
+                                In</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

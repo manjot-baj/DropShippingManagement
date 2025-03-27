@@ -1,0 +1,292 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dripshop Pro - Complete E-commerce Solution">
+    <title>Dripshop Pro - Your Business, Your Rules, Our Technology!</title>
+
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <!-- CSS Resources -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #68baae;
+            --gradient: linear-gradient(135deg, var(--primary), var(--primary));
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            background-color: var(--primary);
+            padding: 140px 0 100px;
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.2;
+            max-width: 800px;
+        }
+
+        .hero-btn {
+            background-color: #ffb400;
+            border-color: #ffb400;
+            font-size: 1.2rem;
+            padding: 12px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card {
+            transition: transform 0.3s;
+        }
+
+        .pricing-card {
+            border: 3px solid #e5e7eb;
+        }
+
+        .btn-custom {
+            background: var(--gradient);
+            padding: 12px 30px;
+        }
+
+        @media (hover: hover) {
+            .feature-card:hover {
+                transform: translateY(-10px);
+            }
+
+            .hero-btn:hover {
+                background-color: #ff9a00;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center me-auto" href="#">
+                <img src="{% static 'media/DripShopPro.ico' %}" width="50" height="40" alt="DripShop Pro"
+                    loading="lazy">
+                <span class="fw-bold fs-5 ms-2">Drip$hop<sup class="ms-1"><small>PRO</small></sup></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="btn btn-custom ms-lg-3" href="#register">Get Started</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero text-center text-white">
+        <div class="container">
+            <h1 class="hero-title mx-auto mb-4">Launch Your Online Store in Minutes</h1>
+            <p class="lead mb-5 mx-auto" style="max-width: 700px">The all-in-one eCommerce platform designed for shop,
+                sell, growth
+            </p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="#register" class="btn btn-primary btn-lg hero-btn">Start Free Trial</a>
+                <a href="#features" class="btn btn-outline-light btn-lg">Learn More</a>
+            </div>
+            <!-- <img src="https://via.placeholder.com/1000x500" class="img-fluid rounded-3 mt-5 w-90" loading="lazy"
+                alt="Dashboard Preview"> -->
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="py-5" id="features">
+        <div class="container text-center">
+            <h2 class="mb-3">Everything You Need to Succeed</h2>
+            <p class="text-muted mb-5">Complete toolkit for modern e-commerce</p>
+            <div class="row g-4 justify-content-center">
+                <!-- feature cards  -->
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 p-4">
+                        <div class="card-body">
+                            <i class="fas fa-rocket fs-1 mb-3" style="color: #68baae;"></i>
+                            <h4>Be a Customer</h4>
+                            <p>Shop from Thousands of Stores.</p>
+                            <p></p> Discover a wide range of products from multiple stores,
+                            all in one place.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more features -->
+
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 p-4">
+                        <div class="card-body">
+                            <i class="fas fa-rocket fs-1 mb-3" style="color: #68baae;"></i>
+                            <h4>Be a Merchant</h4>
+                            <p>Expand your Business.</p>
+                            <p>List your products, reach more customers, and grow your online store.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 p-4">
+                        <div class="card-body">
+                            <i class="fas fa-rocket fs-1 mb-3" style="color: #68baae;"></i>
+                            <h4>Be a Vendor</h4>
+                            <p>Streamline your supply chain.</p>
+                            <p>Expand your business by listing products on our multi-vendor marketplace. Reach more
+                                customers and streamline order fulfillment.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Remaining sections follow similar optimized structure -->
+
+    <!-- Pricing Section -->
+    <section class="py-5 bg-light" id="pricing">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2>Simple, Transparent Pricing</h2>
+                <p class="text-muted">Start free - upgrade when you're ready</p>
+            </div>
+            <div class="row justify-content-center g-4">
+                <!-- Customer Plan -->
+                <div class="col-lg-4">
+                    <div class="card pricing-card h-100">
+                        <div class="card-body text-center p-5">
+                            <h4>Customer</h4>
+                            <div class="display-4 my-4">Free</div>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-3">Browse & Shop</li>
+                                <li class="mb-3">Wishlists & Favorites</li>
+                                <li class="mb-3">Order Tracking</li>
+                            </ul>
+                            <a href="#register" class="btn btn-outline-primary">Join Free</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Merchant/Vendor Plan -->
+                <div class="col-lg-4">
+                    <div class="card pricing-card pro h-100">
+                        <div class="card-body text-center p-5">
+                            <h4>Merchant</h4>
+                            <div class="display-4 my-4">$1299<span class="fs-6 text-muted">/month</span></div>
+                            <div class="badge bg-success mb-3">15-Day Free Trial</div>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-3">Unlimited Products</li>
+                                <li class="mb-3">Unlimited Vendor Catalog</li>
+                                <li class="mb-3">Advanced Analytics</li>
+                                <li class="mb-3">24/7 Support</li>
+                                <li class="mb-3">Payment Processing</li>
+                            </ul>
+                            <a href="#register" class="btn btn-custom">Start Free Trial</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Merchant/Vendor Plan -->
+                <div class="col-lg-4">
+                    <div class="card pricing-card pro h-100">
+                        <div class="card-body text-center p-5">
+                            <h4>Vendor</h4>
+                            <div class="display-4 my-4">₹999<span class="fs-6 text-muted">/month</span></div>
+                            <div class="badge bg-success mb-3">15-Day Free Trial</div>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-3">Unlimited Products</li>
+                                <li class="mb-3">Unlimited Merchant Store </li>
+                                <li class="mb-3">Advanced Analytics</li>
+                                <li class="mb-3">24/7 Support</li>
+                                <li class="mb-3">Payment Processing</li>
+                            </ul>
+                            <a href="#register" class="btn btn-custom">Start Free Trial</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Section -->
+    <section class="py-5" id="register">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2>About us</h2>
+                    <p class="lead mb-5 mx-auto" style="max-width: 700px">Dripshop Pro is a self-hosted ERP solution
+                        designed for dropshipping businesses, streamlining
+                        order
+                        management, vendor coordination, inventory tracking, billing, and analytics. It centralizes
+                        business
+                        operations, making multi-vendor management seamless.</p>
+                </div>
+                <!-- <div class="col-md-6">
+                    <img src="https://via.placeholder.com/500" class="img-fluid" alt="Platform Preview">
+                </div> -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Section -->
+    <section class="py-5" id="about">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2>Start Your Journey Today</h2> <a href="{% url 'register' %}"
+                        class="btn btn-custom btn-lg">Register</a>
+                    <!-- <div class="d-grid gap-3">
+                        
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h4>Dripshop Pro</h4>
+                    <p>Empowering businesses since 2025</p>
+                </div>
+                <div class="col-md-4">
+                    <h4>Contact</h4>
+                    <p>support@dripshoppro.com<br>+1 (555) 123-4567</p>
+                </div>
+                <div class="col-md-4">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-4 border-top">
+                <p>© 2025 Dripshop Pro. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -27,7 +27,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -42,7 +42,8 @@ INSTALLED_APPS = [
 ]
 
 MY_APPS = [
-    "authentication",
+    "user_profile",
+    "dashboard",
 ]
 
 THIRD_PARTY_APPS = []
@@ -59,12 +60,12 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "DripShopPro.urls"
+ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],  # Global templates
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -77,7 +78,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "DripShopPro.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
 
 # Database
@@ -129,10 +130,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-# STATIC_URL = "static/"
+# Static Files Configuration
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),  # Global static files
+]
 
-# Static files settings
-STATIC_URL = "/static/"
+STATIC_URL = "/static/"  # URL for serving static files
 
 # Collect all static files in one place (for production)
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")

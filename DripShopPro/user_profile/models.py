@@ -23,21 +23,8 @@ class UserProfile(models.Model):
         return self.username
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            user_obj = User.objects.create_user(
-                username=self.username,
-                email=self.email_id,
-                first_name=self.first_name,
-                last_name=self.last_name,
-            )
-            user_obj.set_password(self.password)
-            user_obj.save()
-            self.user = user_obj
-
         if self.role == "Customer":
             self.is_approved = True
-
         self.user.is_active = self.is_approved
         self.user.save()
-
         super().save(*args, **kwargs)

@@ -18,7 +18,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+admin.site.site_header = "DripShop Pro Admin"
+admin.site.site_title = "DripShop Pro Admin site"
+admin.site.index_title = "DripShop Pro Admin"
+
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("authentication.urls")),
+    path("", include("user_profile.urls")),
+    path("dashboard/", include("dashboard.urls")),
 ]

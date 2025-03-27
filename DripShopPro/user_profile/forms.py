@@ -7,12 +7,12 @@ from .models import UserProfile
 class UserRegistrationForm(forms.ModelForm):
     first_name = forms.CharField(
         max_length=100,
-        required=False,
+        required=True,
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     last_name = forms.CharField(
         max_length=100,
-        required=False,
+        required=True,
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     role = forms.ChoiceField(
@@ -63,7 +63,19 @@ class UserRegistrationForm(forms.ModelForm):
         mobile_no = self.cleaned_data.get("mobile_no")
         if not mobile_no.isdigit():
             raise forms.ValidationError("Mobile number must contain only digits.")
+        if UserProfile.objects.filter(mobile_no=mobile_no).exists():
+            raise forms.ValidationError(
+                "This mobile_no is already registered with other user."
+            )
         return mobile_no
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if UserProfile.objects.filter(email_id=email).exists():
+            raise forms.ValidationError(
+                "This email is already registered with other user."
+            )
+        return email
 
     def clean(self):
         cleaned_data = super().clean()
@@ -74,6 +86,39 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError("Passwords do not match.")
 
         return cleaned_data
+
+    def save(self, commit=True):
+        """Override save to create a linked User object and ensure password hashing."""
+        if not self.is_valid():
+            raise ValueError("Cannot save user: form is not valid.")
+
+        user = User(
+            username=self.cleaned_data["username"],
+            email=self.cleaned_data["email"],
+            first_name=self.cleaned_data["first_name"],
+            last_name=self.cleaned_data["last_name"],
+        )
+        user.set_password(self.cleaned_data["password"])  # Hash password before saving
+        if commit:
+            user.save()
+
+            # Create and save the UserProfile instance
+            user_profile = UserProfile(
+                user=user,
+                first_name=self.cleaned_data["first_name"],
+                last_name=self.cleaned_data["last_name"],
+                username=self.cleaned_data["username"],
+                password=self.cleaned_data["password"],
+                role=self.cleaned_data["role"],
+                mobile_no=self.cleaned_data["mobile_no"],
+                email_id=self.cleaned_data["email"],
+                is_approved=self.cleaned_data["role"]
+                == "Customer",  # Auto-approve customers
+            )
+        if commit:
+            user_profile.save()
+
+        return user_profile
 
 
 class LoginForm(AuthenticationForm):

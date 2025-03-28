@@ -9,6 +9,21 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
     <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+
+    <script>
+        // Load theme from localStorage
+        document.addEventListener("DOMContentLoaded", function () {
+            let theme = localStorage.getItem("theme") || "light";
+            document.body.classList.toggle("dark-mode", theme === "dark");
+        });
+
+        // Toggle theme
+        function toggleTheme() {
+            let isDarkMode = document.body.classList.toggle("dark-mode");
+            localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+        }
+    </script>
+
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -59,11 +74,41 @@
                         <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
                     </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                        <i class="fas fa-expand-arrows-alt"></i>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-user"></i>
+
                     </a>
+
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <span class="dropdown-item dropdown-header">Hi, {{ user.role }} {{ user.username }}</span>
+
+                        <!-- Full screen mode -->
+                        <div class="dropdown-divider"></div>
+
+                        <div class="dropdown-item d-flex justify-content-between align-items-center">
+                            <!-- Fullscreen Mode Button -->
+                            <button class="btn btn-sm btn-light" data-widget="fullscreen">
+                                <i class="fas fa-expand-arrows-alt"></i>
+                            </button>
+
+                            <!-- Dark Mode Toggle Button -->
+                            <button onclick="toggleTheme()" class="btn btn-sm btn-dark">
+                                <i class="fas fa-moon"></i>
+                            </button>
+
+                            <!-- Logout Button -->
+                            <a href="{% url 'logout' %}">
+                                <button class="btn btn-sm btn-danger">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </button>
+                            </a>
+                        </div>
+
+                    </div>
                 </li>
+
             </ul>
         </nav>
         <!-- /.navbar -->

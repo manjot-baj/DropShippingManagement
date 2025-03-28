@@ -2,11 +2,17 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from .forms import UserRegistrationForm, LoginForm
+from .models import UserProfile
 
 
 def home(request):
     if request.user.is_authenticated:
-        return redirect("dashboard")
+        try:
+            profile = UserProfile.objects.get(user=request.user)
+            if profile.role in ["Merchant", "Vendor"]:
+                return redirect("dashboard")
+        except:
+            pass
     return render(request, "home.html")
 
 
@@ -22,7 +28,7 @@ def user_register(request):
     else:
         form = UserRegistrationForm()
 
-    return render(request, "register.html", {"form": form})
+    return render(request, "auth/register.html", {"form": form})
 
 
 def user_login(request):
@@ -33,7 +39,15 @@ def user_login(request):
             if user.is_active:
                 login(request, user)
                 messages.success(request, "You are now logged in.")
-                return redirect("dashboard")
+                try:
+                    profile = UserProfile.objects.get(user=user)
+                    if profile.role in ["Merchant", "Vendor"]:
+                        return redirect("dashboard")
+                    else:
+                        return redirect("home")
+                except:
+                    return redirect("home")
+
             else:
                 messages.error(request, "Your account is not approved yet.")
         else:
@@ -42,7 +56,7 @@ def user_login(request):
     else:
         form = LoginForm()
 
-    return render(request, "login.html", {"form": form})
+    return render(request, "auth/login.html", {"form": form})
 
 
 def user_logout(request):

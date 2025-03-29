@@ -6,4 +6,4 @@ from user_profile.models import UserProfile
 @login_required
 def dashboard(request):
     user = UserProfile.objects.get(user=request.user)
-    return render(request, "vendor_merchant/dashboard.html", {"user": user})
+    return render(request, f"{user.role.lower()}/dashboard.html", {"user": user})

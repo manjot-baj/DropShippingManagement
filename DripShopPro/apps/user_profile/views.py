@@ -9,7 +9,7 @@ def home(request):
     if request.user.is_authenticated:
         try:
             profile = UserProfile.objects.get(user=request.user)
-            if profile.role in ["Merchant", "Vendor"]:
+            if profile.role in ["Merchant", "Vendor", "Customer"]:
                 return redirect("dashboard")
         except:
             pass
@@ -41,7 +41,7 @@ def user_login(request):
                 messages.success(request, "You are now logged in.")
                 try:
                     profile = UserProfile.objects.get(user=user)
-                    if profile.role in ["Merchant", "Vendor"]:
+                    if profile.role in ["Merchant", "Vendor", "Customer"]:
                         return redirect("dashboard")
                     else:
                         return redirect("home")

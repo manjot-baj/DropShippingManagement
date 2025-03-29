@@ -16,15 +16,14 @@ class UserProfile(models.Model):
     otp = models.CharField(max_length=10, blank=True, null=True)
     email_id = models.EmailField(unique=True)
     mobile_no = models.CharField(max_length=12, unique=True)
-    is_approved = models.BooleanField(default=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    # vendor merchant oriented fields
+    is_approved = models.BooleanField(default=False)
+    is_plan_active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    plan_start_date = models.DateField(null=True, blank=True)
+    plan_expiry_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.username
-
-    def save(self, *args, **kwargs):
-        if self.role == "Customer":
-            self.is_approved = True
-        self.user.is_active = self.is_approved
-        self.user.save()
-        super().save(*args, **kwargs)

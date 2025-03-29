@@ -11,16 +11,30 @@
     <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
 
     <script>
-        // Load theme from localStorage
         document.addEventListener("DOMContentLoaded", function () {
             let theme = localStorage.getItem("theme") || "light";
-            document.body.classList.toggle("dark-mode", theme === "dark");
+            applyTheme(theme);
         });
 
-        // Toggle theme
         function toggleTheme() {
-            let isDarkMode = document.body.classList.toggle("dark-mode");
-            localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+            let theme = document.body.classList.contains("dark-mode") ? "light" : "dark";
+            localStorage.setItem("theme", theme);
+            applyTheme(theme);
+        }
+
+        function applyTheme(theme) {
+            document.body.classList.toggle("dark-mode", theme === "dark");
+
+            let navbar = document.querySelector(".main-header.navbar");
+            if (navbar) {
+                if (theme === "dark") {
+                    navbar.classList.remove("navbar-white", "navbar-light");
+                    navbar.classList.add("navbar-dark");
+                } else {
+                    navbar.classList.remove("navbar-dark");
+                    navbar.classList.add("navbar-white", "navbar-light");
+                }
+            }
         }
     </script>
 

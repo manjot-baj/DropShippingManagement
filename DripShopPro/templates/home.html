@@ -69,7 +69,69 @@
                 background-color: #ff9a00;
             }
         }
+
+        /* Dark Mode Styles */
+        .dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode .navbar {
+            background-color: #1e1e1e !important;
+        }
+
+        .dark-mode .card {
+            background-color: #242424;
+            border-color: #333;
+            color: #ffffff;
+        }
+
+        .dark-mode .hero {
+            /* background-color: #1e1e1e; */
+            --primary: #68baae;
+            --gradient: linear-gradient(135deg, var(--primary), var(--primary));
+        }
+
+        .dark-mode .pricing-card {
+            border-color: #444;
+        }
+
+        .dark-mode .btn-custom {
+            background: linear-gradient(135deg, #ffb400, #ff9a00);
+            color: #000;
+        }
+
+        .dark-mode .text-muted {
+            color: #bbbbbb !important;
+        }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let theme = localStorage.getItem("theme") || "light";
+            applyTheme(theme);
+        });
+
+        function toggleTheme() {
+            let theme = document.body.classList.contains("dark-mode") ? "light" : "dark";
+            localStorage.setItem("theme", theme);
+            applyTheme(theme);
+        }
+
+        function applyTheme(theme) {
+            document.body.classList.toggle("dark-mode", theme === "dark");
+
+            let navbar = document.querySelector(".navbar");
+            if (navbar) {
+                if (theme === "dark") {
+                    navbar.classList.remove("navbar-light", "bg-white");
+                    navbar.classList.add("navbar-dark", "bg-dark");
+                } else {
+                    navbar.classList.remove("navbar-dark", "bg-dark");
+                    navbar.classList.add("navbar-light", "bg-white");
+                }
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -86,10 +148,17 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav align-items-center">
+                    <li class="nav-item"><!-- Dark Mode Toggle Button -->
+                        <button onclick="toggleTheme()" class="btn btn-sm btn-dark">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
                     <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
                     <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
                     <li class="nav-item"><a class="btn btn-custom ms-lg-3" href="#register">Get Started</a></li>
+
+
                 </ul>
             </div>
         </div>
@@ -160,7 +229,7 @@
     <!-- Remaining sections follow similar optimized structure -->
 
     <!-- Pricing Section -->
-    <section class="py-5 bg-light" id="pricing">
+    <section class="py-5" id="pricing">
         <div class="container">
             <div class="text-center mb-5">
                 <h2>Simple, Transparent Pricing</h2>

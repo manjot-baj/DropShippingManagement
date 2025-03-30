@@ -11,11 +11,15 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+GLOBAL_APPS_DIR = os.path.join(BASE_DIR, "apps")
+sys.path.insert(0, GLOBAL_APPS_DIR)
 
 
 # Quick-start development settings - unsuitable for production
@@ -144,6 +148,19 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # STATICFILES_DIRS = [
 #     os.path.join(BASE_DIR, "static"),  # Custom static directory
 # ]
+
+# media
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# Ensure the media directory exists
+if not os.path.exists(MEDIA_ROOT):
+    os.makedirs(MEDIA_ROOT)
+
+# temp
+TEMP_ROOT = os.path.join(BASE_DIR, "temp")
+# Ensure the temp directory exists
+if not os.path.exists(TEMP_ROOT):
+    os.makedirs(TEMP_ROOT)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

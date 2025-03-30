@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Dripshop Pro - Complete E-commerce Solution">
-    <title>Dripshop Pro - Your Business, Your Rules, Our Technology!</title>
+    <title>Dripshop Pro - Shop, Sell, Ship, Grow!</title>
 
     <!-- Preconnect to external resources -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -69,7 +69,69 @@
                 background-color: #ff9a00;
             }
         }
+
+        /* Dark Mode Styles */
+        .dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode .navbar {
+            background-color: #1e1e1e !important;
+        }
+
+        .dark-mode .card {
+            background-color: #242424;
+            border-color: #333;
+            color: #ffffff;
+        }
+
+        .dark-mode .hero {
+            /* background-color: #1e1e1e; */
+            --primary: #68baae;
+            --gradient: linear-gradient(135deg, var(--primary), var(--primary));
+        }
+
+        .dark-mode .pricing-card {
+            border-color: #444;
+        }
+
+        .dark-mode .btn-custom {
+            background: linear-gradient(135deg, #ffb400, #ff9a00);
+            color: #000;
+        }
+
+        .dark-mode .text-muted {
+            color: #bbbbbb !important;
+        }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let theme = localStorage.getItem("theme") || "light";
+            applyTheme(theme);
+        });
+
+        function toggleTheme() {
+            let theme = document.body.classList.contains("dark-mode") ? "light" : "dark";
+            localStorage.setItem("theme", theme);
+            applyTheme(theme);
+        }
+
+        function applyTheme(theme) {
+            document.body.classList.toggle("dark-mode", theme === "dark");
+
+            let navbar = document.querySelector(".navbar");
+            if (navbar) {
+                if (theme === "dark") {
+                    navbar.classList.remove("navbar-light", "bg-white");
+                    navbar.classList.add("navbar-dark", "bg-dark");
+                } else {
+                    navbar.classList.remove("navbar-dark", "bg-dark");
+                    navbar.classList.add("navbar-light", "bg-white");
+                }
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -86,10 +148,17 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav align-items-center">
+                    <li class="nav-item"><!-- Dark Mode Toggle Button -->
+                        <button onclick="toggleTheme()" class="btn btn-sm btn-dark">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
                     <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
                     <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
                     <li class="nav-item"><a class="btn btn-custom ms-lg-3" href="#register">Get Started</a></li>
+
+
                 </ul>
             </div>
         </div>
@@ -100,14 +169,12 @@
         <div class="container">
             <h1 class="hero-title mx-auto mb-4">Launch Your Online Store in Minutes</h1>
             <p class="lead mb-5 mx-auto" style="max-width: 700px">The all-in-one eCommerce platform designed for shop,
-                sell, growth
+                sell, ship, growth
             </p>
             <div class="d-flex gap-3 justify-content-center flex-wrap">
-                <a href="#register" class="btn btn-primary btn-lg hero-btn">Start Free Trial</a>
+                <a href="#register" class="btn btn-primary btn-lg hero-btn">Start Now</a>
                 <a href="#features" class="btn btn-outline-light btn-lg">Learn More</a>
             </div>
-            <!-- <img src="https://via.placeholder.com/1000x500" class="img-fluid rounded-3 mt-5 w-90" loading="lazy"
-                alt="Dashboard Preview"> -->
         </div>
     </section>
 
@@ -121,7 +188,7 @@
                 <div class="col-md-4">
                     <div class="card feature-card h-100 p-4">
                         <div class="card-body">
-                            <i class="fas fa-rocket fs-1 mb-3" style="color: #68baae;"></i>
+                            <i class="fas fa-cart-shopping fs-1 mb-3" style="color: #68baae;"></i>
                             <h4>Be a Customer</h4>
                             <p>Shop from Thousands of Stores.</p>
                             <p></p> Discover a wide range of products from multiple stores,
@@ -134,7 +201,7 @@
                 <div class="col-md-4">
                     <div class="card feature-card h-100 p-4">
                         <div class="card-body">
-                            <i class="fas fa-rocket fs-1 mb-3" style="color: #68baae;"></i>
+                            <i class="fas fa-shop fs-1 mb-3" style="color: #68baae;"></i>
                             <h4>Be a Merchant</h4>
                             <p>Expand your Business.</p>
                             <p>List your products, reach more customers, and grow your online store.</p>
@@ -145,7 +212,7 @@
                 <div class="col-md-4">
                     <div class="card feature-card h-100 p-4">
                         <div class="card-body">
-                            <i class="fas fa-rocket fs-1 mb-3" style="color: #68baae;"></i>
+                            <i class="fas fa-truck-fast fs-1 mb-3" style="color: #68baae;"></i>
                             <h4>Be a Vendor</h4>
                             <p>Streamline your supply chain.</p>
                             <p>Expand your business by listing products on our multi-vendor marketplace. Reach more
@@ -160,11 +227,11 @@
     <!-- Remaining sections follow similar optimized structure -->
 
     <!-- Pricing Section -->
-    <section class="py-5 bg-light" id="pricing">
+    <section class="py-5" id="pricing">
         <div class="container">
             <div class="text-center mb-5">
                 <h2>Simple, Transparent Pricing</h2>
-                <p class="text-muted">Start free - upgrade when you're ready</p>
+                <!-- <p class="text-muted">Start free - upgrade when you're ready</p> -->
             </div>
             <div class="row justify-content-center g-4">
                 <!-- Customer Plan -->
@@ -178,7 +245,7 @@
                                 <li class="mb-3">Wishlists & Favorites</li>
                                 <li class="mb-3">Order Tracking</li>
                             </ul>
-                            <a href="#register" class="btn btn-outline-primary">Join Free</a>
+                            <a href="#register" class="btn btn-custom">Join Now</a>
                         </div>
                     </div>
                 </div>
@@ -188,8 +255,8 @@
                     <div class="card pricing-card pro h-100">
                         <div class="card-body text-center p-5">
                             <h4>Merchant</h4>
-                            <div class="display-4 my-4">$1299<span class="fs-6 text-muted">/month</span></div>
-                            <div class="badge bg-success mb-3">15-Day Free Trial</div>
+                            <div class="display-4 my-4">₹1499<span class="fs-6 text-muted">/month</span></div>
+                            <!-- <div class="badge bg-success mb-3">15-Day Free Trial</div> -->
                             <ul class="list-unstyled mb-4">
                                 <li class="mb-3">Unlimited Products</li>
                                 <li class="mb-3">Unlimited Vendor Catalog</li>
@@ -197,7 +264,7 @@
                                 <li class="mb-3">24/7 Support</li>
                                 <li class="mb-3">Payment Processing</li>
                             </ul>
-                            <a href="#register" class="btn btn-custom">Start Free Trial</a>
+                            <a href="#register" class="btn btn-custom">Join Now</a>
                         </div>
                     </div>
                 </div>
@@ -208,7 +275,7 @@
                         <div class="card-body text-center p-5">
                             <h4>Vendor</h4>
                             <div class="display-4 my-4">₹999<span class="fs-6 text-muted">/month</span></div>
-                            <div class="badge bg-success mb-3">15-Day Free Trial</div>
+                            <!-- <div class="badge bg-success mb-3">15-Day Free Trial</div> -->
                             <ul class="list-unstyled mb-4">
                                 <li class="mb-3">Unlimited Products</li>
                                 <li class="mb-3">Unlimited Merchant Store </li>
@@ -216,7 +283,7 @@
                                 <li class="mb-3">24/7 Support</li>
                                 <li class="mb-3">Payment Processing</li>
                             </ul>
-                            <a href="#register" class="btn btn-custom">Start Free Trial</a>
+                            <a href="#register" class="btn btn-custom">Join Now</a>
                         </div>
                     </div>
                 </div>
@@ -225,10 +292,10 @@
     </section>
 
     <!-- Registration Section -->
-    <section class="py-5" id="register">
+    <section class="hero text-center text-white">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-md-6">
+                <div class="col-md-6" id="about">
                     <h2>About us</h2>
                     <p class="lead mb-5 mx-auto" style="max-width: 700px">Dripshop Pro is a self-hosted ERP solution
                         designed for dropshipping businesses, streamlining
@@ -237,20 +304,9 @@
                         business
                         operations, making multi-vendor management seamless.</p>
                 </div>
-                <!-- <div class="col-md-6">
-                    <img src="https://via.placeholder.com/500" class="img-fluid" alt="Platform Preview">
-                </div> -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Registration Section -->
-    <section class="py-5" id="about">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
+                <div class="col-md-6" id="register">
                     <h2>Start Your Journey Today</h2> <a href="{% url 'register' %}"
-                        class="btn btn-custom btn-lg">Register</a>
+                        class="btn btn-primary btn-lg hero-btn">Register</a>
                     <!-- <div class="d-grid gap-3">
                         
                     </div> -->

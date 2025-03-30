@@ -15,7 +15,8 @@ class ProductForm(forms.ModelForm):
 
     category = forms.ModelChoiceField(
         queryset=Category.objects.none(),  # Initially empty
-        required=False,
+        required=True,
+        error_messages={"required": "Category is required."},
         empty_label="Select a category",
     )
 

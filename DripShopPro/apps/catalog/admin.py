@@ -20,8 +20,8 @@ class ProductImageInline(admin.TabularInline):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name",)
-    search_fields = ("name",)
+    list_display = ("name", "vendor")
+    search_fields = ("name", "vendor")
 
 
 @admin.register(Product)
@@ -35,6 +35,7 @@ class ProductAdmin(admin.ModelAdmin):
         "updated_at",
         "catalog_display",
         "store_display",
+        "vendor",
     )
     list_filter = (
         "category",
@@ -43,7 +44,7 @@ class ProductAdmin(admin.ModelAdmin):
         "catalog_display",
         "store_display",
     )
-    search_fields = ("name", "description")
+    search_fields = ("name", "vendor")
     ordering = ("-created_at",)
     readonly_fields = ("created_at", "updated_at")
     inlines = [ProductImageInline]
@@ -51,9 +52,12 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Catalog)
 class CatalogAdmin(admin.ModelAdmin):
-    list_display = ("title", "is_active", "created_at", "updated_at")
-    list_filter = ("is_active", "created_at")
-    search_fields = ("title", "description")
+    list_display = ("title", "is_active", "created_at", "updated_at", "vendor")
+    list_filter = (
+        "is_active",
+        "created_at",
+    )
+    search_fields = ("title", "vendor")
     filter_horizontal = ("products",)
     ordering = ("-created_at",)
     readonly_fields = ("created_at", "updated_at")

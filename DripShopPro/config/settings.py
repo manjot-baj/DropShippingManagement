@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 MY_APPS = [
     "user_profile",
     "dashboard",
+    "catalog",
 ]
 
 THIRD_PARTY_APPS = []

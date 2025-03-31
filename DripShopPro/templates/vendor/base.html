@@ -147,27 +147,21 @@
                      with font-awesome or any other icon font library -->
                         <!-- side menu items here -->
                         <li class="nav-item">
-                            <a href="{% url 'dashboard' %}" class="nav-link">
+                            <a href="{% url 'dashboard' %}" class="nav-link" data-url="{% url 'dashboard' %}">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Dashboard
-                                </p>
+                                <p>Dashboard</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{% url 'category_list' %}" class="nav-link">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Category
-                                </p>
+                            <a href="{% url 'category_list' %}" class="nav-link" data-url="{% url 'category_list' %}">
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>Category</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{% url 'product_list' %}" class="nav-link">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Products
-                                </p>
+                            <a href="{% url 'product_list' %}" class="nav-link" data-url="{% url 'product_list' %}">
+                                <i class="nav-icon fas fa-box"></i>
+                                <p>Products</p>
                             </a>
                         </li>
 
@@ -308,6 +302,25 @@
         });
 
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let currentUrl = window.location.pathname;
+            let sidebarLinks = document.querySelectorAll(".nav-link");
+
+            sidebarLinks.forEach(link => {
+                if (link.getAttribute("data-url") === currentUrl) {
+                    link.classList.add("active");
+                    // If inside a dropdown, also highlight the parent
+                    let parentItem = link.closest(".nav-item");
+                    if (parentItem) {
+                        parentItem.classList.add("menu-open");
+                    }
+                }
+            });
+        });
+    </script>
+
 
 </body>
 

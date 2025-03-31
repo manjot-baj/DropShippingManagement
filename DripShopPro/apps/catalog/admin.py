@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Category, Product, ProductImage, Catalog
+from .models import Category, Product, ProductImage
 
 
 class ProductImageInline(admin.TabularInline):
@@ -48,16 +48,3 @@ class ProductAdmin(admin.ModelAdmin):
     ordering = ("-created_at",)
     readonly_fields = ("created_at", "updated_at")
     inlines = [ProductImageInline]
-
-
-@admin.register(Catalog)
-class CatalogAdmin(admin.ModelAdmin):
-    list_display = ("title", "is_active", "created_at", "updated_at", "vendor")
-    list_filter = (
-        "is_active",
-        "created_at",
-    )
-    search_fields = ("title", "vendor")
-    filter_horizontal = ("products",)
-    ordering = ("-created_at",)
-    readonly_fields = ("created_at", "updated_at")

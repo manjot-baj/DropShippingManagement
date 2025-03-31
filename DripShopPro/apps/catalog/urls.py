@@ -5,14 +5,11 @@ from catalog.Views.product_views import (
     ProductUpdateView,
     ProductDeleteView,
     ProductImageDeleteView,
+    CategoryListView,
+    CategoryCreateView,
+    CategoryUpdateView,
+    CategoryDeleteView,
 )
-
-# from catalog.Views.catalog_views import (
-#     catalog_detail,
-#     catalog_create,
-#     catalog_update,
-#     catalog_delete,
-# )
 
 urlpatterns = [
     # Product URLs
@@ -29,9 +26,17 @@ urlpatterns = [
     path(
         "products/<int:pk>/delete/", ProductDeleteView.as_view(), name="product_delete"
     ),
-    # catalog URLS
-    # path("catalog/", catalog_detail, name="catalog_detail"),
-    # path("catalog/new/", catalog_create, name="catalog_create"),
-    # path("catalog/edit/", catalog_update, name="catalog_update"),
-    # path("catalog/delete/", catalog_delete, name="catalog_delete"),
+    # Category URLs
+    path("category/", CategoryListView.as_view(), name="category_list"),
+    path("category/create/", CategoryCreateView.as_view(), name="category_create"),
+    path(
+        "category/<int:pk>/update/",
+        CategoryUpdateView.as_view(),
+        name="category_update",
+    ),
+    path(
+        "category/<int:pk>/delete/",
+        CategoryDeleteView.as_view(),
+        name="category_delete",
+    ),
 ]

@@ -7,11 +7,121 @@ from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from user_profile.middlewares import RoleRequiredMixin
-from catalog.models import Product, ProductImage
-from catalog.Forms.product_forms import ProductForm
+from catalog.models import Product, ProductImage, Category
+from catalog.Forms.product_forms import ProductForm, CategoryForm
 from user_profile.models import UserProfile
 
 logger = logging.getLogger("error_log")  # Centralized logger
+
+
+# List all Category (for vendor)
+class CategoryListView(RoleRequiredMixin, View):
+    required_role = "Vendor"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            categorys = Category.objects.select_related("vendor").filter(
+                vendor__user=request.user
+            )
+            return render(
+                request,
+                "vendor/products/category_list.html",
+                {"categorys": categorys},
+            )
+        except Exception:
+            logger.error(traceback.format_exc())
+            return render(
+                request,
+                "vendor/error.html",
+                {"message": "Error fetching categories."},
+                status=500,
+            )
+
+
+# Create a new Category
+class CategoryCreateView(RoleRequiredMixin, View):
+    required_role = "Vendor"
+
+    def get(self, request, *args, **kwargs):
+        form = CategoryForm(user=request.user)
+        return render(request, "vendor/products/category_form.html", {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        try:
+            form = CategoryForm(request.POST, user=request.user)
+
+            if form.is_valid():
+                with transaction.atomic():
+                    category = form.save(commit=False)
+                    category.vendor = get_object_or_404(
+                        UserProfile, user=request.user, role="Vendor"
+                    )
+                    category.save()
+                return redirect("category_list")
+            return render(request, "vendor/products/category_form.html", {"form": form})
+        except Exception:
+            logger.error(traceback.format_exc())
+            return render(
+                request,
+                "vendor/error.html",
+                {"message": "Error creating category."},
+                status=500,
+            )
+
+
+# Update an existing Category
+class CategoryUpdateView(RoleRequiredMixin, View):
+    required_role = "Vendor"
+
+    def get(self, request, pk, *args, **kwargs):
+        category = get_object_or_404(Category, pk=pk, vendor__user=request.user)
+        form = CategoryForm(instance=category, user=request.user)
+        return render(
+            request,
+            "vendor/products/category_form.html",
+            {"form": form, "category": category},
+        )
+
+    def post(self, request, pk, *args, **kwargs):
+        try:
+            category = get_object_or_404(Category, pk=pk, vendor__user=request.user)
+            form = CategoryForm(request.POST, instance=category, user=request.user)
+
+            if form.is_valid():
+                with transaction.atomic():
+                    category = form.save()
+                return redirect("category_list")
+            return render(
+                request,
+                "vendor/products/category_form.html",
+                {"form": form, "category": category},
+            )
+        except Exception:
+            logger.error(traceback.format_exc())
+            return render(
+                request,
+                "vendor/error.html",
+                {"message": "Error updating category."},
+                status=500,
+            )
+
+
+# Delete a category
+class CategoryDeleteView(RoleRequiredMixin, View):
+    required_role = "Vendor"
+
+    def post(self, request, pk, *args, **kwargs):
+        try:
+            category = get_object_or_404(Category, pk=pk, vendor__user=request.user)
+            category.delete()
+            return JsonResponse(
+                {"success": True, "message": "Category deleted successfully."}
+            )
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            return JsonResponse(
+                {"success": False, "message": "Error deleting category."}, status=500
+            )
 
 
 # List all products (for vendor)

@@ -2,6 +2,49 @@ from django import forms
 from catalog.models import Product, Category
 
 
+class CategoryForm(forms.ModelForm):
+    name = forms.CharField(
+        max_length=255,
+        required=True,
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Enter Category name"}
+        ),
+        error_messages={"required": "Category name is required."},
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)  # Extract `user` from kwargs
+        super().__init__(*args, **kwargs)
+
+        # Apply consistent Bootstrap styling to all fields
+        for field in self.fields:
+            self.fields[field].widget.attrs["class"] += " mb-3"
+
+    class Meta:
+        model = Category
+        fields = [
+            "name",
+        ]
+
+    def clean_name(self):
+        name = self.cleaned_data.get("name")
+        # Check if we're updating an existing product
+        is_update = bool(self.instance and self.instance.pk)
+
+        if is_update:
+            if not self.instance.name == name:
+                if Category.objects.filter(name=name, vendor__user=self.user).exists():
+                    raise forms.ValidationError(
+                        "You already have a Category with this name. Please use a unique name."
+                    )
+        else:
+            if Category.objects.filter(name=name, vendor__user=self.user).exists():
+                raise forms.ValidationError(
+                    "You already have a Category with this name. Please use a unique name."
+                )
+        return name
+
+
 class ProductForm(forms.ModelForm):
     name = forms.CharField(
         max_length=255,
@@ -79,12 +122,12 @@ class ProductForm(forms.ModelForm):
             if not self.instance.name == name:
                 if Product.objects.filter(name=name, vendor__user=self.user).exists():
                     raise forms.ValidationError(
-                        "You already have a product with this name. Please use a unique name."
+                        "You already have a Product with this name. Please use a unique name."
                     )
         else:
             if Product.objects.filter(name=name, vendor__user=self.user).exists():
                 raise forms.ValidationError(
-                    "You already have a product with this name. Please use a unique name."
+                    "You already have a Product with this name. Please use a unique name."
                 )
         return name
 

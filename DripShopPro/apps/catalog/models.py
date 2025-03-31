@@ -42,17 +42,3 @@ class ProductImage(models.Model):
     def __str__(self):
         return f"Image for {self.product.name}"
 
-
-class Catalog(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    title = models.CharField(max_length=255, unique=True)
-    description = models.TextField(blank=True, null=True)
-    products = models.ManyToManyField(Product, related_name="catalogs")
-    is_active = models.BooleanField(default=True)
-    vendor = models.OneToOneField(
-        UserProfile, on_delete=models.CASCADE, blank=True, null=True
-    )
-
-    def __str__(self):
-        return self.title

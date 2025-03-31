@@ -1,0 +1,44 @@
+{% extends 'vendor/base.html' %}
+{% block title %}{% if category %}Update{% else %}Add{% endif %} Product{% endblock %}
+{% block content %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title">{% if category %}Update{% else %}Add{% endif %} Category</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">Category Name</label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.name.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <br><br>
+
+                            <div class="d-flex justify-content-end mt-4">
+                                <a href="{% url 'category_list' %}" class="btn btn-secondary mr-2">Cancel</a>
+                                <button type="submit" class="btn btn-success">
+                                    {% if category %}Update{% else %}Create{% endif %} Product
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

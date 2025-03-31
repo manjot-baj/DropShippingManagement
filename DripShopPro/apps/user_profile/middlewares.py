@@ -1,17 +1,22 @@
-from django.utils.deprecation import MiddlewareMixin
 from django.contrib import messages
 from django.shortcuts import redirect
 
 
-def role_required(required_role):
-    def decorator(view_func):
-        def _wrapped_view(request, *args, **kwargs):
-            if request.user.is_authenticated and request.user.role == required_role:
-                return view_func(request, *args, **kwargs)
-            else:
+class RoleRequiredMixin:
+    """Base Mixin for role-based access control in CBVs."""
+
+    required_role = None  # To be set in subclasses
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to access this page.")
+            return redirect("login")  # Redirect if not authenticated
+        try:
+            user_role = getattr(request.user.userprofile, "role", None)
+            if user_role != self.required_role:
                 messages.error(request, "Unauthorized access.")
-                return redirect("login")
+                return redirect("login")  # Redirect if role
+        except:
+            return redirect("login")
 
-        return _wrapped_view
-
-    return decorator
+        return super().dispatch(request, *args, **kwargs)

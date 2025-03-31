@@ -1,9 +1,5 @@
-import logging
-import traceback
 from django import forms
 from catalog.models import Product, Category
-
-logger = logging.getLogger("error_log")  # Centralized logger
 
 
 class ProductForm(forms.ModelForm):
@@ -57,48 +53,43 @@ class ProductForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
-        try:
-            self.user = kwargs.pop("user", None)  # Extract `user` from kwargs
-            super().__init__(*args, **kwargs)
+        self.user = kwargs.pop("user", None)  # Extract `user` from kwargs
+        super().__init__(*args, **kwargs)
 
-            # Show only categories created by the current vendor
-            if self.user:
-                self.fields["category"].queryset = Category.objects.filter(
-                    vendor__user=self.user
-                )
+        # Show only categories created by the current vendor
+        if self.user:
+            self.fields["category"].queryset = Category.objects.filter(
+                vendor__user=self.user
+            )
 
-            # Apply consistent Bootstrap styling to all fields
-            for field in self.fields:
-                self.fields[field].widget.attrs["class"] += " mb-3"
-
-        except Exception as e:
-            logger.error(traceback.format_exc())
-            return None
+        # Apply consistent Bootstrap styling to all fields
+        for field in self.fields:
+            self.fields[field].widget.attrs["class"] += " mb-3"
 
     class Meta:
         model = Product
         fields = ["name", "description", "category", "price", "stock"]
 
-    # def clean_name(self):
-    #     try:
-    #         name = self.cleaned_data.get("name")
-    #         if Product.objects.filter(
-    #             name__iexact=name, vendor__user=self.user
-    #         ).exists():
-    #             raise forms.ValidationError(
-    #                 "A product with this name already exists in your store."
-    #             )
-    #         return name
-    #     except Exception as e:
-    #         logger.error(traceback.format_exc())
-    #         return None
+    def clean_name(self):
+        name = self.cleaned_data.get("name")
+        # Check if we're updating an existing product
+        is_update = bool(self.instance and self.instance.pk)
+
+        if is_update:
+            if not self.instance.name == name:
+                if Product.objects.filter(name=name, vendor__user=self.user).exists():
+                    raise forms.ValidationError(
+                        "You already have a product with this name. Please use a unique name."
+                    )
+        else:
+            if Product.objects.filter(name=name, vendor__user=self.user).exists():
+                raise forms.ValidationError(
+                    "You already have a product with this name. Please use a unique name."
+                )
+        return name
 
     def clean_price(self):
-        try:
-            price = self.cleaned_data.get("price")
-            if price and price > 99999:
-                raise forms.ValidationError("Price must not exceed Rs.99999/-")
-            return price
-        except Exception as e:
-            logger.error(traceback.format_exc())
-            return None
+        price = self.cleaned_data.get("price")
+        if price and price > 9999:
+            raise forms.ValidationError("Price must not exceed Rs.9999/-")
+        return price

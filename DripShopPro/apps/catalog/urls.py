@@ -16,6 +16,11 @@ from catalog.Views.product_views import (
 
 urlpatterns = [
     # Product URLs
+    path(
+        "products/image/<int:image_id>/delete/",
+        ProductImageDeleteView.as_view(),
+        name="product_image_delete",
+    ),
     path("products/", ProductListView.as_view(), name="product_list"),
     path("products/create/", ProductCreateView.as_view(), name="product_create"),
     path(
@@ -23,11 +28,6 @@ urlpatterns = [
     ),
     path(
         "products/<int:pk>/delete/", ProductDeleteView.as_view(), name="product_delete"
-    ),
-    path(
-        "products/image/<int:image_id>/delete/",
-        ProductImageDeleteView.as_view(),
-        name="product_image_delete",
     ),
     # catalog URLS
     # path("catalog/", catalog_detail, name="catalog_detail"),

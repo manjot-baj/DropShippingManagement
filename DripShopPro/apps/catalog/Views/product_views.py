@@ -233,6 +233,7 @@ class ProductUpdateView(RoleRequiredMixin, View):
             form = ProductForm(
                 request.POST, request.FILES, instance=product, user=request.user
             )
+            existing_images = ProductImage.objects.filter(product=product)
             images = request.FILES.getlist("images")
 
             # Validate images before saving
@@ -243,7 +244,7 @@ class ProductUpdateView(RoleRequiredMixin, View):
                 return render(
                     request,
                     "vendor/products/product_form.html",
-                    {"form": form, "product": product},
+                    {"form": form, "product": product, "images": existing_images},
                 )
 
             if form.is_valid():
@@ -256,7 +257,7 @@ class ProductUpdateView(RoleRequiredMixin, View):
             return render(
                 request,
                 "vendor/products/product_form.html",
-                {"form": form, "product": product},
+                {"form": form, "product": product, "images": existing_images},
             )
         except Exception:
             logger.error(traceback.format_exc())

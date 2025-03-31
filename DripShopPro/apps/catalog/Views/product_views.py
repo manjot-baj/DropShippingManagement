@@ -1,100 +1,158 @@
+import logging
+import traceback
+from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
-from user_profile.middlewares import role_required
+from user_profile.middlewares import RoleRequiredMixin
 from catalog.models import Product, ProductImage
 from catalog.Forms.product_forms import ProductForm
 from user_profile.models import UserProfile
 
 
 # List all products (for vendor)
-@role_required("Vendor")
-def product_list(request):
-    products = Product.objects.select_related("vendor").filter(
-        vendor__user=request.user
-    )  # Filter by vendor
-    return render(request, "products/product_list.html", {"products": products})
+class ProductListView(RoleRequiredMixin, View):
+    required_role = "Vendor"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            products = Product.objects.select_related("vendor").filter(
+                vendor__user=request.user
+            )
+            return render(request, "products/product_list.html", {"products": products})
+        except Exception:
+            logging.getLogger("error_log").error(traceback.format_exc())
+            return render(
+                request,
+                "error.html",
+                {"message": "Error fetching products."},
+                status=500,
+            )
 
 
 # Create a new product with multiple image uploads
-@role_required("Vendor")
-def product_create(request):
-    if request.method == "POST":
-        form = ProductForm(request.POST, request.FILES, user=request.user)
-        if form.is_valid():
-            with transaction.atomic():
-                product = form.save(commit=False)
-                product.vendor = get_object_or_404(
-                    UserProfile, user=request.user, role="Vendor"
-                )  # Set vendor
-                product.save()  # Ensure product is saved before adding images
+class ProductCreateView(RoleRequiredMixin, View):
+    required_role = "Vendor"
 
-                # Save multiple images
-                images = request.FILES.getlist("images")
-                for image in images:
-                    ProductImage.objects.create(product=product, image=image)
-
-            return redirect("product_list")
-    else:
+    def get(self, request, *args, **kwargs):
         form = ProductForm(user=request.user)
+        return render(request, "products/product_form.html", {"form": form})
 
-    return render(request, "products/product_form.html", {"form": form})
+    def post(self, request, *args, **kwargs):
+        try:
+            form = ProductForm(request.POST, request.FILES, user=request.user)
+            if form.is_valid():
+                with transaction.atomic():
+                    product = form.save(commit=False)
+                    product.vendor = get_object_or_404(
+                        UserProfile, user=request.user, role="Vendor"
+                    )
+                    product.save()
+
+                    images = request.FILES.getlist("images")
+                    for image in images:
+                        ProductImage.objects.create(product=product, image=image)
+
+                return redirect("product_list")
+            return render(request, "products/product_form.html", {"form": form})
+        except Exception:
+            logging.getLogger("error_log").error(traceback.format_exc())
+            return render(
+                request,
+                "error.html",
+                {"message": "Error creating product."},
+                status=500,
+            )
 
 
-# Update an existing product (also update images if provided)
-@role_required("Vendor")
-def product_update(request, pk):
-    product = get_object_or_404(Product, pk=pk, vendor__user=request.user)
+# Update an existing product
+class ProductUpdateView(RoleRequiredMixin, View):
+    required_role = "Vendor"
 
-    if request.method == "POST":
-        form = ProductForm(
-            request.POST, request.FILES, instance=product, user=request.user
-        )
-        if form.is_valid():
-            with transaction.atomic():
-                product = form.save()
-
-                # If new images are provided, save them
-                images = request.FILES.getlist("images")
-                for image in images:
-                    ProductImage.objects.create(product=product, image=image)
-
-            return redirect("product_list")
-    else:
+    def get(self, request, pk, *args, **kwargs):
+        product = get_object_or_404(Product, pk=pk, vendor__user=request.user)
         form = ProductForm(instance=product, user=request.user)
+        return render(
+            request, "products/product_form.html", {"form": form, "product": product}
+        )
 
-    return render(
-        request, "products/product_form.html", {"form": form, "product": product}
-    )
+    def post(self, request, pk, *args, **kwargs):
+        try:
+            product = get_object_or_404(Product, pk=pk, vendor__user=request.user)
+            form = ProductForm(
+                request.POST, request.FILES, instance=product, user=request.user
+            )
+            if form.is_valid():
+                with transaction.atomic():
+                    product = form.save()
+                    images = request.FILES.getlist("images")
+                    for image in images:
+                        ProductImage.objects.create(product=product, image=image)
+
+                return redirect("product_list")
+            return render(
+                request,
+                "products/product_form.html",
+                {"form": form, "product": product},
+            )
+        except Exception:
+            logging.getLogger("error_log").error(traceback.format_exc())
+            return render(
+                request,
+                "error.html",
+                {"message": "Error updating product."},
+                status=500,
+            )
 
 
-# Delete a product (also delete related images)
-@role_required("Vendor")
-def product_delete(request, pk):
-    product = get_object_or_404(Product, pk=pk, vendor__user=request.user)
+# Delete a product (and related images)
+class ProductDeleteView(RoleRequiredMixin, View):
+    required_role = "Vendor"
 
-    if request.method == "POST":
-        with transaction.atomic():
-            product.delete()  # Automatically deletes related images due to cascade
+    def get(self, request, pk, *args, **kwargs):
+        product = get_object_or_404(Product, pk=pk, vendor__user=request.user)
+        return render(
+            request, "products/product_confirm_delete.html", {"product": product}
+        )
+
+    def post(self, request, pk, *args, **kwargs):
+        try:
+            product = get_object_or_404(Product, pk=pk, vendor__user=request.user)
+            with transaction.atomic():
+                product.delete()
             return redirect("product_list")
-
-    return render(
-        request, "products/product_confirm_delete.html", {"product": product}
-    )  # Show confirmation page
+        except Exception:
+            logging.getLogger("error_log").error(traceback.format_exc())
+            return render(
+                request,
+                "error.html",
+                {"message": "Error deleting product."},
+                status=500,
+            )
 
 
 # Delete an image from a product
-@role_required("Vendor")
-def product_image_delete(request, image_id):
-    image = get_object_or_404(
-        ProductImage, id=image_id, product__vendor__user=request.user
-    )
-    product_id = image.product.id
+class ProductImageDeleteView(RoleRequiredMixin, View):
+    required_role = "Vendor"
 
-    if request.method == "POST":
-        with transaction.atomic():
-            image.delete()
-            return redirect("product_update", product_id)
+    def get(self, request, image_id, *args, **kwargs):
+        image = get_object_or_404(
+            ProductImage, id=image_id, product__vendor__user=request.user
+        )
+        return render(
+            request, "products/product_image_confirm_delete.html", {"image": image}
+        )
 
-    return render(
-        request, "products/product_image_confirm_delete.html", {"image": image}
-    )  # Show confirmation page
+    def post(self, request, image_id, *args, **kwargs):
+        try:
+            image = get_object_or_404(
+                ProductImage, id=image_id, product__vendor__user=request.user
+            )
+            product_id = image.product.id
+            with transaction.atomic():
+                image.delete()
+            return redirect("product_update", pk=product_id)
+        except Exception:
+            logging.getLogger("error_log").error(traceback.format_exc())
+            return render(
+                request, "error.html", {"message": "Error deleting image."}, status=500
+            )

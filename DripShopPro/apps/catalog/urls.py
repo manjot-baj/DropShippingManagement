@@ -1,10 +1,10 @@
 from django.urls import path
 from catalog.Views.product_views import (
-    product_list,
-    product_create,
-    product_update,
-    product_delete,
-    product_image_delete,
+    ProductListView,
+    ProductCreateView,
+    ProductUpdateView,
+    ProductDeleteView,
+    ProductImageDeleteView,
 )
 
 # from catalog.Views.catalog_views import (
@@ -16,13 +16,17 @@ from catalog.Views.product_views import (
 
 urlpatterns = [
     # Product URLs
-    path("products/", product_list, name="product_list"),
-    path("products/new/", product_create, name="product_create"),
-    path("products/<int:pk>/edit/", product_update, name="product_update"),
-    path("products/<int:pk>/delete/", product_delete, name="product_delete"),
+    path("products/", ProductListView.as_view(), name="product_list"),
+    path("products/create/", ProductCreateView.as_view(), name="product_create"),
     path(
-        "products/image/<int:pk>/delete/",
-        product_image_delete,
+        "products/<int:pk>/update/", ProductUpdateView.as_view(), name="product_update"
+    ),
+    path(
+        "products/<int:pk>/delete/", ProductDeleteView.as_view(), name="product_delete"
+    ),
+    path(
+        "products/image/<int:image_id>/delete/",
+        ProductImageDeleteView.as_view(),
         name="product_image_delete",
     ),
     # catalog URLS

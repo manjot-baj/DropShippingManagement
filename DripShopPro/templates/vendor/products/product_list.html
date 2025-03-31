@@ -1,0 +1,73 @@
+{% extends 'vendor/base.html' %}
+{% block title %}Products{% endblock %}
+{% block content %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Products</h3>
+                        <div class="card-tools">
+                            <a href="{% url 'product_create' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i> Add Product
+                            </a>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Created on</th>
+                                    <th>Updated on</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Inside Catalog</th>
+                                    <th>Inside Store</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                <tr>
+                                    <td>{{ product.created_at }}</td>
+                                    <td>{{ product.updated_at }}</td>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ product.category.name }}</td>
+                                    <td>{{ product.price }}</td>
+                                    <td>{{ product.stock }}</td>
+                                    <td>{% if product.catalog_display %}Yes{% else %}No{% endif %}</td>
+                                    <td>{% if product.store_display %}Yes{% else %}No{% endif %}</td>
+                                    <td>
+                                        <!-- Edit Button -->
+                                        <a href="{% url 'product_update' product.id %}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        <!-- Delete Button -->
+                                        <button class="btn btn-danger btn-sm delete-btn"
+                                            data-url="{% url 'product_delete' product.id %}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+{% endblock %}

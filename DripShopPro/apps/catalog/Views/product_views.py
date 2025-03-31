@@ -3,6 +3,7 @@ import traceback
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from user_profile.middlewares import RoleRequiredMixin
@@ -22,12 +23,14 @@ class ProductListView(RoleRequiredMixin, View):
             products = Product.objects.select_related("vendor").filter(
                 vendor__user=request.user
             )
-            return render(request, "products/product_list.html", {"products": products})
+            return render(
+                request, "vendor/products/product_list.html", {"products": products}
+            )
         except Exception:
             logger.error(traceback.format_exc())
             return render(
                 request,
-                "error.html",
+                "vendor/error.html",
                 {"message": "Error fetching products."},
                 status=500,
             )
@@ -50,7 +53,7 @@ class ProductCreateView(RoleRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         form = ProductForm(user=request.user)
-        return render(request, "products/product_form.html", {"form": form})
+        return render(request, "vendor/products/product_form.html", {"form": form})
 
     def post(self, request, *args, **kwargs):
         try:
@@ -62,7 +65,9 @@ class ProductCreateView(RoleRequiredMixin, View):
                 self.validate_images(images)
             except ValidationError as e:
                 messages.error(request, e.message)
-                return render(request, "products/product_form.html", {"form": form})
+                return render(
+                    request, "vendor/products/product_form.html", {"form": form}
+                )
 
             if form.is_valid():
                 with transaction.atomic():
@@ -76,12 +81,12 @@ class ProductCreateView(RoleRequiredMixin, View):
                         ProductImage.objects.create(product=product, image=image)
 
                 return redirect("product_list")
-            return render(request, "products/product_form.html", {"form": form})
+            return render(request, "vendor/products/product_form.html", {"form": form})
         except Exception:
             logger.error(traceback.format_exc())
             return render(
                 request,
-                "error.html",
+                "vendor/error.html",
                 {"message": "Error creating product."},
                 status=500,
             )
@@ -104,9 +109,12 @@ class ProductUpdateView(RoleRequiredMixin, View):
 
     def get(self, request, pk, *args, **kwargs):
         product = get_object_or_404(Product, pk=pk, vendor__user=request.user)
+        images = ProductImage.objects.filter(product=product)
         form = ProductForm(instance=product, user=request.user)
         return render(
-            request, "products/product_form.html", {"form": form, "product": product}
+            request,
+            "vendor/products/product_form.html",
+            {"form": form, "product": product, "images": images},
         )
 
     def post(self, request, pk, *args, **kwargs):
@@ -124,7 +132,7 @@ class ProductUpdateView(RoleRequiredMixin, View):
                 messages.error(request, e.message)
                 return render(
                     request,
-                    "products/product_form.html",
+                    "vendor/products/product_form.html",
                     {"form": form, "product": product},
                 )
 
@@ -137,14 +145,14 @@ class ProductUpdateView(RoleRequiredMixin, View):
                 return redirect("product_list")
             return render(
                 request,
-                "products/product_form.html",
+                "vendor/products/product_form.html",
                 {"form": form, "product": product},
             )
         except Exception:
             logger.error(traceback.format_exc())
             return render(
                 request,
-                "error.html",
+                "vendor/error.html",
                 {"message": "Error updating product."},
                 status=500,
             )
@@ -154,25 +162,17 @@ class ProductUpdateView(RoleRequiredMixin, View):
 class ProductDeleteView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
-    def get(self, request, pk, *args, **kwargs):
-        product = get_object_or_404(Product, pk=pk, vendor__user=request.user)
-        return render(
-            request, "products/product_confirm_delete.html", {"product": product}
-        )
-
     def post(self, request, pk, *args, **kwargs):
         try:
             product = get_object_or_404(Product, pk=pk, vendor__user=request.user)
-            with transaction.atomic():
-                product.delete()
-            return redirect("product_list")
-        except Exception:
+            product.delete()
+            return JsonResponse(
+                {"success": True, "message": "Product deleted successfully."}
+            )
+        except Exception as e:
             logger.error(traceback.format_exc())
-            return render(
-                request,
-                "error.html",
-                {"message": "Error deleting product."},
-                status=500,
+            return JsonResponse(
+                {"success": False, "message": "Error deleting product."}, status=500
             )
 
 
@@ -180,25 +180,17 @@ class ProductDeleteView(RoleRequiredMixin, View):
 class ProductImageDeleteView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
-    def get(self, request, image_id, *args, **kwargs):
-        image = get_object_or_404(
-            ProductImage, id=image_id, product__vendor__user=request.user
-        )
-        return render(
-            request, "products/product_image_confirm_delete.html", {"image": image}
-        )
-
     def post(self, request, image_id, *args, **kwargs):
         try:
             image = get_object_or_404(
                 ProductImage, id=image_id, product__vendor__user=request.user
             )
-            product_id = image.product.id
-            with transaction.atomic():
-                image.delete()
-            return redirect("product_update", pk=product_id)
-        except Exception:
+            image.delete()
+            return JsonResponse(
+                {"success": True, "message": "Image deleted successfully."}
+            )
+        except Exception as e:
             logger.error(traceback.format_exc())
-            return render(
-                request, "error.html", {"message": "Error deleting image."}, status=500
+            return JsonResponse(
+                {"success": False, "message": "Error deleting image."}, status=500
             )

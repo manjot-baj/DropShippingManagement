@@ -10,16 +10,27 @@ class ProductForm(forms.ModelForm):
     name = forms.CharField(
         max_length=255,
         required=True,
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Enter product name"}
+        ),
         error_messages={"required": "Product name is required."},
     )
 
     description = forms.CharField(
-        widget=forms.Textarea(attrs={"rows": 3}), required=False
+        widget=forms.Textarea(
+            attrs={
+                "rows": 4,
+                "class": "form-control",
+                "placeholder": "Enter description (optional)",
+            }
+        ),
+        required=False,
     )
 
     category = forms.ModelChoiceField(
         queryset=Category.objects.none(),  # Initially empty
         required=True,
+        widget=forms.Select(attrs={"class": "form-control"}),
         error_messages={"required": "Category is required."},
         empty_label="Select a category",
     )
@@ -28,6 +39,9 @@ class ProductForm(forms.ModelForm):
         max_digits=10,
         decimal_places=2,
         min_value=0.01,
+        widget=forms.NumberInput(
+            attrs={"class": "form-control", "placeholder": "Enter price"}
+        ),
         error_messages={
             "required": "Price is required.",
             "min_value": "Price must be greater than 0.",
@@ -35,7 +49,11 @@ class ProductForm(forms.ModelForm):
     )
 
     stock = forms.IntegerField(
-        min_value=0, error_messages={"min_value": "Stock cannot be negative."}
+        min_value=0,
+        widget=forms.NumberInput(
+            attrs={"class": "form-control", "placeholder": "Enter stock quantity"}
+        ),
+        error_messages={"min_value": "Stock cannot be negative."},
     )
 
     def __init__(self, *args, **kwargs):
@@ -48,6 +66,11 @@ class ProductForm(forms.ModelForm):
                 self.fields["category"].queryset = Category.objects.filter(
                     vendor__user=self.user
                 )
+
+            # Apply consistent Bootstrap styling to all fields
+            for field in self.fields:
+                self.fields[field].widget.attrs["class"] += " mb-3"
+
         except Exception as e:
             logger.error(traceback.format_exc())
             return None
@@ -56,36 +79,19 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ["name", "description", "category", "price", "stock"]
 
-    def clean_name(self):
-        try:
-            name = self.cleaned_data.get("name")
-            if Product.objects.filter(
-                name__iexact=name, vendor__user=self.user
-            ).exists():
-                raise forms.ValidationError(
-                    "A product with this name already exists in your store."
-                )
-            return name
-        except Exception as e:
-            logger.error(traceback.format_exc())
-            return None
-
-    def clean_category(self):
-        try:
-            category = self.cleaned_data.get("category")
-            if (
-                category
-                and Category.objects.filter(
-                    name__iexact=category.name, vendor__user=self.user
-                ).exists()
-            ):
-                raise forms.ValidationError(
-                    "A category with this name already exists for your store."
-                )
-            return category
-        except Exception as e:
-            logger.error(traceback.format_exc())
-            return None
+    # def clean_name(self):
+    #     try:
+    #         name = self.cleaned_data.get("name")
+    #         if Product.objects.filter(
+    #             name__iexact=name, vendor__user=self.user
+    #         ).exists():
+    #             raise forms.ValidationError(
+    #                 "A product with this name already exists in your store."
+    #             )
+    #         return name
+    #     except Exception as e:
+    #         logger.error(traceback.format_exc())
+    #         return None
 
     def clean_price(self):
         try:

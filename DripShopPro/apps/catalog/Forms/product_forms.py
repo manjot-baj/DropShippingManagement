@@ -38,11 +38,6 @@ class ProductForm(forms.ModelForm):
         min_value=0, error_messages={"min_value": "Stock cannot be negative."}
     )
 
-    images = forms.ImageField(
-        widget=forms.ClearableFileInput(attrs={"multiple": True}),
-        required=False,
-    )
-
     def __init__(self, *args, **kwargs):
         try:
             self.user = kwargs.pop("user", None)  # Extract `user` from kwargs
@@ -98,21 +93,6 @@ class ProductForm(forms.ModelForm):
             if price and price > 99999:
                 raise forms.ValidationError("Price must not exceed Rs.99999/-")
             return price
-        except Exception as e:
-            logger.error(traceback.format_exc())
-            return None
-
-    def clean_images(self):
-        try:
-            images = self.files.getlist(
-                "images"
-            )  # Ensure multiple images can be uploaded
-            for image in images:
-                if image.size > 5 * 1024 * 1024:  # Limit image size to 5MB
-                    raise forms.ValidationError("Each image must be less than 5MB.")
-                if not image.name.lower().endswith((".jpg", ".jpeg", ".png")):
-                    raise forms.ValidationError("Only JPG and PNG images are allowed.")
-            return images
         except Exception as e:
             logger.error(traceback.format_exc())
             return None

@@ -2,6 +2,8 @@ import logging
 import traceback
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from user_profile.middlewares import RoleRequiredMixin
 from catalog.models import Product, ProductImage
@@ -35,6 +37,17 @@ class ProductListView(RoleRequiredMixin, View):
 class ProductCreateView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
+    def validate_images(self, images):
+        """Validate multiple image uploads."""
+        allowed_extensions = (".jpg", ".jpeg", ".png")
+        max_size = 5 * 1024 * 1024  # 5MB
+
+        for image in images:
+            if image.size > max_size:
+                raise ValidationError("Each image must be less than 5MB.")
+            if not image.name.lower().endswith(allowed_extensions):
+                raise ValidationError("Only JPG and PNG images are allowed.")
+
     def get(self, request, *args, **kwargs):
         form = ProductForm(user=request.user)
         return render(request, "products/product_form.html", {"form": form})
@@ -42,6 +55,15 @@ class ProductCreateView(RoleRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         try:
             form = ProductForm(request.POST, request.FILES, user=request.user)
+            images = request.FILES.getlist("images")
+
+            # Validate images before saving
+            try:
+                self.validate_images(images)
+            except ValidationError as e:
+                messages.error(request, e.message)
+                return render(request, "products/product_form.html", {"form": form})
+
             if form.is_valid():
                 with transaction.atomic():
                     product = form.save(commit=False)
@@ -50,7 +72,6 @@ class ProductCreateView(RoleRequiredMixin, View):
                     )
                     product.save()
 
-                    images = request.FILES.getlist("images")
                     for image in images:
                         ProductImage.objects.create(product=product, image=image)
 
@@ -70,6 +91,17 @@ class ProductCreateView(RoleRequiredMixin, View):
 class ProductUpdateView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
+    def validate_images(self, images):
+        """Validate multiple image uploads."""
+        allowed_extensions = (".jpg", ".jpeg", ".png")
+        max_size = 5 * 1024 * 1024  # 5MB
+
+        for image in images:
+            if image.size > max_size:
+                raise ValidationError("Each image must be less than 5MB.")
+            if not image.name.lower().endswith(allowed_extensions):
+                raise ValidationError("Only JPG and PNG images are allowed.")
+
     def get(self, request, pk, *args, **kwargs):
         product = get_object_or_404(Product, pk=pk, vendor__user=request.user)
         form = ProductForm(instance=product, user=request.user)
@@ -83,10 +115,22 @@ class ProductUpdateView(RoleRequiredMixin, View):
             form = ProductForm(
                 request.POST, request.FILES, instance=product, user=request.user
             )
+            images = request.FILES.getlist("images")
+
+            # Validate images before saving
+            try:
+                self.validate_images(images)
+            except ValidationError as e:
+                messages.error(request, e.message)
+                return render(
+                    request,
+                    "products/product_form.html",
+                    {"form": form, "product": product},
+                )
+
             if form.is_valid():
                 with transaction.atomic():
                     product = form.save()
-                    images = request.FILES.getlist("images")
                     for image in images:
                         ProductImage.objects.create(product=product, image=image)
 

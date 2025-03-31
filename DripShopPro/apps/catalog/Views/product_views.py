@@ -8,6 +8,8 @@ from catalog.models import Product, ProductImage
 from catalog.Forms.product_forms import ProductForm
 from user_profile.models import UserProfile
 
+logger = logging.getLogger("error_log")  # Centralized logger
+
 
 # List all products (for vendor)
 class ProductListView(RoleRequiredMixin, View):
@@ -20,7 +22,7 @@ class ProductListView(RoleRequiredMixin, View):
             )
             return render(request, "products/product_list.html", {"products": products})
         except Exception:
-            logging.getLogger("error_log").error(traceback.format_exc())
+            logger.error(traceback.format_exc())
             return render(
                 request,
                 "error.html",
@@ -55,7 +57,7 @@ class ProductCreateView(RoleRequiredMixin, View):
                 return redirect("product_list")
             return render(request, "products/product_form.html", {"form": form})
         except Exception:
-            logging.getLogger("error_log").error(traceback.format_exc())
+            logger.error(traceback.format_exc())
             return render(
                 request,
                 "error.html",
@@ -95,7 +97,7 @@ class ProductUpdateView(RoleRequiredMixin, View):
                 {"form": form, "product": product},
             )
         except Exception:
-            logging.getLogger("error_log").error(traceback.format_exc())
+            logger.error(traceback.format_exc())
             return render(
                 request,
                 "error.html",
@@ -121,7 +123,7 @@ class ProductDeleteView(RoleRequiredMixin, View):
                 product.delete()
             return redirect("product_list")
         except Exception:
-            logging.getLogger("error_log").error(traceback.format_exc())
+            logger.error(traceback.format_exc())
             return render(
                 request,
                 "error.html",
@@ -152,7 +154,7 @@ class ProductImageDeleteView(RoleRequiredMixin, View):
                 image.delete()
             return redirect("product_update", pk=product_id)
         except Exception:
-            logging.getLogger("error_log").error(traceback.format_exc())
+            logger.error(traceback.format_exc())
             return render(
                 request, "error.html", {"message": "Error deleting image."}, status=500
             )

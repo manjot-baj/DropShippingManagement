@@ -77,12 +77,22 @@
                             </div>
 
                             {% if messages %}
+
+                            {% for message in messages %}
+                            {% if message == "Only JPG and PNG images are allowed." %}
                             <div class="alert alert-danger">
-                                {% for message in messages %}
                                 <p>{{ message }}</p>
-                                {% endfor %}
                             </div>
                             {% endif %}
+                            {% if message == "Each image must be less than 5MB." %}
+                            <div class="alert alert-danger">
+                                <p>{{ message }}</p>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+
+                            {% endif %}
+
 
                             <div class="form-group">
                                 <label class="font-weight-bold">Product Images</label>

@@ -10,6 +10,12 @@ from catalog.Views.product_views import (
     CategoryUpdateView,
     CategoryDeleteView,
 )
+from catalog.Views.company_views import (
+    CompanyListView,
+    CompanyCreateView,
+    CompanyUpdateView,
+    CompanyDeleteView,
+)
 
 urlpatterns = [
     # Product URLs
@@ -38,5 +44,14 @@ urlpatterns = [
         "category/<int:pk>/delete/",
         CategoryDeleteView.as_view(),
         name="category_delete",
+    ),
+    # Company URLs
+    path("company/", CompanyListView.as_view(), name="company_list"),
+    path("company/create/", CompanyCreateView.as_view(), name="company_create"),
+    path(
+        "company/<int:pk>/update/", CompanyUpdateView.as_view(), name="company_update"
+    ),
+    path(
+        "company/<int:pk>/delete/", CompanyDeleteView.as_view(), name="company_delete"
     ),
 ]

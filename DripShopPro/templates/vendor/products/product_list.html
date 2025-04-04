@@ -24,10 +24,7 @@
                                     <th>Updated on</th>
                                     <th>Name</th>
                                     <th>Category</th>
-                                    <th>Price</th>
-                                    <th>Stock</th>
                                     <th>Inside Catalog</th>
-                                    <th>Inside Store</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -38,10 +35,7 @@
                                     <td>{{ product.updated_at }}</td>
                                     <td>{{ product.name }}</td>
                                     <td>{{ product.category.name }}</td>
-                                    <td>{{ product.price }}</td>
-                                    <td>{{ product.stock }}</td>
                                     <td>{% if product.catalog_display %}Yes{% else %}No{% endif %}</td>
-                                    <td>{% if product.store_display %}Yes{% else %}No{% endif %}</td>
                                     <td>
                                         <!-- Edit Button -->
                                         <a href="{% url 'product_update' product.id %}" class="btn btn-warning btn-sm">

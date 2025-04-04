@@ -74,26 +74,26 @@ class ProductForm(forms.ModelForm):
         empty_label="Select a category",
     )
 
-    price = forms.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        min_value=0.01,
-        widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": "Enter price"}
-        ),
-        error_messages={
-            "required": "Price is required.",
-            "min_value": "Price must be greater than 0.",
-        },
-    )
+    # price = forms.DecimalField(
+    #     max_digits=10,
+    #     decimal_places=2,
+    #     min_value=0.01,
+    #     widget=forms.NumberInput(
+    #         attrs={"class": "form-control", "placeholder": "Enter price"}
+    #     ),
+    #     error_messages={
+    #         "required": "Price is required.",
+    #         "min_value": "Price must be greater than 0.",
+    #     },
+    # )
 
-    stock = forms.IntegerField(
-        min_value=0,
-        widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": "Enter stock quantity"}
-        ),
-        error_messages={"min_value": "Stock cannot be negative."},
-    )
+    # stock = forms.IntegerField(
+    #     min_value=0,
+    #     widget=forms.NumberInput(
+    #         attrs={"class": "form-control", "placeholder": "Enter stock quantity"}
+    #     ),
+    #     error_messages={"min_value": "Stock cannot be negative."},
+    # )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user", None)  # Extract `user` from kwargs
@@ -130,9 +130,3 @@ class ProductForm(forms.ModelForm):
                     "You already have a Product with this name. Please use a unique name."
                 )
         return name
-
-    def clean_price(self):
-        price = self.cleaned_data.get("price")
-        if price and price > 9999:
-            raise forms.ValidationError("Price must not exceed Rs.9999/-")
-        return price

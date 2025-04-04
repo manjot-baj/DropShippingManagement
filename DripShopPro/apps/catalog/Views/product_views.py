@@ -21,7 +21,9 @@ class CategoryListView(RoleRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         try:
             categorys = Category.objects.select_related("vendor").filter(
-                vendor__user=request.user
+                vendor__user=request.user,
+                is_deleted=False,
+                is_active=True,
             )
             return render(
                 request,
@@ -74,7 +76,13 @@ class CategoryUpdateView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
     def get(self, request, pk, *args, **kwargs):
-        category = get_object_or_404(Category, pk=pk, vendor__user=request.user)
+        category = get_object_or_404(
+            Category,
+            pk=pk,
+            vendor__user=request.user,
+            is_deleted=False,
+            is_active=True,
+        )
         form = CategoryForm(instance=category, user=request.user)
         return render(
             request,
@@ -84,7 +92,13 @@ class CategoryUpdateView(RoleRequiredMixin, View):
 
     def post(self, request, pk, *args, **kwargs):
         try:
-            category = get_object_or_404(Category, pk=pk, vendor__user=request.user)
+            category = get_object_or_404(
+                Category,
+                pk=pk,
+                vendor__user=request.user,
+                is_deleted=False,
+                is_active=True,
+            )
             form = CategoryForm(request.POST, instance=category, user=request.user)
 
             if form.is_valid():
@@ -112,8 +126,15 @@ class CategoryDeleteView(RoleRequiredMixin, View):
 
     def post(self, request, pk, *args, **kwargs):
         try:
-            category = get_object_or_404(Category, pk=pk, vendor__user=request.user)
-            category.delete()
+            category = get_object_or_404(
+                Category,
+                pk=pk,
+                vendor__user=request.user,
+                is_deleted=False,
+                is_active=True,
+            )
+            category.is_deleted = True
+            category.save()
             return JsonResponse(
                 {"success": True, "message": "Category deleted successfully."}
             )
@@ -131,7 +152,9 @@ class ProductListView(RoleRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         try:
             products = Product.objects.select_related("vendor").filter(
-                vendor__user=request.user
+                vendor__user=request.user,
+                is_deleted=False,
+                is_active=True,
             )
             return render(
                 request, "vendor/products/product_list.html", {"products": products}
@@ -183,7 +206,9 @@ class ProductCreateView(RoleRequiredMixin, View):
                 with transaction.atomic():
                     product = form.save(commit=False)
                     product.vendor = get_object_or_404(
-                        UserProfile, user=request.user, role="Vendor"
+                        UserProfile,
+                        user=request.user,
+                        role="Vendor",
                     )
                     product.save()
 
@@ -218,8 +243,18 @@ class ProductUpdateView(RoleRequiredMixin, View):
                 raise ValidationError("Only JPG and PNG images are allowed.")
 
     def get(self, request, pk, *args, **kwargs):
-        product = get_object_or_404(Product, pk=pk, vendor__user=request.user)
-        images = ProductImage.objects.filter(product=product)
+        product = get_object_or_404(
+            Product,
+            pk=pk,
+            vendor__user=request.user,
+            is_deleted=False,
+            is_active=True,
+        )
+        images = ProductImage.objects.filter(
+            product=product,
+            is_deleted=False,
+            is_active=True,
+        )
         form = ProductForm(instance=product, user=request.user)
         return render(
             request,
@@ -229,11 +264,21 @@ class ProductUpdateView(RoleRequiredMixin, View):
 
     def post(self, request, pk, *args, **kwargs):
         try:
-            product = get_object_or_404(Product, pk=pk, vendor__user=request.user)
+            product = get_object_or_404(
+                Product,
+                pk=pk,
+                vendor__user=request.user,
+                is_deleted=False,
+                is_active=True,
+            )
             form = ProductForm(
                 request.POST, request.FILES, instance=product, user=request.user
             )
-            existing_images = ProductImage.objects.filter(product=product)
+            existing_images = ProductImage.objects.filter(
+                product=product,
+                is_deleted=False,
+                is_active=True,
+            )
             images = request.FILES.getlist("images")
 
             # Validate images before saving
@@ -275,8 +320,15 @@ class ProductDeleteView(RoleRequiredMixin, View):
 
     def post(self, request, pk, *args, **kwargs):
         try:
-            product = get_object_or_404(Product, pk=pk, vendor__user=request.user)
-            product.delete()
+            product = get_object_or_404(
+                Product,
+                pk=pk,
+                vendor__user=request.user,
+                is_deleted=False,
+                is_active=True,
+            )
+            product.is_deleted = True
+            product.save()
             return JsonResponse(
                 {"success": True, "message": "Product deleted successfully."}
             )
@@ -294,9 +346,14 @@ class ProductImageDeleteView(RoleRequiredMixin, View):
     def post(self, request, image_id, *args, **kwargs):
         try:
             image = get_object_or_404(
-                ProductImage, id=image_id, product__vendor__user=request.user
+                ProductImage,
+                id=image_id,
+                product__vendor__user=request.user,
+                is_deleted=False,
+                is_active=True,
             )
-            image.delete()
+            image.is_deleted = True
+            image.save()
             return JsonResponse(
                 {"success": True, "message": "Image deleted successfully."}
             )

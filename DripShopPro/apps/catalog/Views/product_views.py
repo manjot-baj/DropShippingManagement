@@ -23,7 +23,6 @@ class CategoryListView(RoleRequiredMixin, View):
             categorys = Category.objects.select_related("vendor").filter(
                 vendor__user=request.user,
                 is_deleted=False,
-                is_active=True,
             )
             return render(
                 request,
@@ -81,7 +80,6 @@ class CategoryUpdateView(RoleRequiredMixin, View):
             pk=pk,
             vendor__user=request.user,
             is_deleted=False,
-            is_active=True,
         )
         form = CategoryForm(instance=category, user=request.user)
         return render(
@@ -97,7 +95,6 @@ class CategoryUpdateView(RoleRequiredMixin, View):
                 pk=pk,
                 vendor__user=request.user,
                 is_deleted=False,
-                is_active=True,
             )
             form = CategoryForm(request.POST, instance=category, user=request.user)
 
@@ -131,7 +128,6 @@ class CategoryDeleteView(RoleRequiredMixin, View):
                 pk=pk,
                 vendor__user=request.user,
                 is_deleted=False,
-                is_active=True,
             )
             category.is_deleted = True
             category.save()
@@ -154,7 +150,6 @@ class ProductListView(RoleRequiredMixin, View):
             products = Product.objects.select_related("vendor").filter(
                 vendor__user=request.user,
                 is_deleted=False,
-                is_active=True,
             )
             return render(
                 request, "vendor/products/product_list.html", {"products": products}
@@ -248,12 +243,10 @@ class ProductUpdateView(RoleRequiredMixin, View):
             pk=pk,
             vendor__user=request.user,
             is_deleted=False,
-            is_active=True,
         )
         images = ProductImage.objects.filter(
             product=product,
             is_deleted=False,
-            is_active=True,
         )
         form = ProductForm(instance=product, user=request.user)
         return render(
@@ -269,7 +262,6 @@ class ProductUpdateView(RoleRequiredMixin, View):
                 pk=pk,
                 vendor__user=request.user,
                 is_deleted=False,
-                is_active=True,
             )
             form = ProductForm(
                 request.POST, request.FILES, instance=product, user=request.user
@@ -277,7 +269,6 @@ class ProductUpdateView(RoleRequiredMixin, View):
             existing_images = ProductImage.objects.filter(
                 product=product,
                 is_deleted=False,
-                is_active=True,
             )
             images = request.FILES.getlist("images")
 
@@ -325,7 +316,6 @@ class ProductDeleteView(RoleRequiredMixin, View):
                 pk=pk,
                 vendor__user=request.user,
                 is_deleted=False,
-                is_active=True,
             )
             product.is_deleted = True
             product.save()
@@ -350,7 +340,6 @@ class ProductImageDeleteView(RoleRequiredMixin, View):
                 id=image_id,
                 product__vendor__user=request.user,
                 is_deleted=False,
-                is_active=True,
             )
             image.is_deleted = True
             image.save()

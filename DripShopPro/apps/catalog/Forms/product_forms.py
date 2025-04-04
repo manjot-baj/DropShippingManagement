@@ -33,12 +33,16 @@ class CategoryForm(forms.ModelForm):
 
         if is_update:
             if not self.instance.name == name:
-                if Category.objects.filter(name=name, vendor__user=self.user).exists():
+                if Category.objects.filter(
+                    name=name, vendor__user=self.user, is_deleted=False
+                ).exists():
                     raise forms.ValidationError(
                         "You already have a Category with this name. Please use a unique name."
                     )
         else:
-            if Category.objects.filter(name=name, vendor__user=self.user).exists():
+            if Category.objects.filter(
+                name=name, vendor__user=self.user, is_deleted=False
+            ).exists():
                 raise forms.ValidationError(
                     "You already have a Category with this name. Please use a unique name."
                 )
@@ -102,7 +106,7 @@ class ProductForm(forms.ModelForm):
         # Show only categories created by the current vendor
         if self.user:
             self.fields["category"].queryset = Category.objects.filter(
-                vendor__user=self.user
+                vendor__user=self.user, is_deleted=False
             )
 
         # Apply consistent Bootstrap styling to all fields
@@ -111,7 +115,7 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ["name", "description", "category", "price", "stock"]
+        fields = ["name", "description", "category"]
 
     def clean_name(self):
         name = self.cleaned_data.get("name")
@@ -120,12 +124,20 @@ class ProductForm(forms.ModelForm):
 
         if is_update:
             if not self.instance.name == name:
-                if Product.objects.filter(name=name, vendor__user=self.user).exists():
+                if Product.objects.filter(
+                    name=name,
+                    vendor__user=self.user,
+                    is_deleted=False,
+                ).exists():
                     raise forms.ValidationError(
                         "You already have a Product with this name. Please use a unique name."
                     )
         else:
-            if Product.objects.filter(name=name, vendor__user=self.user).exists():
+            if Product.objects.filter(
+                name=name,
+                vendor__user=self.user,
+                is_deleted=False,
+            ).exists():
                 raise forms.ValidationError(
                     "You already have a Product with this name. Please use a unique name."
                 )

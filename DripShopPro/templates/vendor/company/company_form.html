@@ -1,0 +1,174 @@
+{% extends 'vendor/base.html' %}
+{% block title %}{% if company %}Update{% else %}Add{% endif %} Company{% endblock %}
+{% block content %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title">{% if company %}Update{% else %}Add{% endif %} Company</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="form-row">
+                                <div class="col-md-4">
+                                    <label class="font-weight-bold">Company Name</label>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.name.errors %}
+                                        <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="font-weight-bold">Registration No</label>
+                                    {{ form.registration_number }}
+                                    {% if form.registration_number.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.registration_number.errors %}
+                                        <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="font-weight-bold">Tax Id</label>
+                                    {{ form.tax_id }}
+                                    {% if form.tax_id.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.tax_id.errors %}
+                                        <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+
+                            <div class="form-row">
+                                <div class="col-md-4">
+                                    <label class="font-weight-bold">Email Id</label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.email.errors %}
+                                        <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="font-weight-bold">Phone No</label>
+                                    {{ form.phone }}
+                                    {% if form.phone.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.phone.errors %}
+                                        <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="font-weight-bold">Address</label>
+                                    {{ form.address }}
+                                    {% if form.address.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.address.errors %}
+                                        <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+
+                            <div class="form-row">
+                                <div class="col-md-4">
+                                    <label class="font-weight-bold">City</label>
+                                    {{ form.city }}
+                                    {% if form.city.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.city.errors %}
+                                        <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="font-weight-bold">State</label>
+                                    {{ form.state }}
+                                    {% if form.state.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.state.errors %}
+                                        <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="font-weight-bold">Postal Code</label>
+                                    {{ form.postal_code }}
+                                    {% if form.postal_code.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.postal_code.errors %}
+                                        <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+
+                            <br><br>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Company Logo</label>
+                                {{ form.logo }}
+                                {% if form.logo.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.logo.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <br><br>
+                            <div class="d-flex justify-content-end mt-4">
+                                <a href="{% url 'company_list' %}" class="btn btn-secondary mr-2">Cancel</a>
+                                <button type="submit" class="btn btn-success">
+                                    {% if company %}Update{% else %}Create{% endif %} Company
+                                </button>
+                            </div>
+                        </form>
+
+                        {% if company %}
+                        {% if company.logo %}
+                        <div class="form-row">
+                            <div class="col-md-2">
+                                <img src="{{ company.logo.url }}" alt="Product Image" class="img-fluid"
+                                    style="max-width: 150px;">
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

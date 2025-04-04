@@ -1,5 +1,5 @@
 {% extends 'vendor/base.html' %}
-{% block title %}Products{% endblock %}
+{% block title %}Company{% endblock %}
 {% block content %}
 
 <section class="content">
@@ -8,10 +8,10 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h1 class="card-title">Products</h1>
+                        <h1 class="card-title">Company</h1>
                         <div class="card-tools">
-                            <a href="{% url 'product_create' %}" class="btn btn-success btn-sm">
-                                <i class="fas fa-plus"></i> Add Product
+                            <a href="{% url 'company_create' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i> Add Company
                             </a>
                         </div>
                     </div>
@@ -22,29 +22,31 @@
                                 <tr>
                                     <th>Created on</th>
                                     <th>Updated on</th>
-                                    <th>Product Name</th>
-                                    <th>Category</th>
-                                    <th>Inside Catalog</th>
+                                    <th>Company Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>State</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for product in products %}
+                                {% for company in companys %}
                                 <tr>
-                                    <td>{{ product.created_at }}</td>
-                                    <td>{{ product.updated_at }}</td>
-                                    <td>{{ product.name }}</td>
-                                    <td>{{ product.category.name }}</td>
-                                    <td>{% if product.catalog_display %}Yes{% else %}No{% endif %}</td>
+                                    <td>{{ company.created_at }}</td>
+                                    <td>{{ company.updated_at }}</td>
+                                    <td>{{ company.name }}</td>
+                                    <td>{{ company.email }}</td>
+                                    <td>{{ company.phone }}</td>
+                                    <td>{{ company.state }}</td>
                                     <td>
                                         <!-- Edit Button -->
-                                        <a href="{% url 'product_update' product.id %}" class="btn btn-warning btn-sm">
+                                        <a href="{% url 'company_update' company.id %}" class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </a>
 
                                         <!-- Delete Button -->
                                         <button class="btn btn-danger btn-sm delete-btn"
-                                            data-url="{% url 'product_delete' product.id %}">
+                                            data-url="{% url 'company_delete' company.id %}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>

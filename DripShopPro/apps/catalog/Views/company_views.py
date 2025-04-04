@@ -23,7 +23,7 @@ class CompanyListView(RoleRequiredMixin, View):
                 is_deleted=False,
             )
             return render(
-                request, "vendor/company/company_list.html", {"company": company}
+                request, "vendor/company/company_list.html", {"companys": company}
             )
         except Exception:
             logger.error(traceback.format_exc())

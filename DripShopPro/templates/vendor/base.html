@@ -152,22 +152,32 @@
                                 <p>Dashboard</p>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'company_list' %}" class="nav-link" data-url="{% url 'company_list' %}">
+                                <i class="nav-icon fas fa-building"></i>
+                                <p>Company</p>
+                            </a>
+                        </li>
+
                         <li class="nav-item">
                             <a href="{% url 'category_list' %}" class="nav-link" data-url="{% url 'category_list' %}">
                                 <i class="nav-icon fas fa-list"></i>
-                                <p>Category</p>
+                                <p>Product Category</p>
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a href="{% url 'product_list' %}" class="nav-link" data-url="{% url 'product_list' %}">
                                 <i class="nav-icon fas fa-box"></i>
                                 <p>Products</p>
                             </a>
                         </li>
+
                         <li class="nav-item">
-                            <a href="{% url 'company_list' %}" class="nav-link" data-url="{% url 'company_list' %}">
-                                <i class="nav-icon fas fa-building"></i>
-                                <p>Company</p>
+                            <a href="{% url 'inventory_list' %}" class="nav-link" data-url="{% url 'inventory_list' %}">
+                                <i class="nav-icon fas fa-box"></i>
+                                <p>Inventory</p>
                             </a>
                         </li>
 

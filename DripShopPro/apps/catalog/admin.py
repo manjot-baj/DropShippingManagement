@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from common.admin import BaseAdmin
-from .models import Category, Product, ProductImage, Company, Catalog
+from .models import Category, Product, ProductImage, Company, Inventory
 
 
 class ProductImageInline(admin.TabularInline):
@@ -27,12 +27,12 @@ class ProductAdmin(BaseAdmin):
     list_display = BaseAdmin.list_display + (
         "name",
         "category",
-        "catalog_display",
+        "inside_inventory",
         "vendor",
     )
     list_filter = BaseAdmin.list_filter + (
         "category",
-        "catalog_display",
+        "inside_inventory",
     )
     search_fields = BaseAdmin.search_fields + ("name", "vendor")
     ordering = BaseAdmin.ordering
@@ -52,20 +52,18 @@ class CompanyAdmin(BaseAdmin):
     list_filter = BaseAdmin.list_filter + ("city", "country")
 
 
-@admin.register(Catalog)
-class CatalogAdmin(BaseAdmin):
+@admin.register(Inventory)
+class InventoryAdmin(BaseAdmin):
     list_display = BaseAdmin.list_display + (
         "company",
         "product",
         "price",
         "stock",
-        "store_display",
     )
     search_fields = BaseAdmin.search_fields + (
         "company__name",
         "product__name",
     )
     list_filter = BaseAdmin.list_filter + (
-        "store_display",
         "company",
     )

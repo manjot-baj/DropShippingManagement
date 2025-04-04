@@ -16,6 +16,12 @@ from catalog.Views.company_views import (
     CompanyUpdateView,
     CompanyDeleteView,
 )
+from catalog.Views.inventory_views import (
+    InventoryListView,
+    InventoryCreateView,
+    InventoryUpdateView,
+    InventoryDeleteView,
+)
 
 urlpatterns = [
     # Product URLs
@@ -53,5 +59,18 @@ urlpatterns = [
     ),
     path(
         "company/<int:pk>/delete/", CompanyDeleteView.as_view(), name="company_delete"
+    ),
+    # Inventory URLs
+    path("inventory/", InventoryListView.as_view(), name="inventory_list"),
+    path("inventory/create/", InventoryCreateView.as_view(), name="inventory_create"),
+    path(
+        "inventory/<int:pk>/update/",
+        InventoryUpdateView.as_view(),
+        name="inventory_update",
+    ),
+    path(
+        "inventory/<int:pk>/delete/",
+        InventoryDeleteView.as_view(),
+        name="inventory_delete",
     ),
 ]

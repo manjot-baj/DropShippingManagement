@@ -1,5 +1,5 @@
 {% extends 'vendor/base.html' %}
-{% block title %}Products{% endblock %}
+{% block title %}Inventory{% endblock %}
 {% block content %}
 
 <section class="content">
@@ -8,10 +8,10 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h1 class="card-title">Products</h1>
+                        <h1 class="card-title">Inventory</h1>
                         <div class="card-tools">
-                            <a href="{% url 'product_create' %}" class="btn btn-success btn-sm">
-                                <i class="fas fa-plus"></i> Add Product
+                            <a href="{% url 'inventory_create' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i> Add Inventory
                             </a>
                         </div>
                     </div>
@@ -22,29 +22,32 @@
                                 <tr>
                                     <th>Created on</th>
                                     <th>Updated on</th>
-                                    <th>Product Name</th>
-                                    <th>Category</th>
-                                    <th>Inside Inventory</th>
+                                    <th>Product</th>
+                                    <th>Stock</th>
+                                    <th>Price</th>
+                                    <th>Company</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for product in products %}
+                                {% for inventory in inventorys %}
                                 <tr>
-                                    <td>{{ product.created_at }}</td>
-                                    <td>{{ product.updated_at }}</td>
-                                    <td>{{ product.name }}</td>
-                                    <td>{{ product.category.name }}</td>
-                                    <td>{% if product.inside_inventory %}Yes{% else %}No{% endif %}</td>
+                                    <td>{{ inventory.created_at }}</td>
+                                    <td>{{ inventory.updated_at }}</td>
+                                    <td>{{ inventory.product.name }}</td>
+                                    <td>{{ inventory.stock }}</td>
+                                    <td>{{ inventory.price }}</td>
+                                    <td>{{ inventory.company.name }}</td>
                                     <td>
                                         <!-- Edit Button -->
-                                        <a href="{% url 'product_update' product.id %}" class="btn btn-warning btn-sm">
+                                        <a href="{% url 'inventory_update' inventory.id %}"
+                                            class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </a>
 
                                         <!-- Delete Button -->
                                         <button class="btn btn-danger btn-sm delete-btn"
-                                            data-url="{% url 'product_delete' product.id %}">
+                                            data-url="{% url 'inventory_delete' inventory.id %}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>

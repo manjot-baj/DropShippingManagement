@@ -19,7 +19,7 @@ class Product(BaseModel):
     category = models.ForeignKey(
         Category, null=True, blank=True, on_delete=models.SET_NULL
     )
-    catalog_display = models.BooleanField(default=False)
+    inside_inventory = models.BooleanField(default=False)
     vendor = models.ForeignKey(
         UserProfile, on_delete=models.CASCADE, blank=True, null=True
     )
@@ -108,24 +108,23 @@ class Company(BaseModel):
         return self.name
 
 
-class Catalog(BaseModel):
+class Inventory(BaseModel):
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
-        related_name="catalog",
+        related_name="inventory",
         null=True,
         blank=True,
     )
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
-        related_name="catalog_product",
+        related_name="inventory_product",
         null=True,
         blank=True,
     )
     price = models.DecimalField(max_digits=10, decimal_places=2, default=float(0))
     stock = models.PositiveIntegerField(default=0)
-    store_display = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.pk)

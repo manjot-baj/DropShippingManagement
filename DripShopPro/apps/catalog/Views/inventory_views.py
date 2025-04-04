@@ -115,33 +115,7 @@ class InventoryUpdateView(RoleRequiredMixin, View):
                 status=500,
             )
 
-
-# Delete a inventory
-class InventoryDeleteView(RoleRequiredMixin, View):
-    required_role = "Vendor"
-
-    def post(self, request, pk, *args, **kwargs):
-        try:
-            inventory = get_object_or_404(
-                Inventory,
-                pk=pk,
-                is_deleted=False,
-            )
-            inventory.product.inside_inventory = False
-            inventory.product.save()
-            inventory.is_deleted = True
-            inventory.save()
-            return JsonResponse(
-                {"success": True, "message": "Inventory deleted successfully."}
-            )
-        except Exception as e:
-            logger.error(traceback.format_exc())
-            return JsonResponse(
-                {"success": False, "message": "Error deleting inventory."}, status=500
-            )
-
-
-# Add or Remove From Catalog
+# Add, Remove From Catalog or Delete Inventory
 class InventoryBulkCatalogUpdateView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
@@ -150,23 +124,30 @@ class InventoryBulkCatalogUpdateView(RoleRequiredMixin, View):
             ids = request.POST.getlist("inventory_ids")
             action = request.POST.get("action")
 
-            if not ids or action not in ["add", "remove"]:
+            if not ids or action not in ["add", "remove", "delete"]:
                 messages.error(request, "Invalid selection or action.")
                 return redirect("inventory_list")
 
             inventories = Inventory.objects.filter(
                 id__in=ids, is_deleted=False, company__owner__user=request.user
             )
+            if action == "delete":
 
-            update_value = True if action == "add" else False
-            inventories.update(catalog_display=update_value)
+                for each in inventories:
+                    each.product.inside_inventory = False
+                    each.product.save()
+                    each.is_deleted = True
+                    each.save()
+            else:
+                update_value = True if action == "add" else False
+                inventories.update(catalog_display=update_value)
 
             messages.success(
                 request,
-                f"{inventories.count()} inventory item(s) updated: catalog display set to {update_value}.",
+                f"Inventory action successful.",
             )
             return redirect("inventory_list")
         except Exception:
             logger.error(traceback.format_exc())
-            messages.error(request, "Error updating catalog display.")
+            messages.error(request, "Error while performing action.")
             return redirect("inventory_list")

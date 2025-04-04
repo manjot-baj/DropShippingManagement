@@ -59,11 +59,10 @@ class InventoryAdmin(BaseAdmin):
         "product",
         "price",
         "stock",
+        "catalog_display",
     )
     search_fields = BaseAdmin.search_fields + (
         "company__name",
         "product__name",
     )
-    list_filter = BaseAdmin.list_filter + (
-        "company",
-    )
+    list_filter = BaseAdmin.list_filter + ("company", "catalog_display")

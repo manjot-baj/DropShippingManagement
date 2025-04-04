@@ -125,6 +125,7 @@ class Inventory(BaseModel):
     )
     price = models.DecimalField(max_digits=10, decimal_places=2, default=float(0))
     stock = models.PositiveIntegerField(default=0)
+    catalog_display = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.pk)

@@ -337,6 +337,27 @@
         });
     </script>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll("[data-select-all]").forEach(selectAll => {
+                const targetName = selectAll.getAttribute("data-select-all");
+                const checkboxes = document.querySelectorAll(`input[name="${targetName}"]`);
+
+                selectAll.addEventListener("change", function () {
+                    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+                });
+
+                // Optional: Keep "select all" checkbox in sync
+                checkboxes.forEach(cb => {
+                    cb.addEventListener("change", function () {
+                        selectAll.checked = [...checkboxes].every(cb => cb.checked);
+                    });
+                });
+            });
+        });
+
+    </script>
+
 
 </body>
 

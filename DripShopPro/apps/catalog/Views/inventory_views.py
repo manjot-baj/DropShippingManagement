@@ -7,7 +7,7 @@ from django.db import transaction
 from user_profile.middlewares import RoleRequiredMixin
 from catalog.models import Inventory
 from catalog.Forms.inventory_forms import InventoryForm
-from user_profile.models import UserProfile
+from django.contrib import messages
 
 logger = logging.getLogger("error_log")  # Centralized logger
 
@@ -139,3 +139,34 @@ class InventoryDeleteView(RoleRequiredMixin, View):
             return JsonResponse(
                 {"success": False, "message": "Error deleting inventory."}, status=500
             )
+
+
+# Add or Remove From Catalog
+class InventoryBulkCatalogUpdateView(RoleRequiredMixin, View):
+    required_role = "Vendor"
+
+    def post(self, request, *args, **kwargs):
+        try:
+            ids = request.POST.getlist("inventory_ids")
+            action = request.POST.get("action")
+
+            if not ids or action not in ["add", "remove"]:
+                messages.error(request, "Invalid selection or action.")
+                return redirect("inventory_list")
+
+            inventories = Inventory.objects.filter(
+                id__in=ids, is_deleted=False, company__owner__user=request.user
+            )
+
+            update_value = True if action == "add" else False
+            inventories.update(catalog_display=update_value)
+
+            messages.success(
+                request,
+                f"{inventories.count()} inventory item(s) updated: catalog display set to {update_value}.",
+            )
+            return redirect("inventory_list")
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error updating catalog display.")
+            return redirect("inventory_list")

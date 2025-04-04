@@ -17,54 +17,67 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Created on</th>
-                                    <th>Updated on</th>
-                                    <th>Product</th>
-                                    <th>Stock</th>
-                                    <th>Price</th>
-                                    <th>Company</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for inventory in inventorys %}
-                                <tr>
-                                    <td>{{ inventory.created_at }}</td>
-                                    <td>{{ inventory.updated_at }}</td>
-                                    <td>{{ inventory.product.name }}</td>
-                                    <td>{{ inventory.stock }}</td>
-                                    <td>{{ inventory.price }}</td>
-                                    <td>{{ inventory.company.name }}</td>
-                                    <td>
-                                        <!-- Edit Button -->
-                                        <a href="{% url 'inventory_update' inventory.id %}"
-                                            class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                        <form id="bulk-action-form" method="post" action="{% url 'inventory_bulk_catalog_update' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <button type="submit" name="action" value="add" class="btn btn-primary btn-sm">
+                                    Add to Catalog
+                                </button>
+                                <button type="submit" name="action" value="remove" class="btn btn-secondary btn-sm">
+                                    Remove from Catalog
+                                </button>
+                            </div>
 
-                                        <!-- Delete Button -->
-                                        <button class="btn btn-danger btn-sm delete-btn"
-                                            data-url="{% url 'inventory_delete' inventory.id %}">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <!-- Updated: using data-select-all -->
+                                        <th><input type="checkbox" data-select-all="inventory_ids"></th>
+                                        <th>Created on</th>
+                                        <th>Updated on</th>
+                                        <th>Product</th>
+                                        <th>Stock</th>
+                                        <th>Price</th>
+                                        <th>Company</th>
+                                        <th>Inside Catalog</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for inventory in inventorys %}
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="inventory_ids" value="{{ inventory.id }}">
+                                        </td>
+                                        <td>{{ inventory.created_at }}</td>
+                                        <td>{{ inventory.updated_at }}</td>
+                                        <td>{{ inventory.product.name }}</td>
+                                        <td>{{ inventory.stock }}</td>
+                                        <td>{{ inventory.price }}</td>
+                                        <td>{{ inventory.company.name }}</td>
+                                        <td>{% if inventory.catalog_display %}Yes{% else %}No{% endif %}</td>
+                                        <td>
+                                            <a href="{% url 'inventory_update' inventory.id %}"
+                                                class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button class="btn btn-danger btn-sm delete-btn"
+                                                data-url="{% url 'inventory_delete' inventory.id %}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </form>
                     </div>
                     <!-- /.card-body -->
                 </div>
                 <!-- /.card -->
             </div>
-            <!-- /.col -->
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </section>
 
 {% endblock %}

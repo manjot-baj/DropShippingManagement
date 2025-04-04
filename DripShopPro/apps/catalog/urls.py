@@ -21,6 +21,7 @@ from catalog.Views.inventory_views import (
     InventoryCreateView,
     InventoryUpdateView,
     InventoryDeleteView,
+    InventoryBulkCatalogUpdateView,
 )
 
 urlpatterns = [
@@ -72,5 +73,10 @@ urlpatterns = [
         "inventory/<int:pk>/delete/",
         InventoryDeleteView.as_view(),
         name="inventory_delete",
+    ),
+    path(
+        "inventory/bulk-catalog-update/",
+        InventoryBulkCatalogUpdateView.as_view(),
+        name="inventory_bulk_catalog_update",
     ),
 ]

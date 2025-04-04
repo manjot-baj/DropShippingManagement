@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from common.admin import BaseAdmin
-from .models import Category, Product, ProductImage, Company, Catalog, CatalogProduct
+from .models import Category, Product, ProductImage, Company, Catalog
 
 
 class ProductImageInline(admin.TabularInline):
@@ -54,19 +54,18 @@ class CompanyAdmin(BaseAdmin):
 
 @admin.register(Catalog)
 class CatalogAdmin(BaseAdmin):
-    list_display = BaseAdmin.list_display + ("name", "company")
-    search_fields = BaseAdmin.search_fields + ("name", "company__name")
-    list_filter = BaseAdmin.list_filter + ("company",)
-
-
-@admin.register(CatalogProduct)
-class CatalogProductAdmin(BaseAdmin):
     list_display = BaseAdmin.list_display + (
-        "catalog",
+        "company",
         "product",
         "price",
         "stock",
         "store_display",
     )
-    search_fields = BaseAdmin.search_fields + ("catalog__name", "product__name")
-    list_filter = BaseAdmin.list_filter + ("store_display", "catalog", "product")
+    search_fields = BaseAdmin.search_fields + (
+        "company__name",
+        "product__name",
+    )
+    list_filter = BaseAdmin.list_filter + (
+        "store_display",
+        "company",
+    )

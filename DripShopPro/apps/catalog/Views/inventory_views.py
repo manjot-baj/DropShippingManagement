@@ -51,9 +51,8 @@ class InventoryCreateView(RoleRequiredMixin, View):
             if form.is_valid():
                 with transaction.atomic():
                     inventory = form.save(commit=False)
-                    inventory.vendor = get_object_or_404(
-                        UserProfile, user=request.user, role="Vendor"
-                    )
+                    inventory.product.inside_inventory = True
+                    inventory.product.save()
                     inventory.save()
                 return redirect("inventory_list")
             return render(
@@ -97,7 +96,10 @@ class InventoryUpdateView(RoleRequiredMixin, View):
 
             if form.is_valid():
                 with transaction.atomic():
-                    inventory = form.save()
+                    inventory = form.save(commit=False)
+                    inventory.product.inside_inventory = True
+                    inventory.product.save()
+                    inventory.save()
                 return redirect("inventory_list")
             return render(
                 request,
@@ -125,6 +127,8 @@ class InventoryDeleteView(RoleRequiredMixin, View):
                 pk=pk,
                 is_deleted=False,
             )
+            inventory.product.inside_inventory = False
+            inventory.product.save()
             inventory.is_deleted = True
             inventory.save()
             return JsonResponse(

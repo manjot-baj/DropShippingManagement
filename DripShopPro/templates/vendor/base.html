@@ -45,8 +45,8 @@
 
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="{% static 'media/DripShopPro.ico' %}" alt="DripShopPro Logo" height="60"
-                width="60">
+            <img src="{% static 'media/DripShopPro.ico' %}" alt="DripShopPro Logo"
+                class="brand-image img-circle elevation-3 animation__shake" style="opacity: .8">
         </div>
 
         <!-- Navbar -->
@@ -176,7 +176,7 @@
 
                         <li class="nav-item">
                             <a href="{% url 'inventory_list' %}" class="nav-link" data-url="{% url 'inventory_list' %}">
-                                <i class="nav-icon fas fa-database"></i>
+                                <i class="nav-icon fas fa-layer-group"></i>
                                 <p>Inventory</p>
                             </a>
                         </li>
@@ -268,7 +268,7 @@
                 "ordering": true,
                 "info": true,
                 "autoWidth": false,
-                "scrollX": true, 
+                "scrollX": true,
             });
         });
     </script>

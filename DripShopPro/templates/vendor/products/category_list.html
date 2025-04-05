@@ -1,5 +1,12 @@
 {% extends 'vendor/base.html' %}
 {% block title %}Category{% endblock %}
+{% block header %}
+<div class="row mb-2">
+    <div class="col-sm-6">
+        <h1>Category</h1>
+    </div>
+</div>
+{% endblock %}
 {% block content %}
 
 <section class="content">
@@ -8,7 +15,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title">Category</h2>
+                        <!-- <h2 class="card-title">Category</h2> -->
                         <div class="card-tools">
                             <a href="{% url 'category_create' %}" class="btn btn-success btn-sm">
                                 <i class="fas fa-plus"></i> Add Category

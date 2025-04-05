@@ -5,11 +5,62 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.db import transaction
 from user_profile.middlewares import RoleRequiredMixin
-from catalog.models import Inventory
+from catalog.models import Inventory, Company, Product, ProductImage
 from catalog.Forms.inventory_forms import InventoryForm
 from django.contrib import messages
 
 logger = logging.getLogger("error_log")  # Centralized logger
+
+
+# Catalog for each Company of Vendor
+class CompanyProductCatalogView(RoleRequiredMixin, View):
+    required_role = "Vendor"
+
+    def get(self, request, pk, *args, **kwargs):
+        try:
+            company = get_object_or_404(
+                Company,
+                pk=pk,
+                owner__user=request.user,
+                is_deleted=False,
+            )
+            catalogs = []
+            inventorys = Inventory.objects.select_related("company", "product").filter(
+                is_deleted=False, company=company
+            )
+            for inventory in inventorys:
+                catalogs.append(
+                    {
+                        "product": inventory.product.name,
+                        "description": inventory.product.description,
+                        "category": inventory.product.category.name,
+                        "price": inventory.price,
+                        "stock": inventory.stock,
+                        "product_imgs": ProductImage.objects.filter(
+                            product=inventory.product, is_deleted=False
+                        ),
+                        "product_single_img": ProductImage.objects.filter(
+                            product=inventory.product, is_deleted=False
+                        ).first(),
+                        "company": inventory.company.name,
+                        "company_id": inventory.company.pk,
+                        "product_id": inventory.product.pk,
+                        "inventory_id": inventory.pk,
+                    }
+                )
+            return render(
+                request,
+                "vendor/catalog/catalog.html",
+                {"catalogs": catalogs},
+            )
+        except Exception:
+            logger.error(traceback.format_exc())
+            return render(
+                request,
+                "vendor/error.html",
+                {"message": "Error fetching catalogs."},
+                status=500,
+            )
 
 
 # List all Inventory (for vendor)
@@ -114,6 +165,7 @@ class InventoryUpdateView(RoleRequiredMixin, View):
                 {"message": "Error updating inventory."},
                 status=500,
             )
+
 
 # Add, Remove From Catalog or Delete Inventory
 class InventoryBulkCatalogUpdateView(RoleRequiredMixin, View):

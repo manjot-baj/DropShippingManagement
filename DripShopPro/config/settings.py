@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 ]
 
 MY_APPS = [
+    "common",
     "user_profile",
     "dashboard",
     "catalog",

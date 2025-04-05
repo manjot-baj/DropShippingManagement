@@ -1,9 +1,9 @@
 {% extends 'vendor/base.html' %}
-{% block title %}Category{% endblock %}
+{% block title %}Company{% endblock %}
 {% block header %}
 <div class="row mb-2">
     <div class="col-sm-6">
-        <h1>Category</h1>
+        <h1>Company</h1>
     </div>
 </div>
 {% endblock %}
@@ -15,39 +15,54 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <!-- <h2 class="card-title">Category</h2> -->
+                        <!-- <h1 class="card-title">Company</h1> -->
                         <div class="card-tools">
-                            <a href="{% url 'category_create' %}" class="btn btn-success btn-sm">
-                                <i class="fas fa-plus"></i> Add Category
+                            <a href="{% url 'company_create' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i> Add Company
                             </a>
                         </div>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="example2"
+                            <table id="example1"
                                 class="table table-hover table-bordered table-striped align-middle text-nowrap"
                                 style="min-width: 1000px;">
                                 <thead class="bg-primary text-white">
                                     <tr>
-                                        <th>Category Name</th>
+                                        <th>Created on</th>
+                                        <th>Updated on</th>
+                                        <th>Company Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>State</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for category in categorys %}
+                                    {% for company in companys %}
                                     <tr>
-                                        <td>{{ category.name }}</td>
+                                        <td>{{ company.created_at }}</td>
+                                        <td>{{ company.updated_at }}</td>
+                                        <td>{{ company.name }}</td>
+                                        <td>{{ company.email }}</td>
+                                        <td>{{ company.phone }}</td>
+                                        <td>{{ company.state }}</td>
                                         <td>
                                             <!-- Edit Button -->
-                                            <a href="{% url 'category_update' category.id %}"
+                                            <a href="{% url 'catalog_view' company.id %}"
+                                                class="btn btn-warning btn-sm">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+
+                                            <a href="{% url 'company_update' company.id %}"
                                                 class="btn btn-warning btn-sm">
                                                 <i class="fas fa-edit"></i>
                                             </a>
 
                                             <!-- Delete Button -->
                                             <button class="btn btn-danger btn-sm delete-btn"
-                                                data-url="{% url 'category_delete' category.id %}">
+                                                data-url="{% url 'company_delete' company.id %}">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </td>

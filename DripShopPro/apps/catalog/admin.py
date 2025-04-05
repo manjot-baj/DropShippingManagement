@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Category, Product, ProductImage
+from common.admin import BaseAdmin
+from .models import Category, Product, ProductImage, Company, Inventory
 
 
 class ProductImageInline(admin.TabularInline):
@@ -8,43 +9,60 @@ class ProductImageInline(admin.TabularInline):
     extra = 1
 
     def image_preview(self, obj):
-        return (
-            format_html('<img src="{}" width="50" height="50"/>', obj.image.url)
-            if obj.image
-            else ""
-        )
+        if obj.image:
+            return format_html('<img src="{}" width="50" height="50"/>', obj.image.url)
+        return ""
 
-    image_preview.allow_tags = True
     image_preview.short_description = "Preview"
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name", "vendor")
-    search_fields = ("name", "vendor")
+class CategoryAdmin(BaseAdmin):
+    list_display = BaseAdmin.list_display + ("name", "vendor")
+    search_fields = BaseAdmin.search_fields + ("name", "vendor")
 
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = (
+class ProductAdmin(BaseAdmin):
+    list_display = BaseAdmin.list_display + (
         "name",
         "category",
-        "price",
-        "stock",
-        "created_at",
-        "updated_at",
-        "catalog_display",
-        "store_display",
+        "inside_inventory",
         "vendor",
     )
-    list_filter = (
+    list_filter = BaseAdmin.list_filter + (
         "category",
-        "created_at",
-        "updated_at",
-        "catalog_display",
-        "store_display",
+        "inside_inventory",
     )
-    search_fields = ("name", "vendor")
-    ordering = ("-created_at",)
-    readonly_fields = ("created_at", "updated_at")
+    search_fields = BaseAdmin.search_fields + ("name", "vendor")
+    ordering = BaseAdmin.ordering
+    readonly_fields = BaseAdmin.readonly_fields
     inlines = [ProductImageInline]
+
+
+@admin.register(Company)
+class CompanyAdmin(BaseAdmin):
+    list_display = BaseAdmin.list_display + ("name", "email", "phone", "owner")
+    search_fields = BaseAdmin.search_fields + (
+        "name",
+        "email",
+        "phone",
+        "owner__user__email",
+    )
+    list_filter = BaseAdmin.list_filter + ("city", "country")
+
+
+@admin.register(Inventory)
+class InventoryAdmin(BaseAdmin):
+    list_display = BaseAdmin.list_display + (
+        "company",
+        "product",
+        "price",
+        "stock",
+        "catalog_display",
+    )
+    search_fields = BaseAdmin.search_fields + (
+        "company__name",
+        "product__name",
+    )
+    list_filter = BaseAdmin.list_filter + ("company", "catalog_display")

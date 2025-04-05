@@ -45,8 +45,8 @@
 
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="{% static 'media/DripShopPro.ico' %}" alt="DripShopPro Logo" height="60"
-                width="60">
+            <img src="{% static 'media/DripShopPro.ico' %}" alt="DripShopPro Logo"
+                class="brand-image img-circle elevation-3 animation__shake" style="opacity: .8">
         </div>
 
         <!-- Navbar -->
@@ -62,7 +62,7 @@
             <ul class="navbar-nav ml-auto">
 
                 <!-- Notifications Dropdown Menu -->
-                <li class="nav-item dropdown">
+                <!-- <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
                         <span class="badge badge-warning navbar-badge">15</span>
@@ -87,7 +87,7 @@
                         <div class="dropdown-divider"></div>
                         <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
                     </div>
-                </li>
+                </li> -->
 
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
@@ -130,7 +130,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="index3.html" class="brand-link">
+            <a href="{% url 'dashboard' %}" class="brand-link">
                 <img src="{% static 'media/DripShopPro.ico' %}" alt="DripShopPro Logo"
                     class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">Drip$hop<sup><small>PRO</small></sup></span>
@@ -152,16 +152,32 @@
                                 <p>Dashboard</p>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'company_list' %}" class="nav-link" data-url="{% url 'company_list' %}">
+                                <i class="nav-icon fas fa-building"></i>
+                                <p>Company</p>
+                            </a>
+                        </li>
+
                         <li class="nav-item">
                             <a href="{% url 'category_list' %}" class="nav-link" data-url="{% url 'category_list' %}">
                                 <i class="nav-icon fas fa-list"></i>
-                                <p>Category</p>
+                                <p>Product Category</p>
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a href="{% url 'product_list' %}" class="nav-link" data-url="{% url 'product_list' %}">
                                 <i class="nav-icon fas fa-box"></i>
                                 <p>Products</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'inventory_list' %}" class="nav-link" data-url="{% url 'inventory_list' %}">
+                                <i class="nav-icon fas fa-layer-group"></i>
+                                <p>Inventory</p>
                             </a>
                         </li>
 
@@ -242,8 +258,8 @@
     <script>
         $(function () {
             $("#example1").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                "lengthChange": false, "autoWidth": false, "scrollX": true,
+                "buttons": ["csv", "excel", "pdf", "print"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
             $('#example2').DataTable({
                 "paging": true,
@@ -252,7 +268,7 @@
                 "ordering": true,
                 "info": true,
                 "autoWidth": false,
-                "responsive": true,
+                "scrollX": true,
             });
         });
     </script>
@@ -319,6 +335,27 @@
                 }
             });
         });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll("[data-select-all]").forEach(selectAll => {
+                const targetName = selectAll.getAttribute("data-select-all");
+                const checkboxes = document.querySelectorAll(`input[name="${targetName}"]`);
+
+                selectAll.addEventListener("change", function () {
+                    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+                });
+
+                // Optional: Keep "select all" checkbox in sync
+                checkboxes.forEach(cb => {
+                    cb.addEventListener("change", function () {
+                        selectAll.checked = [...checkboxes].every(cb => cb.checked);
+                    });
+                });
+            });
+        });
+
     </script>
 
 

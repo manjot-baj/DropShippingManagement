@@ -33,12 +33,16 @@ class CategoryForm(forms.ModelForm):
 
         if is_update:
             if not self.instance.name == name:
-                if Category.objects.filter(name=name, vendor__user=self.user).exists():
+                if Category.objects.filter(
+                    name=name, vendor__user=self.user, is_deleted=False
+                ).exists():
                     raise forms.ValidationError(
                         "You already have a Category with this name. Please use a unique name."
                     )
         else:
-            if Category.objects.filter(name=name, vendor__user=self.user).exists():
+            if Category.objects.filter(
+                name=name, vendor__user=self.user, is_deleted=False
+            ).exists():
                 raise forms.ValidationError(
                     "You already have a Category with this name. Please use a unique name."
                 )
@@ -74,26 +78,26 @@ class ProductForm(forms.ModelForm):
         empty_label="Select a category",
     )
 
-    price = forms.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        min_value=0.01,
-        widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": "Enter price"}
-        ),
-        error_messages={
-            "required": "Price is required.",
-            "min_value": "Price must be greater than 0.",
-        },
-    )
+    # price = forms.DecimalField(
+    #     max_digits=10,
+    #     decimal_places=2,
+    #     min_value=0.01,
+    #     widget=forms.NumberInput(
+    #         attrs={"class": "form-control", "placeholder": "Enter price"}
+    #     ),
+    #     error_messages={
+    #         "required": "Price is required.",
+    #         "min_value": "Price must be greater than 0.",
+    #     },
+    # )
 
-    stock = forms.IntegerField(
-        min_value=0,
-        widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": "Enter stock quantity"}
-        ),
-        error_messages={"min_value": "Stock cannot be negative."},
-    )
+    # stock = forms.IntegerField(
+    #     min_value=0,
+    #     widget=forms.NumberInput(
+    #         attrs={"class": "form-control", "placeholder": "Enter stock quantity"}
+    #     ),
+    #     error_messages={"min_value": "Stock cannot be negative."},
+    # )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user", None)  # Extract `user` from kwargs
@@ -102,7 +106,7 @@ class ProductForm(forms.ModelForm):
         # Show only categories created by the current vendor
         if self.user:
             self.fields["category"].queryset = Category.objects.filter(
-                vendor__user=self.user
+                vendor__user=self.user, is_deleted=False
             )
 
         # Apply consistent Bootstrap styling to all fields
@@ -111,7 +115,7 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ["name", "description", "category", "price", "stock"]
+        fields = ["name", "description", "category"]
 
     def clean_name(self):
         name = self.cleaned_data.get("name")
@@ -120,19 +124,21 @@ class ProductForm(forms.ModelForm):
 
         if is_update:
             if not self.instance.name == name:
-                if Product.objects.filter(name=name, vendor__user=self.user).exists():
+                if Product.objects.filter(
+                    name=name,
+                    vendor__user=self.user,
+                    is_deleted=False,
+                ).exists():
                     raise forms.ValidationError(
                         "You already have a Product with this name. Please use a unique name."
                     )
         else:
-            if Product.objects.filter(name=name, vendor__user=self.user).exists():
+            if Product.objects.filter(
+                name=name,
+                vendor__user=self.user,
+                is_deleted=False,
+            ).exists():
                 raise forms.ValidationError(
                     "You already have a Product with this name. Please use a unique name."
                 )
         return name
-
-    def clean_price(self):
-        price = self.cleaned_data.get("price")
-        if price and price > 9999:
-            raise forms.ValidationError("Price must not exceed Rs.9999/-")
-        return price

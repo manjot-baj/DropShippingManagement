@@ -1,5 +1,5 @@
 {% extends 'vendor/base.html' %}
-{% block title %}{% if category %}Update{% else %}Add{% endif %} Product{% endblock %}
+{% block title %}{% if category %}Update{% else %}Add{% endif %} Category{% endblock %}
 {% block content %}
 
 <section class="content">
@@ -30,7 +30,7 @@
                             <div class="d-flex justify-content-end mt-4">
                                 <a href="{% url 'category_list' %}" class="btn btn-secondary mr-2">Cancel</a>
                                 <button type="submit" class="btn btn-success">
-                                    {% if category %}Update{% else %}Create{% endif %} Product
+                                    {% if category %}Update{% else %}Create{% endif %} Category
                                 </button>
                             </div>
                         </form>

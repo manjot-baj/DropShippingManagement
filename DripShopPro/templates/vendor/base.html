@@ -176,7 +176,7 @@
 
                         <li class="nav-item">
                             <a href="{% url 'inventory_list' %}" class="nav-link" data-url="{% url 'inventory_list' %}">
-                                <i class="nav-icon fas fa-box"></i>
+                                <i class="nav-icon fas fa-database"></i>
                                 <p>Inventory</p>
                             </a>
                         </li>
@@ -258,8 +258,8 @@
     <script>
         $(function () {
             $("#example1").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                "lengthChange": false, "autoWidth": false, "scrollX": true,
+                "buttons": ["csv", "excel", "pdf", "print"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
             $('#example2').DataTable({
                 "paging": true,
@@ -268,7 +268,7 @@
                 "ordering": true,
                 "info": true,
                 "autoWidth": false,
-                "responsive": true,
+                "scrollX": true, 
             });
         });
     </script>

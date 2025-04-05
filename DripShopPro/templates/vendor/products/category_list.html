@@ -17,34 +17,38 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <table id="example2" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Category Name</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for category in categorys %}
-                                <tr>
-                                    <td>{{ category.name }}</td>
-                                    <td>
-                                        <!-- Edit Button -->
-                                        <a href="{% url 'category_update' category.id %}"
-                                            class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                        <div class="table-responsive">
+                            <table id="example2"
+                                class="table table-hover table-bordered table-striped align-middle text-nowrap"
+                                style="min-width: 1000px;">
+                                <thead class="bg-primary text-white">
+                                    <tr>
+                                        <th>Category Name</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for category in categorys %}
+                                    <tr>
+                                        <td>{{ category.name }}</td>
+                                        <td>
+                                            <!-- Edit Button -->
+                                            <a href="{% url 'category_update' category.id %}"
+                                                class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
 
-                                        <!-- Delete Button -->
-                                        <button class="btn btn-danger btn-sm delete-btn"
-                                            data-url="{% url 'category_delete' category.id %}">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                            <!-- Delete Button -->
+                                            <button class="btn btn-danger btn-sm delete-btn"
+                                                data-url="{% url 'category_delete' category.id %}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>

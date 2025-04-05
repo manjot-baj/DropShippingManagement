@@ -32,44 +32,50 @@
                                 </button>
                             </div>
 
-                            <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <!-- Updated: using data-select-all -->
-                                        <th><input type="checkbox" data-select-all="inventory_ids"></th>
-                                        <th>Created on</th>
-                                        <th>Updated on</th>
-                                        <th>Product</th>
-                                        <th>Stock</th>
-                                        <th>Price</th>
-                                        <th>Company</th>
-                                        <th>Inside Catalog</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for inventory in inventorys %}
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox" name="inventory_ids" value="{{ inventory.id }}">
-                                        </td>
-                                        <td>{{ inventory.created_at }}</td>
-                                        <td>{{ inventory.updated_at }}</td>
-                                        <td>{{ inventory.product.name }}</td>
-                                        <td>{{ inventory.stock }}</td>
-                                        <td>{{ inventory.price }}</td>
-                                        <td>{{ inventory.company.name }}</td>
-                                        <td>{% if inventory.catalog_display %}Yes{% else %}No{% endif %}</td>
-                                        <td>
-                                            <a href="{% url 'inventory_update' inventory.id %}"
-                                                class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table id="example1"
+                                    class="table table-hover table-bordered table-striped align-middle text-nowrap"
+                                    style="min-width: 1000px;">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            <!-- Updated: using data-select-all -->
+                                            <th><input type="checkbox" data-select-all="inventory_ids"></th>
+                                            <th>Created on</th>
+                                            <th>Updated on</th>
+                                            <th>Product</th>
+                                            <th>Product Category</th>
+                                            <th>Stock</th>
+                                            <th>Price</th>
+                                            <th>Company</th>
+                                            <th>Inside Catalog</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for inventory in inventorys %}
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="inventory_ids" value="{{ inventory.id }}">
+                                            </td>
+                                            <td>{{ inventory.created_at }}</td>
+                                            <td>{{ inventory.updated_at }}</td>
+                                            <td>{{ inventory.product.name }}</td>
+                                            <td>{{ inventory.product.category.name }}</td>
+                                            <td>{{ inventory.stock }}</td>
+                                            <td>{{ inventory.price }}</td>
+                                            <td>{{ inventory.company.name }}</td>
+                                            <td>{% if inventory.catalog_display %}Yes{% else %}No{% endif %}</td>
+                                            <td>
+                                                <a href="{% url 'inventory_update' inventory.id %}"
+                                                    class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </form>
                     </div>
                     <!-- /.card-body -->

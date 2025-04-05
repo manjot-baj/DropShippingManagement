@@ -17,41 +17,46 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Created on</th>
-                                    <th>Updated on</th>
-                                    <th>Product Name</th>
-                                    <th>Category</th>
-                                    <th>Inside Inventory</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for product in products %}
-                                <tr>
-                                    <td>{{ product.created_at }}</td>
-                                    <td>{{ product.updated_at }}</td>
-                                    <td>{{ product.name }}</td>
-                                    <td>{{ product.category.name }}</td>
-                                    <td>{% if product.inside_inventory %}Yes{% else %}No{% endif %}</td>
-                                    <td>
-                                        <!-- Edit Button -->
-                                        <a href="{% url 'product_update' product.id %}" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                        <div class="table-responsive">
+                            <table id="example1"
+                                class="table table-hover table-bordered table-striped align-middle text-nowrap"
+                                style="min-width: 1000px;">
+                                <thead class="bg-primary text-white">
+                                    <tr>
+                                        <th>Created on</th>
+                                        <th>Updated on</th>
+                                        <th>Product Name</th>
+                                        <th>Category</th>
+                                        <th>Inside Inventory</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in products %}
+                                    <tr>
+                                        <td>{{ product.created_at }}</td>
+                                        <td>{{ product.updated_at }}</td>
+                                        <td>{{ product.name }}</td>
+                                        <td>{{ product.category.name }}</td>
+                                        <td>{% if product.inside_inventory %}Yes{% else %}No{% endif %}</td>
+                                        <td>
+                                            <!-- Edit Button -->
+                                            <a href="{% url 'product_update' product.id %}"
+                                                class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
 
-                                        <!-- Delete Button -->
-                                        <button class="btn btn-danger btn-sm delete-btn"
-                                            data-url="{% url 'product_delete' product.id %}">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                            <!-- Delete Button -->
+                                            <button class="btn btn-danger btn-sm delete-btn"
+                                                data-url="{% url 'product_delete' product.id %}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>

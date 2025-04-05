@@ -26,7 +26,9 @@ class CompanyProductCatalogView(RoleRequiredMixin, View):
             )
             catalogs = []
             inventorys = Inventory.objects.select_related("company", "product").filter(
-                is_deleted=False, company=company
+                is_deleted=False,
+                company=company,
+                catalog_display=True,
             )
             for inventory in inventorys:
                 catalogs.append(
@@ -101,10 +103,10 @@ class InventoryCreateView(RoleRequiredMixin, View):
 
             if form.is_valid():
                 with transaction.atomic():
-                    inventory = form.save(commit=False)
+                    inventory = form.save()
+                    inventory.save()
                     inventory.product.inside_inventory = True
                     inventory.product.save()
-                    inventory.save()
                 return redirect("inventory_list")
             return render(
                 request, "vendor/inventory/inventory_form.html", {"form": form}
@@ -147,10 +149,10 @@ class InventoryUpdateView(RoleRequiredMixin, View):
 
             if form.is_valid():
                 with transaction.atomic():
-                    inventory = form.save(commit=False)
+                    inventory = form.save()
+                    inventory.save()
                     inventory.product.inside_inventory = True
                     inventory.product.save()
-                    inventory.save()
                 return redirect("inventory_list")
             return render(
                 request,

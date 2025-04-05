@@ -4,69 +4,77 @@
 
 {% block header %}
 <div class="row mb-4">
-    <div class="col-sm-6">
+    <div class="col-12">
         <h1>Catalog</h1>
     </div>
 </div>
 {% endblock %}
 
 {% block content %}
-<section class="content">
+<section class="content py-2">
     <div class="container-fluid">
-        <div class="row">
+        <div class="row g-4">
             {% for catalog in catalogs %}
-            <div class="col-md-4 mb-4">
-                <div class="card border-0 shadow-lg position-relative bg-white rounded-lg overflow-hidden"
-                    style="backdrop-filter: blur(10px);">
-                    <div class="bg-primary text-white p-3">
-                        <h4 class="mb-0">{{ catalog.product }}</h4>
-                        <small class="text-light">{{ catalog.category }}</small>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="card shadow-sm border-0 h-100 bg-body-tertiary rounded-4 overflow-hidden transition">
+
+                    <!-- Card Header -->
+                    <div class="bg-gradient p-3 text-white"
+                        style="background: linear-gradient(45deg, #389789, #68baae);">
+                        <h5 class="mb-1">{{ catalog.product }}</h5>
+                        <small class="text-light-emphasis">{{ catalog.category }}</small>
                     </div>
 
-                    <div id="carousel-{{ catalog.id }}" class="carousel slide" data-ride="carousel">
+                    <!-- Carousel -->
+                    <div id="carousel-{{ catalog.id }}" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             {% for img in catalog.product_imgs %}
                             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                <img class="d-block w-100" src="{{ img.image.url }}"
-                                    alt="Product Image {{ forloop.counter }}"
-                                    style="height: 250px; object-fit: cover; border-bottom: 1px solid #eee;">
+                                <img src="{{ img.image.url }}" alt="Image {{ forloop.counter }}" class="d-block w-100"
+                                    style="height: 200px; object-fit: cover;">
                             </div>
                             {% endfor %}
                         </div>
                         {% if catalog.product_imgs|length > 1 %}
-                        <a class="carousel-control-prev" href="#carousel-{{ catalog.id }}" role="button"
-                            data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        </a>
-                        <a class="carousel-control-next" href="#carousel-{{ catalog.id }}" role="button"
-                            data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        </a>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ catalog.id }}"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle p-2"
+                                aria-hidden="true"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ catalog.id }}"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle p-2"
+                                aria-hidden="true"></span>
+                        </button>
                         {% endif %}
                     </div>
 
+                    <!-- Card Body -->
                     <div class="card-body text-center">
-                        <p class="text-muted">{{ catalog.description|truncatewords:15 }}</p>
+                        <p class="small text-muted">{{ catalog.description|truncatewords:15 }}</p>
                         <div class="my-2">
-                            <span class="h5 text-dark font-weight-bold">₹{{ catalog.price }}</span>
+                            <span class="h5 text-success fw-bold">₹{{ catalog.price }}</span>
                         </div>
-                        <div class="text-muted mb-3">Stock: {{ catalog.stock }}</div>
-
-                        <div class="d-flex justify-content-center">
-                            <a href="#" class="btn btn-sm btn-outline-primary mr-2" title="View Product">
-                                <i class="fas fa-eye"></i>
+                        <div class="small mb-3">Stock: {{ catalog.stock }}</div>
+                    </div>
+                    <div class="card-foot text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-primary btn-sm"
+                                style="background: linear-gradient(45deg, #389789, #68baae);" title="View Product">
+                                <i class="fas fa-eye me-1"></i>
                             </a>
-                            <button class="btn btn-sm btn-outline-danger" title="Add to Wishlist">
-                                <i class="fas fa-heart"></i>
-                            </button>
+                            <!-- <button class="btn btn-outline-danger btn-sm" title="Add to Wishlist">
+                                <i class="fas fa-heart me-1"></i> Wishlist
+                            </button> -->
                         </div>
                     </div>
+
                 </div>
             </div>
             {% empty %}
             <div class="col-12">
-                <div class="alert alert-info text-center">
-                    <i class="fas fa-box-open mr-2"></i> No products available at the moment.
+                <div class="alert alert-info text-center shadow-sm">
+                    <i class="fas fa-box-open me-2"></i> No products available at the moment.
                 </div>
             </div>
             {% endfor %}

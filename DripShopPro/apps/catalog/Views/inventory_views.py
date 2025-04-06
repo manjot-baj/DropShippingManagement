@@ -16,11 +16,11 @@ logger = logging.getLogger("error_log")  # Centralized logger
 class CompanyProductCatalogView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
-    def get(self, request, pk, *args, **kwargs):
+    def get(self, request, company_id, *args, **kwargs):
         try:
             company = get_object_or_404(
                 Company,
-                pk=pk,
+                pk=company_id,
                 owner__user=request.user,
                 is_deleted=False,
             )
@@ -205,3 +205,42 @@ class InventoryBulkCatalogUpdateView(RoleRequiredMixin, View):
             logger.error(traceback.format_exc())
             messages.error(request, "Error while performing action.")
             return redirect("inventory_list")
+
+
+# Catalog Product Detail
+class CatalogProductDetailView(RoleRequiredMixin, View):
+    required_role = "Vendor"
+
+    def get(self, request, inventory_id, *args, **kwargs):
+        try:
+            inventory = get_object_or_404(Inventory, pk=inventory_id, is_deleted=False)
+            context = {
+                "product": inventory.product.name,
+                "description": inventory.product.description,
+                "category": inventory.product.category.name,
+                "price": inventory.price,
+                "stock": inventory.stock,
+                "product_imgs": ProductImage.objects.filter(
+                    product=inventory.product, is_deleted=False
+                ),
+                "product_single_img": ProductImage.objects.filter(
+                    product=inventory.product, is_deleted=False
+                ).first(),
+                "company": inventory.company.name,
+                "company_id": inventory.company.pk,
+                "product_id": inventory.product.pk,
+                "inventory_id": inventory.pk,
+            }
+            return render(
+                request,
+                "vendor/catalog/catalog_detail_view.html",
+                context,
+            )
+        except Exception:
+            logger.error(traceback.format_exc())
+            return render(
+                request,
+                "vendor/error.html",
+                {"message": "Error fetching product details."},
+                status=500,
+            )

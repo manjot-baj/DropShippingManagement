@@ -37,6 +37,36 @@
             }
         }
     </script>
+    <style>
+        /* Maintain aspect ratio for image container */
+        .product-image-container {
+            position: relative;
+            padding-top: 100%;
+            /* 1:1 aspect ratio (adjust as needed) */
+            overflow: hidden;
+        }
+
+        /* Style for main product image */
+        #main-product-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* Maintain aspect ratio while fitting in container */
+        }
+
+        /* Thumbnail images */
+        .product-image-thumbs .thumbnail-img {
+            width: 100%;
+            height: 80px;
+            /* Fixed thumbnail height */
+            object-fit: cover;
+            /* Maintain aspect ratio for thumbnails */
+            cursor: pointer;
+        }
+    </style>
 
 </head>
 
@@ -360,7 +390,24 @@
         });
 
     </script>
+    <script>
+        // JavaScript to handle image switching
+        function changeMainImage(thumb) {
+            // Get the clicked thumbnail image source
+            const newSrc = thumb.querySelector('img').src;
 
+            // Update main image
+            document.getElementById('main-product-image').src = newSrc;
+
+            // Remove active class from all thumbnails
+            document.querySelectorAll('.product-image-thumb').forEach(element => {
+                element.classList.remove('active');
+            });
+
+            // Add active class to clicked thumbnail
+            thumb.classList.add('active');
+        }
+    </script>
 
 </body>
 

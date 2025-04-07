@@ -50,6 +50,7 @@ MY_APPS = [
     "user_profile",
     "dashboard",
     "catalog",
+    "store",
 ]
 
 THIRD_PARTY_APPS = []

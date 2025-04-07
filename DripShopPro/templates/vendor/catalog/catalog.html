@@ -26,26 +26,26 @@
                     </div>
 
                     <!-- Carousel -->
-                    <div id="carousel-{{ catalog.id }}" class="carousel slide" data-bs-ride="carousel">
+                    <div id="carousel-{{ catalog.id }}" class="carousel slide" data-ride="carousel">
                         <div class="carousel-inner">
                             {% for img in catalog.product_imgs %}
                             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                <img src="{{ img.image.url }}" alt="Image {{ forloop.counter }}" class="d-block w-100"
+                                <img src="{{ img.image.url }}" class="d-block w-100"
                                     style="height: 200px; object-fit: cover;">
                             </div>
                             {% endfor %}
                         </div>
                         {% if catalog.product_imgs|length > 1 %}
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ catalog.id }}"
-                            data-bs-slide="prev">
+                        <a class="carousel-control-prev" href="#carousel-{{ catalog.id }}" role="button"
+                            data-slide="prev">
                             <span class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle p-2"
                                 aria-hidden="true"></span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ catalog.id }}"
-                            data-bs-slide="next">
+                        </a>
+                        <a class="carousel-control-next" href="#carousel-{{ catalog.id }}" role="button"
+                            data-slide="next">
                             <span class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle p-2"
                                 aria-hidden="true"></span>
-                        </button>
+                        </a>
                         {% endif %}
                     </div>
 

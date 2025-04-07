@@ -1,16 +1,11 @@
 import logging
 import traceback
 from django.views import View
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
-from django.db import transaction
+from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from user_profile.middlewares import RoleRequiredMixin
 from store.Utils.middlewares import StoreRequiredMixin
-from store.models import Store
-from store.Forms.store_forms import StoreForm
-from user_profile.models import UserProfile
-from catalog.models import Company, Inventory, Product, ProductImage
+from catalog.models import Company, Inventory, ProductImage
 
 logger = logging.getLogger("error_log")
 

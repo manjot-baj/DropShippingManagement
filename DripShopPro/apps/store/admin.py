@@ -11,6 +11,5 @@ class StoreAdmin(BaseAdmin):
         "name",
         "email",
         "phone",
-        "owner__user__email",
     )
     list_filter = BaseAdmin.list_filter + ("city", "country")

@@ -190,6 +190,13 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a href="{% url 'vendor_list' %}" class="nav-link" data-url="{% url 'vendor_list' %}">
+                                <i class="nav-icon fas fa-truck"></i>
+                                <p>Explore Catalogs</p>
+                            </a>
+                        </li>
+
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -383,6 +390,22 @@
             // Add active class to clicked thumbnail
             thumb.classList.add('active');
         }
+    </script>
+
+    <script>
+        function goBackAndReload() {
+            // Use the Performance API to detect back navigation
+            sessionStorage.setItem("reloadOnBack", "true");
+            window.history.back();
+        }
+
+        // Check if reload is needed on page load
+        window.addEventListener("pageshow", function (event) {
+            if (sessionStorage.getItem("reloadOnBack")) {
+                sessionStorage.removeItem("reloadOnBack");
+                window.location.reload();
+            }
+        });
     </script>
 
 </body>

@@ -1,11 +1,12 @@
-{% extends 'vendor/base.html' %}
+{% extends 'merchant/base.html' %}
 {% load static %}
-{% block title %}Product Detail{% endblock %}
+{% block title %}{{company}} Product Detail{% endblock %}
 
 {% block header %}
 <div class="row mb-4">
     <div class="col-12">
-        <h1>Product Detail</h1>
+        <h1>{{company}}</h1>
+        <h5>Product Details</h5>
     </div>
 </div>
 {% endblock %}

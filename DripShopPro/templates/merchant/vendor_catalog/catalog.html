@@ -1,11 +1,12 @@
-{% extends 'vendor/base.html' %}
+{% extends 'merchant/base.html' %}
 {% load static %}
-{% block title %}Product Catalog{% endblock %}
+{% block title %}{{company}} Catalog{% endblock %}
 
 {% block header %}
 <div class="row mb-4">
     <div class="col-12">
-        <h1>Catalog</h1>
+        <h1>{{company}}</h1>
+        <h5>Catalog</h5>
     </div>
 </div>
 {% endblock %}
@@ -71,7 +72,7 @@
                     </div>
                     <div class="card-foot text-center">
                         <div class="d-flex justify-content-center gap-2">
-                            <a href="{% url 'catalog_product_detail_view' catalog.inventory_id %}"
+                            <a href="{% url 'vendor_catalog_product_detail_view' catalog.inventory_id %}"
                                 class="btn btn-primary btn-sm"
                                 style="background: linear-gradient(45deg, #389789, #68baae);" title="View Product">
                                 <i class="fas fa-eye me-1"></i>

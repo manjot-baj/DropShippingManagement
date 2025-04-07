@@ -405,6 +405,22 @@
             thumb.classList.add('active');
         }
     </script>
+    
+    <script>
+        function goBackAndReload() {
+            // Use the Performance API to detect back navigation
+            sessionStorage.setItem("reloadOnBack", "true");
+            window.history.back();
+        }
+
+        // Check if reload is needed on page load
+        window.addEventListener("pageshow", function (event) {
+            if (sessionStorage.getItem("reloadOnBack")) {
+                sessionStorage.removeItem("reloadOnBack");
+                window.location.reload();
+            }
+        });
+    </script>
 
 </body>
 

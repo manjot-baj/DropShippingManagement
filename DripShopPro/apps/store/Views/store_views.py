@@ -8,6 +8,7 @@ from user_profile.middlewares import RoleRequiredMixin
 from store.models import Store
 from store.Forms.store_forms import StoreForm
 from user_profile.models import UserProfile
+from catalog.models import Company
 
 logger = logging.getLogger("error_log")  # Centralized logger
 
@@ -154,3 +155,4 @@ class StoreDeleteView(RoleRequiredMixin, View):
             return JsonResponse(
                 {"success": False, "message": "Error deleting store."}, status=500
             )
+

@@ -1,6 +1,7 @@
 from django.db import models
 from common.models import BaseModel
 from user_profile.models import UserProfile
+from catalog.models import Inventory
 
 
 class Store(BaseModel):
@@ -69,3 +70,24 @@ class Store(BaseModel):
 
     def __str__(self):
         return self.name
+
+
+class StoreProduct(BaseModel):
+    store = models.ForeignKey(
+        Store,
+        on_delete=models.CASCADE,
+        related_name="store",
+        null=True,
+        blank=True,
+    )
+    inventory = models.ForeignKey(
+        Inventory,
+        on_delete=models.CASCADE,
+        related_name="store_product",
+        null=True,
+        blank=True,
+    )
+    margin = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return str(self.pk)

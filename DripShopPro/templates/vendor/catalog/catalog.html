@@ -25,8 +25,14 @@
                         <small class="text-light-emphasis">{{ catalog.category }}</small>
                     </div>
 
+                    <div>
+                        <img src="{{ catalog.product_single_img.image.url }}" class="d-block w-100"
+                            style="height: 200px; object-fit: cover;">
+                    </div>
+
+
                     <!-- Carousel -->
-                    <div id="carousel-{{ catalog.id }}" class="carousel slide" data-ride="carousel">
+                    <!-- <div id="carousel-{{ catalog.id }}" class="carousel slide" data-ride="carousel">
                         <div class="carousel-inner">
                             {% for img in catalog.product_imgs %}
                             <div class="carousel-item {% if forloop.first %}active{% endif %}">
@@ -47,7 +53,7 @@
                                 aria-hidden="true"></span>
                         </a>
                         {% endif %}
-                    </div>
+                    </div> -->
 
                     <!-- Card Body -->
                     <div class="card-body text-center">

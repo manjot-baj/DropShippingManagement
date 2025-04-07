@@ -12,7 +12,7 @@ from user_profile.models import UserProfile
 logger = logging.getLogger("error_log")  # Centralized logger
 
 
-# List all store (for merchant)
+# View store (for merchant)
 class StoreView(RoleRequiredMixin, View):
     required_role = "Merchant"
 

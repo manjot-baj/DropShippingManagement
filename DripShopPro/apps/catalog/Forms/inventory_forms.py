@@ -52,7 +52,6 @@ class InventoryForm(forms.ModelForm):
             self.fields["product"].queryset = Product.objects.filter(
                 vendor__user=self.user,
                 is_deleted=False,
-                inside_inventory=False,
             )
 
         # Apply consistent Bootstrap styling to all fields

@@ -4,15 +4,14 @@ from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.db import transaction
+from django.contrib import messages
 from user_profile.middlewares import RoleRequiredMixin
 from catalog.models import Inventory, Company, Product, ProductImage
 from catalog.Forms.inventory_forms import InventoryForm
-from django.contrib import messages
 
-logger = logging.getLogger("error_log")  # Centralized logger
+logger = logging.getLogger("error_log")
 
 
-# Catalog for each Company of Vendor
 class CompanyProductCatalogView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
@@ -57,6 +56,7 @@ class CompanyProductCatalogView(RoleRequiredMixin, View):
             )
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching catalog data.")
             return render(
                 request,
                 "vendor/error.html",
@@ -65,7 +65,6 @@ class CompanyProductCatalogView(RoleRequiredMixin, View):
             )
 
 
-# List all Inventory (for vendor)
 class InventoryListView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
@@ -81,15 +80,15 @@ class InventoryListView(RoleRequiredMixin, View):
             )
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching inventory.")
             return render(
                 request,
                 "vendor/error.html",
-                {"message": "Error fetching categories."},
+                {"message": "Error fetching inventory."},
                 status=500,
             )
 
 
-# Create a new Inventory
 class InventoryCreateView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
@@ -104,15 +103,19 @@ class InventoryCreateView(RoleRequiredMixin, View):
             if form.is_valid():
                 with transaction.atomic():
                     inventory = form.save()
-                    inventory.save()
                     inventory.product.inside_inventory = True
                     inventory.product.save()
+                messages.success(request, "Inventory created successfully.")
                 return redirect("inventory_list")
+
+            messages.error(request, "Invalid inventory form.")
             return render(
                 request, "vendor/inventory/inventory_form.html", {"form": form}
             )
+
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error creating inventory.")
             return render(
                 request,
                 "vendor/error.html",
@@ -121,39 +124,13 @@ class InventoryCreateView(RoleRequiredMixin, View):
             )
 
 
-# Update an existing Inventory
 class InventoryUpdateView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
     def get(self, request, pk, *args, **kwargs):
-        inventory = get_object_or_404(
-            Inventory,
-            pk=pk,
-            is_deleted=False,
-        )
-        form = InventoryForm(instance=inventory, user=request.user)
-        return render(
-            request,
-            "vendor/inventory/inventory_form.html",
-            {"form": form, "inventory": inventory},
-        )
-
-    def post(self, request, pk, *args, **kwargs):
         try:
-            inventory = get_object_or_404(
-                Inventory,
-                pk=pk,
-                is_deleted=False,
-            )
-            form = InventoryForm(request.POST, instance=inventory, user=request.user)
-
-            if form.is_valid():
-                with transaction.atomic():
-                    inventory = form.save()
-                    inventory.save()
-                    inventory.product.inside_inventory = True
-                    inventory.product.save()
-                return redirect("inventory_list")
+            inventory = get_object_or_404(Inventory, pk=pk, is_deleted=False)
+            form = InventoryForm(instance=inventory, user=request.user)
             return render(
                 request,
                 "vendor/inventory/inventory_form.html",
@@ -161,6 +138,36 @@ class InventoryUpdateView(RoleRequiredMixin, View):
             )
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching inventory.")
+            return render(
+                request,
+                "vendor/error.html",
+                {"message": "Error fetching inventory."},
+                status=500,
+            )
+
+    def post(self, request, pk, *args, **kwargs):
+        try:
+            inventory = get_object_or_404(Inventory, pk=pk, is_deleted=False)
+            form = InventoryForm(request.POST, instance=inventory, user=request.user)
+
+            if form.is_valid():
+                with transaction.atomic():
+                    inventory = form.save()
+                    inventory.product.inside_inventory = True
+                    inventory.product.save()
+                messages.success(request, "Inventory updated successfully.")
+                return redirect("inventory_list")
+
+            messages.error(request, "Invalid inventory form.")
+            return render(
+                request,
+                "vendor/inventory/inventory_form.html",
+                {"form": form, "inventory": inventory},
+            )
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error updating inventory.")
             return render(
                 request,
                 "vendor/error.html",
@@ -169,7 +176,6 @@ class InventoryUpdateView(RoleRequiredMixin, View):
             )
 
 
-# Add, Remove From Catalog or Delete Inventory
 class InventoryBulkCatalogUpdateView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
@@ -185,29 +191,28 @@ class InventoryBulkCatalogUpdateView(RoleRequiredMixin, View):
             inventories = Inventory.objects.filter(
                 id__in=ids, is_deleted=False, company__owner__user=request.user
             )
-            if action == "delete":
 
+            if action == "delete":
                 for each in inventories:
                     each.product.inside_inventory = False
                     each.product.save()
                     each.is_deleted = True
                     each.save()
             else:
-                update_value = True if action == "add" else False
+                update_value = action == "add"
                 inventories.update(catalog_display=update_value)
 
             messages.success(
-                request,
-                f"Inventory action successful.",
+                request, f"Inventory action '{action}' executed successfully."
             )
             return redirect("inventory_list")
+
         except Exception:
             logger.error(traceback.format_exc())
-            messages.error(request, "Error while performing action.")
+            messages.error(request, "Error performing inventory action.")
             return redirect("inventory_list")
 
 
-# Catalog Product Detail
 class CatalogProductDetailView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
@@ -238,6 +243,7 @@ class CatalogProductDetailView(RoleRequiredMixin, View):
             )
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching product details.")
             return render(
                 request,
                 "vendor/error.html",

@@ -4,6 +4,7 @@ from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.db import transaction
+from django.contrib import messages
 from user_profile.middlewares import RoleRequiredMixin
 from store.Utils.middlewares import StoreRequiredMixin
 from store.models import Store
@@ -11,7 +12,7 @@ from store.Forms.store_forms import StoreForm
 from user_profile.models import UserProfile
 from catalog.models import Company, Inventory, Product, ProductImage
 
-logger = logging.getLogger("error_log")  # Centralized logger
+logger = logging.getLogger("error_log")
 
 
 # List all Vendors (for Merchant)
@@ -28,6 +29,7 @@ class VendorListView(RoleRequiredMixin, StoreRequiredMixin, View):
             )
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching vendors.")
             return render(
                 request,
                 "merchant/error.html",
@@ -36,7 +38,7 @@ class VendorListView(RoleRequiredMixin, StoreRequiredMixin, View):
             )
 
 
-# Catalogs
+# Vendor Catalogs
 class VendorCatalogView(RoleRequiredMixin, StoreRequiredMixin, View):
     required_role = "Merchant"
 
@@ -82,6 +84,7 @@ class VendorCatalogView(RoleRequiredMixin, StoreRequiredMixin, View):
             )
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching vendor catalogs.")
             return render(
                 request,
                 "merchant/error.html",
@@ -90,7 +93,7 @@ class VendorCatalogView(RoleRequiredMixin, StoreRequiredMixin, View):
             )
 
 
-# Product Detail
+# Product Detail View
 class VendorCatalogProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View):
     required_role = "Merchant"
 
@@ -121,6 +124,7 @@ class VendorCatalogProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View
             )
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching product details.")
             return render(
                 request,
                 "merchant/error.html",

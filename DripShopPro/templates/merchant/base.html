@@ -221,6 +221,25 @@
                     {% block content %}{% endblock %}
                 </div>
             </section>
+            <section class="content">
+                <div class="container-fluid">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        <i
+                            class="icon fas {% if message.tags == 'success' %}fa-check{% elif message.tags == 'error' or message.tags == 'danger' %}fa-ban{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </section>
+
+
+
             <!-- /.content -->
             <!-- Delete Confirmation Modal -->
             <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
@@ -405,6 +424,21 @@
                 sessionStorage.removeItem("reloadOnBack");
                 window.location.reload();
             }
+        });
+    </script>
+
+    <script>
+        // Auto-dismiss Django messages after 5 seconds
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(function () {
+                document.querySelectorAll(".alert-dismissible").forEach(function (el) {
+                    // Bootstrap fade-out
+                    el.classList.remove("show");
+                    el.classList.add("fade");
+                    // Remove from DOM after transition
+                    setTimeout(() => el.remove(), 500); // Wait for fade transition
+                });
+            }, 3000); // 3000ms = 3 seconds
         });
     </script>
 

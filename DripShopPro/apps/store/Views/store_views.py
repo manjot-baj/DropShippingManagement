@@ -4,44 +4,33 @@ from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.db import transaction
+from django.contrib import messages
 from user_profile.middlewares import RoleRequiredMixin
 from store.models import Store
 from store.Forms.store_forms import StoreForm
 from user_profile.models import UserProfile
-from catalog.models import Company
 
-logger = logging.getLogger("error_log")  # Centralized logger
+logger = logging.getLogger("error_log")
 
 
-# View store (for merchant)
 class StoreView(RoleRequiredMixin, View):
     required_role = "Merchant"
 
     def get(self, request, *args, **kwargs):
         try:
-            if (
+            store = (
                 Store.objects.select_related("owner")
                 .filter(
                     owner__user=request.user,
                     is_deleted=False,
                 )
-                .exists()
-            ):
-                store = (
-                    Store.objects.select_related("owner")
-                    .filter(
-                        owner__user=request.user,
-                        is_deleted=False,
-                    )
-                    .first()
-                )
-                context = {"store": store}
-            else:
-                context = {"store": None}
+                .first()
+            )
 
-            return render(request, "merchant/store/store_view.html", context)
+            return render(request, "merchant/store/store_view.html", {"store": store})
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching store.")
             return render(
                 request,
                 "merchant/error.html",
@@ -50,7 +39,6 @@ class StoreView(RoleRequiredMixin, View):
             )
 
 
-# Create a new store
 class StoreCreateView(RoleRequiredMixin, View):
     required_role = "Merchant"
 
@@ -71,11 +59,14 @@ class StoreCreateView(RoleRequiredMixin, View):
                         role="Merchant",
                     )
                     store.save()
-
+                messages.success(request, "Store created successfully.")
                 return redirect("store_view")
+
+            messages.error(request, "Invalid store form.")
             return render(request, "merchant/store/store_form.html", {"form": form})
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error creating store.")
             return render(
                 request,
                 "merchant/error.html",
@@ -84,23 +75,32 @@ class StoreCreateView(RoleRequiredMixin, View):
             )
 
 
-# Update an existing store
 class StoreUpdateView(RoleRequiredMixin, View):
     required_role = "Merchant"
 
     def get(self, request, pk, *args, **kwargs):
-        store = get_object_or_404(
-            Store,
-            pk=pk,
-            owner__user=request.user,
-            is_deleted=False,
-        )
-        form = StoreForm(instance=store, user=request.user)
-        return render(
-            request,
-            "merchant/store/store_form.html",
-            {"form": form, "store": store},
-        )
+        try:
+            store = get_object_or_404(
+                Store,
+                pk=pk,
+                owner__user=request.user,
+                is_deleted=False,
+            )
+            form = StoreForm(instance=store, user=request.user)
+            return render(
+                request,
+                "merchant/store/store_form.html",
+                {"form": form, "store": store},
+            )
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching store for editing.")
+            return render(
+                request,
+                "merchant/error.html",
+                {"message": "Error loading store."},
+                status=500,
+            )
 
     def post(self, request, pk, *args, **kwargs):
         try:
@@ -117,8 +117,10 @@ class StoreUpdateView(RoleRequiredMixin, View):
             if form.is_valid():
                 with transaction.atomic():
                     store = form.save()
-
+                messages.success(request, "Store updated successfully.")
                 return redirect("store_view")
+
+            messages.error(request, "Invalid store form.")
             return render(
                 request,
                 "merchant/store/store_form.html",
@@ -126,6 +128,7 @@ class StoreUpdateView(RoleRequiredMixin, View):
             )
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error updating store.")
             return render(
                 request,
                 "merchant/error.html",
@@ -134,7 +137,6 @@ class StoreUpdateView(RoleRequiredMixin, View):
             )
 
 
-# Delete a store (and related images)
 class StoreDeleteView(RoleRequiredMixin, View):
     required_role = "Merchant"
 
@@ -147,12 +149,13 @@ class StoreDeleteView(RoleRequiredMixin, View):
                 is_deleted=False,
             )
             store.delete()
+            messages.success(request, "Store deleted successfully.")
             return JsonResponse(
                 {"success": True, "message": "Store deleted successfully."}
             )
-        except Exception as e:
+        except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error deleting store.")
             return JsonResponse(
                 {"success": False, "message": "Error deleting store."}, status=500
             )
-

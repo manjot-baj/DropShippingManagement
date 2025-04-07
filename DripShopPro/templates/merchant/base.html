@@ -119,40 +119,37 @@
                     </div>
                 </li> -->
 
+                <!-- User Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-user"></i>
-
+                    <a class="nav-link" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">
+                        <i class="far fa-user-circle"></i>
                     </a>
-
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header">Hi, {{ user.role }} {{ user.username }}</span>
+                        <span class="dropdown-item dropdown-header">
+                            Hi, {{ user.role|capfirst }} {{ user.username }}
+                        </span>
 
-                        <!-- Full screen mode -->
                         <div class="dropdown-divider"></div>
 
-                        <div class="dropdown-item d-flex justify-content-between align-items-center">
-                            <!-- Fullscreen Mode Button -->
-                            <button class="btn btn-sm btn-light" data-widget="fullscreen">
-                                <i class="fas fa-expand-arrows-alt"></i>
-                            </button>
+                        <!-- <a href="#" class="dropdown-item">
+                                <i class="fas fa-user-cog mr-2"></i> Profile Settings
+                            </a> -->
 
-                            <!-- Dark Mode Toggle Button -->
-                            <button onclick="toggleTheme()" class="btn btn-sm btn-dark">
-                                <i class="fas fa-moon"></i>
-                            </button>
+                        <a href="#" onclick="toggleTheme()" class="dropdown-item">
+                            <i class="fas fa-moon mr-2"></i> Dark Mode
+                        </a>
 
-                            <!-- Logout Button -->
-                            <a href="{% url 'logout' %}">
-                                <button class="btn btn-sm btn-danger">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                </button>
-                            </a>
-                        </div>
+                        <a href="#" class="dropdown-item" data-widget="fullscreen">
+                            <i class="fas fa-expand-arrows-alt mr-2"></i> Fullscreen
+                        </a>
 
+                        <div class="dropdown-divider"></div>
+
+                        <a href="{% url 'logout' %}" class="dropdown-item text-danger">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        </a>
                     </div>
                 </li>
-
             </ul>
         </nav>
         <!-- /.navbar -->

@@ -54,6 +54,17 @@ class VendorCatalogView(RoleRequiredMixin, StoreRequiredMixin, View):
                 catalog_display=True,
             )
             for inventory in inventorys:
+                in_store = False
+                margin = 5
+                if StoreProduct.objects.filter(
+                    store=store, inventory=inventory
+                ).exists():
+                    in_store = True
+                    margin = (
+                        StoreProduct.objects.filter(store=store, inventory=inventory)
+                        .latest("pk")
+                        .margin
+                    )
                 catalogs.append(
                     {
                         "product": inventory.product.name,
@@ -73,6 +84,7 @@ class VendorCatalogView(RoleRequiredMixin, StoreRequiredMixin, View):
                         "in_store": StoreProduct.objects.filter(
                             store=store, inventory=inventory
                         ).exists(),
+                        "margin": int(margin),
                     }
                 )
             return render(

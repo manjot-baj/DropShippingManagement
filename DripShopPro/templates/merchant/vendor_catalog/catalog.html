@@ -111,7 +111,15 @@
                             <div class="small mb-3">Stock: {{ catalog.stock }}</div>
                             <div class="my-2">
                                 <label for="margin">Margin:</label>
-                                <input type="number" name="margin" value="5" min="0" max="100" step="1" required>
+                                {% if catalog.in_store %}
+                                <input type="number" name="margin" value="{{ catalog.margin }}" min="0" max="100"
+                                    step="1" onkeydown="return false" readonly style="width: 80px; margin-right: 4px;">
+                                <span>%</span>
+                                {% else %}
+                                <input type="number" name="margin" value="{{ catalog.margin }}" min="0" max="100"
+                                    step="1" onkeydown="return false" style="width: 80px; margin-right: 4px;">
+                                <span>%</span>
+                                {% endif %}
                             </div>
 
                         </div>
@@ -120,7 +128,7 @@
                                 <a href="{% url 'vendor_catalog_product_detail_view' catalog.inventory_id %}"
                                     class="btn btn-primary btn-sm"
                                     style="background: linear-gradient(45deg, #389789, #68baae);" title="View Product">
-                                    <i class="fas fa-eye me-1"></i> View
+                                    <i class="fas fa-eye me-1"></i>
                                 </a>
                                 {% if not catalog.in_store %}
                                 <button type="submit" class="btn btn-primary btn-sm"

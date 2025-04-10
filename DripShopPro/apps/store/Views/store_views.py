@@ -31,23 +31,23 @@ class StoreView(RoleRequiredMixin, View):
 
             products = []
             store_product_objs = StoreProduct.objects.filter(store=store_obj)
-            for store in store_product_objs:
+            for store_product in store_product_objs:
                 products.append(
                     {
-                        "product": store.inventory.product.name,
-                        "description": store.inventory.product.description,
-                        "category": store.inventory.product.category.name,
-                        "price": store.inventory.price,
-                        "stock": store.inventory.stock,
+                        "product": store_product.inventory.product.name,
+                        "description": store_product.inventory.product.description,
+                        "category": store_product.inventory.product.category.name,
+                        "price": store_product.inventory.price,
+                        "stock": store_product.inventory.stock,
                         "product_imgs": ProductImage.objects.filter(
-                            product=store.inventory.product, is_deleted=False
+                            product=store_product.inventory.product, is_deleted=False
                         ),
                         "product_single_img": ProductImage.objects.filter(
-                            product=store.inventory.product, is_deleted=False
+                            product=store_product.inventory.product, is_deleted=False
                         ).first(),
-                        "product_id": store.inventory.product.pk,
-                        "inventory_id": store.inventory.pk,
-                        "store_id": store.pk,
+                        "inventory_id": store_product.inventory.pk,
+                        "store_product_id": store_product.pk,
+                        "margin": int(store_product.margin),
                     }
                 )
 
@@ -199,6 +199,7 @@ class StoreProductCreateOrUpdateView(RoleRequiredMixin, StoreRequiredMixin, View
             store = Store.objects.get(id=store_id)
             inventory = Inventory.objects.get(id=inventory_id)
             sp = None
+            action = None
             with transaction.atomic():
                 if StoreProduct.objects.filter(
                     store=store,
@@ -207,21 +208,34 @@ class StoreProductCreateOrUpdateView(RoleRequiredMixin, StoreRequiredMixin, View
                     sp = StoreProduct.objects.filter(
                         store=store, inventory=inventory
                     ).latest("pk")
+                    print(int(margin))
                     sp.margin = int(margin)
                     sp.save()
+                    action = "Update"
                 else:
                     sp = StoreProduct(
                         store=store, inventory=inventory, margin=int(margin)
                     )
                     sp.save()
-            return redirect("vendor_catalog_view", company_id=sp.inventory.company.pk)
+                    action = "Create"
+
+            if action == "Create":
+                messages.success(request, "Product Added to Store successfully.")
+                return redirect(
+                    "vendor_catalog_view", company_id=sp.inventory.company.pk
+                )
+
+            if action == "Update":
+                messages.success(request, "Store Product Margin Updated successfully.")
+                return redirect("store_view")
+
         except:
             logger.error(traceback.format_exc())
-            messages.error(request, "Error while adding product to store.")
+            messages.error(request, "Error while adding or updating product to store.")
             return render(
                 request,
                 "merchant/error.html",
-                {"message": "Error while adding product to store."},
+                {"message": "Error while adding or updating product to store."},
                 status=500,
             )
 
@@ -233,7 +247,10 @@ class StoreProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View):
     def get(self, request, inventory_id, *args, **kwargs):
         try:
             inventory = get_object_or_404(Inventory, pk=inventory_id, is_deleted=False)
-            store = StoreProduct.objects.filter(inventory=inventory).latest("pk").store
+            store_product = StoreProduct.objects.filter(inventory=inventory).latest(
+                "pk"
+            )
+            store = store_product.store
             context = {
                 "product": inventory.product.name,
                 "description": inventory.product.description,
@@ -246,12 +263,9 @@ class StoreProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View):
                 "product_single_img": ProductImage.objects.filter(
                     product=inventory.product, is_deleted=False
                 ).first(),
-                "company": inventory.company.name,
-                "company_id": inventory.company.pk,
-                "product_id": inventory.product.pk,
                 "inventory_id": inventory.pk,
-                "store_id": store.pk,
                 "store": store,
+                "store_product_id": store_product.pk,
             }
             return render(
                 request,
@@ -265,5 +279,25 @@ class StoreProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View):
                 request,
                 "merchant/error.html",
                 {"message": "Error fetching product details."},
+                status=500,
+            )
+
+
+class StoreProductDeleteView(RoleRequiredMixin, View):
+    required_role = "Merchant"
+
+    def post(self, request, store_product_id, *args, **kwargs):
+        try:
+            store = get_object_or_404(StoreProduct, pk=store_product_id)
+            store.delete()
+            messages.success(request, "Product removed from Store successfully.")
+            return JsonResponse(
+                {"success": True, "message": "Product removed from Store successfully."}
+            )
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error removing product from store.")
+            return JsonResponse(
+                {"success": False, "message": "Error removing product from store."},
                 status=500,
             )

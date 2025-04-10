@@ -6,6 +6,7 @@ from store.Views.store_views import (
     StoreDeleteView,
     StoreProductCreateOrUpdateView,
     StoreProductDetailView,
+    StoreProductDeleteView,
 )
 from store.Views.vendor_catalog_views import (
     VendorCatalogView,
@@ -14,6 +15,25 @@ from store.Views.vendor_catalog_views import (
 )
 
 urlpatterns = [
+    # Store Product
+    # Add or Update
+    path(
+        "store/<int:store_id>/inventory/<int:inventory_id>/add_update_product/",
+        StoreProductCreateOrUpdateView.as_view(),
+        name="store_product_create_or_update",
+    ),
+    # Detail View
+    path(
+        "store/<int:inventory_id>/product_detail",
+        StoreProductDetailView.as_view(),
+        name="store_product_detail_view",
+    ),
+    # Remove from store
+    path(
+        "store/<int:store_product_id>/delete/",
+        StoreProductDeleteView.as_view(),
+        name="remove_store_product",
+    ),
     # Store URLs
     path("store/", StoreView.as_view(), name="store_view"),
     path("store/create/", StoreCreateView.as_view(), name="store_create"),
@@ -31,17 +51,5 @@ urlpatterns = [
         "vendor_catalog/<int:inventory_id>/product_detail",
         VendorCatalogProductDetailView.as_view(),
         name="vendor_catalog_product_detail_view",
-    ),
-    # Add or Update Store Product
-    path(
-        "store/<int:store_id>/inventory/<int:inventory_id>/add_update_product/",
-        StoreProductCreateOrUpdateView.as_view(),
-        name="store_product_create_or_update",
-    ),
-    # Store Product View
-    path(
-        "store/<int:inventory_id>/product_detail",
-        StoreProductDetailView.as_view(),
-        name="store_product_detail_view",
     ),
 ]

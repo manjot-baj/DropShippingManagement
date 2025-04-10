@@ -67,26 +67,24 @@
         <div class="row g-4">
             {% for product in products %}
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <form method="POST" enctype="multipart/form-data"
-                    action="{% url 'store_product_create_or_update' product.store_id product.inventory_id %}">
-                    {% csrf_token %}
-                    <div class="card shadow-sm border-0 h-100 bg-body-tertiary rounded-4 overflow-hidden transition">
 
-                        <!-- Card Header -->
-                        <div class="bg-gradient p-3 text-white"
-                            style="background: linear-gradient(45deg, #389789, #68baae);">
-                            <h5 class="mb-1">{{ product.product }}</h5>
-                            <small class="text-light-emphasis">{{ product.category }}</small>
-                        </div>
+                <div class="card shadow-sm border-0 h-100 bg-body-tertiary rounded-4 overflow-hidden transition">
 
-                        <div>
-                            <img src="{{ product.product_single_img.image.url }}" class="d-block w-100"
-                                style="height: 200px; object-fit: cover;">
-                        </div>
+                    <!-- Card Header -->
+                    <div class="bg-gradient p-3 text-white"
+                        style="background: linear-gradient(45deg, #389789, #68baae);">
+                        <h5 class="mb-1">{{ product.product }}</h5>
+                        <small class="text-light-emphasis">{{ product.category }}</small>
+                    </div>
+
+                    <div>
+                        <img src="{{ product.product_single_img.image.url }}" class="d-block w-100"
+                            style="height: 200px; object-fit: cover;">
+                    </div>
 
 
-                        <!-- Carousel -->
-                        <!-- <div id="carousel-{{ product.id }}" class="carousel slide" data-ride="carousel">
+                    <!-- Carousel -->
+                    <!-- <div id="carousel-{{ product.id }}" class="carousel slide" data-ride="carousel">
                         <div class="carousel-inner">
                             {% for img in product.product_imgs %}
                             <div class="carousel-item {% if forloop.first %}active{% endif %}">
@@ -109,36 +107,47 @@
                         {% endif %}
                     </div> -->
 
-                        <!-- Card Body -->
-                        <div class="card-body text-center">
-                            <p class="small text-muted">{{ product.description|truncatewords:15 }}</p>
-                            <div class="my-2">
-                                <span class="h5 text-success fw-bold">₹{{ product.price }}</span>
-                            </div>
-                            <div class="small mb-3">Stock: {{ product.stock }}</div>
+                    <!-- Card Body -->
+                    <div class="card-body text-center">
+                        <p class="small text-muted">{{ product.description|truncatewords:15 }}</p>
+                        <div class="my-2">
+                            <span class="h5 text-success fw-bold">₹{{ product.price }}</span>
+                        </div>
+                        <div class="small mb-3">Stock: {{ product.stock }}</div>
+                        <form method="POST" enctype="multipart/form-data"
+                            action="{% url 'store_product_create_or_update' store.pk product.inventory_id %}">
+                            {% csrf_token %}
                             <div class="my-2">
                                 <label for="margin">Margin:</label>
-                                <input type="number" name="margin" value="5" min="0" max="100" step="1" required>
+                                <input type="number" name="margin" value="{{ product.margin }}" min="0" max="100"
+                                    step="1" onkeydown="return false" style="width: 80px; margin-right: 4px;">
+                                <span>%</span>
                             </div>
-
-                        </div>
-                        <div class="card-footer">
-                            <div class="d-flex justify-content-around align-items-center">
-                                <a href="{% url 'store_product_detail_view' product.inventory_id %}"
-                                    class="btn btn-primary btn-sm"
-                                    style="background: linear-gradient(45deg, #389789, #68baae);" title="View Product">
-                                    <i class="fas fa-eye me-1"></i> View
-                                </a>
-                                <button type="submit" class="btn btn-primary btn-sm"
-                                    style="background: linear-gradient(45deg, #389789, #68baae);"
-                                    title="Add Update Product to Store">
-                                    Update
-                                </button>
-                            </div>
-                        </div>
 
                     </div>
-                </form>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-around align-items-center">
+                            <button type="submit" class="btn btn-primary btn-sm"
+                                style="background: linear-gradient(45deg, #389789, #68baae);" title="Update Margin">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            </form>
+                            <a href="{% url 'store_product_detail_view' product.inventory_id %}"
+                                class="btn btn-primary btn-sm"
+                                style="background: linear-gradient(45deg, #389789, #68baae);"
+                                title="View Product Details">
+                                <i class="fas fa-eye me-1"></i>
+                            </a>
+                            <button class="btn btn-danger btn-sm delete-btn mb-2"
+                                data-url="{% url 'remove_store_product' product.store_product_id %}"
+                                title="Remove from Store">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
             {% empty %}
             <div class="col-12">

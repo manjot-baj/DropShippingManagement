@@ -111,9 +111,13 @@
                     <div class="card-body text-center">
                         <p class="small text-muted">{{ product.description|truncatewords:15 }}</p>
                         <div class="my-2">
-                            <span class="h5 text-success fw-bold">₹{{ product.price }}</span>
+                            <span class="h5 text-success fw-bold">Selling Price: ₹{{ product.selling_price }} / Unit
+                            </span>
                         </div>
-                        <div class="small mb-3">Stock: {{ product.stock }}</div>
+                        <div class="my-2">
+                            <span class="h5 text-success fw-bold">Cost Price: ₹{{ product.cost_price }} / Unit</span>
+                        </div>
+                        <div class="mb-3">Stock: {{ product.stock }}</div>
                         <form method="POST" enctype="multipart/form-data"
                             action="{% url 'store_product_create_or_update' store.pk product.inventory_id %}">
                             {% csrf_token %}

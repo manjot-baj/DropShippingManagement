@@ -53,6 +53,12 @@
     <!-- Default box -->
     <div class="card card-solid">
         <div class="card-body">
+            {% if in_store %}
+            <div class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 rounded-end shadow-sm fw-bold"
+                style="z-index: 2;">
+                IN STORE
+            </div>
+            {% endif %}
             <div class="row">
                 <div class="col-12 col-sm-6">
 
@@ -73,17 +79,30 @@
 
                 </div>
                 <div class="col-12 col-sm-6">
+
                     <h3 class="my-3">{{product}}</h3>
                     <h5 class="my-3">{{category}}</h5>
                     <p>{{description}}</p>
 
                     <h4>Available Stock : {{stock}}</h4>
 
+                    {% if in_store %}
+                    <h4>Sell Margin : {{margin}} %</h4>
+                    {% endif %}
+
                     <hr>
 
                     <div class="bg-gray py-2 px-3 mt-4">
-                        <h2 class="mb-0">₹{{price}}</h2>
+                        <h2 class="mb-0">Cost Price: ₹{{cost_price}} / Unit</h2>
                     </div>
+
+                    {% if in_store %}
+                    <div class="bg-gray py-2 px-3 mt-4">
+                        <h2 class="mb-0">Selling Price: ₹{{selling_price}} / Unit</h2>
+                    </div>
+                    {% endif %}
+
+
 
                     <!-- <div class="mt-4">
                         <button type="button" class="btn btn-primary btn-lg btn-flat">
@@ -98,6 +117,7 @@
                     </div> -->
 
                 </div>
+
             </div>
         </div>
         <!-- /.card-body -->

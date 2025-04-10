@@ -32,12 +32,16 @@ class StoreView(RoleRequiredMixin, View):
             products = []
             store_product_objs = StoreProduct.objects.filter(store=store_obj)
             for store_product in store_product_objs:
+                cost_price = store_product.inventory.price
+                margin_price = cost_price * int(store_product.margin)
+                selling_price = cost_price + (margin_price / 100)
                 products.append(
                     {
                         "product": store_product.inventory.product.name,
                         "description": store_product.inventory.product.description,
                         "category": store_product.inventory.product.category.name,
-                        "price": store_product.inventory.price,
+                        "selling_price": selling_price,
+                        "cost_price": cost_price,
                         "stock": store_product.inventory.stock,
                         "product_imgs": ProductImage.objects.filter(
                             product=store_product.inventory.product, is_deleted=False
@@ -267,6 +271,16 @@ class StoreProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View):
                 "store": store,
                 "store_product_id": store_product.pk,
             }
+
+            margin = store_product.margin
+            cost_price = store_product.inventory.price
+            margin_price = cost_price * int(store_product.margin)
+            selling_price = cost_price + (margin_price / 100)
+
+            context["selling_price"] = selling_price
+            context["cost_price"] = cost_price
+            context["margin"] = margin
+
             return render(
                 request,
                 "merchant/store/store_product_detail_view.html",
@@ -283,7 +297,7 @@ class StoreProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View):
             )
 
 
-class StoreProductDeleteView(RoleRequiredMixin, View):
+class StoreProductDeleteView(RoleRequiredMixin, StoreRequiredMixin, View):
     required_role = "Merchant"
 
     def post(self, request, store_product_id, *args, **kwargs):

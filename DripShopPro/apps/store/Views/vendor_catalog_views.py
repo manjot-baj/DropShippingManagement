@@ -113,11 +113,12 @@ class VendorCatalogProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View
     def get(self, request, inventory_id, *args, **kwargs):
         try:
             inventory = get_object_or_404(Inventory, pk=inventory_id, is_deleted=False)
+
             context = {
                 "product": inventory.product.name,
                 "description": inventory.product.description,
                 "category": inventory.product.category.name,
-                "price": inventory.price,
+                "cost_price": inventory.price,
                 "stock": inventory.stock,
                 "product_imgs": ProductImage.objects.filter(
                     product=inventory.product, is_deleted=False
@@ -129,6 +130,25 @@ class VendorCatalogProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View
                 "product_id": inventory.product.pk,
                 "inventory_id": inventory.pk,
             }
+
+            in_store = False
+            margin = 5
+            if StoreProduct.objects.filter(inventory=inventory).exists():
+                in_store = True
+                store_product = StoreProduct.objects.filter(inventory=inventory).latest(
+                    "pk"
+                )
+                margin = store_product.margin
+                cost_price = store_product.inventory.price
+                margin_price = cost_price * int(store_product.margin)
+                selling_price = cost_price + (margin_price / 100)
+
+                context["selling_price"] = selling_price
+                context["cost_price"] = cost_price
+
+            context["in_store"] = in_store
+            context["margin"] = margin
+
             return render(
                 request,
                 "merchant/vendor_catalog/catalog_detail_view.html",

@@ -106,9 +106,9 @@
                         <div class="card-body text-center">
                             <p class="small text-muted">{{ catalog.description|truncatewords:15 }}</p>
                             <div class="my-2">
-                                <span class="h5 text-success fw-bold">₹{{ catalog.price }}</span>
+                                <span class="h5 text-success fw-bold">Cost: ₹{{ catalog.price }} / Unit</span>
                             </div>
-                            <div class="small mb-3">Stock: {{ catalog.stock }}</div>
+                            <div class="mb-3">Stock: {{ catalog.stock }}</div>
                             <div class="my-2">
                                 <label for="margin">Margin:</label>
                                 {% if catalog.in_store %}

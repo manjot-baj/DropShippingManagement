@@ -31,7 +31,7 @@
                                 <thead class="bg-primary text-white">
                                     <tr>
                                         <th>Created on</th>
-                                        <th>Updated on</th>
+                                        <!-- <th>Updated on</th> -->
                                         <th>Product Name</th>
                                         <th>Category</th>
                                         <th>Inside Inventory</th>
@@ -42,7 +42,7 @@
                                     {% for product in products %}
                                     <tr>
                                         <td>{{ product.created_at }}</td>
-                                        <td>{{ product.updated_at }}</td>
+                                        <!-- <td>{{ product.updated_at }}</td> -->
                                         <td>{{ product.name }}</td>
                                         <td>{{ product.category.name }}</td>
                                         <td>{% if product.inside_inventory %}Yes{% else %}No{% endif %}</td>

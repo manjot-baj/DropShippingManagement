@@ -1,11 +1,11 @@
-{% extends 'vendor/base.html' %}
+{% extends 'merchant/base.html' %}
 {% load static %}
-{% block title %}Product Detail{% endblock %}
+{% block title %}My Store Product Detail{% endblock %}
 
 {% block header %}
 <div class="row mb-4">
     <div class="col-12">
-        <h1>Product Detail</h1>
+        <h1>My Store Product Detail</h1>
     </div>
 </div>
 {% endblock %}
@@ -19,6 +19,36 @@
             &larr; Back
         </button>
     </div>
+    <div class="container-fluid">
+
+        <!-- Store Overview Card -->
+        <div class="card mb-4">
+            <div class="card-body d-flex flex-wrap align-items-center">
+                <!-- Store Logo -->
+                {% if store.logo %}
+                <div class="mr-4 mb-3">
+                    <img src="{{ store.logo.url }}" alt="Store Logo" class="img-thumbnail"
+                        style="height: 120px; width: auto;">
+                </div>
+                {% endif %}
+
+                <!-- Store Info -->
+                <div class="flex-grow-1">
+                    <h3 class="mb-1">{{ store.name }}</h3>
+                    <p class="mb-1"><strong>Email:</strong> {{ store.email }}</p>
+                    <p class="mb-1"><strong>Phone:</strong> {{ store.phone }}</p>
+                    <p class="mb-1"><strong>Address:</strong> {{ store.address }}</p>
+                    <p class="mb-0"><strong>State:</strong> {{ store.state }}</p>
+                </div>
+
+                <!-- Actions -->
+                <!-- something -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
 
     <!-- Default box -->
     <div class="card card-solid">
@@ -49,11 +79,18 @@
 
                     <h4>Available Stock : {{stock}}</h4>
 
+                    <h4>Sell Margin : {{margin}} %</h4>
+
                     <hr>
 
                     <div class="bg-gray py-2 px-3 mt-4">
-                        <h2 class="mb-0">₹{{price}}</h2>
+                        <h2 class="mb-0">Cost Price: ₹{{cost_price}} / Unit</h2>
                     </div>
+
+                    <div class="bg-gray py-2 px-3 mt-4">
+                        <h2 class="mb-0">Selling Price: ₹{{selling_price}} / Unit</h2>
+                    </div>
+
 
                     <!-- <div class="mt-4">
                         <button type="button" class="btn btn-primary btn-lg btn-flat">

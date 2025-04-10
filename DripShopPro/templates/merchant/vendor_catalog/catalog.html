@@ -1,0 +1,156 @@
+{% extends 'merchant/base.html' %}
+{% load static %}
+{% block title %}Vendor Catalog{% endblock %}
+
+{% block header %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1>Vendor Catalog</h1>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<section class="content">
+    <!-- Back Button -->
+    <div class="mb-3">
+        <button class="btn btn-secondary" onclick="goBackAndReload();">
+            &larr; Back
+        </button>
+    </div>
+    <div class="container-fluid">
+
+        <!-- Vendor Company Overview Card -->
+        <div class="card mb-4">
+            <div class="card-body d-flex flex-wrap align-items-center">
+                <!-- Vendor Company Logo -->
+                {% if company.logo %}
+                <div class="mr-4 mb-3">
+                    <img src="{{ company.logo.url }}" alt="Vendor Company Logo" class="img-thumbnail"
+                        style="height: 120px; width: auto;">
+                </div>
+                {% endif %}
+
+                <!-- Vendor Company Info -->
+                <div class="flex-grow-1">
+                    <h3 class="mb-1">{{ company.name }}</h3>
+                    <p class="mb-1"><strong>Email:</strong> {{ company.email }}</p>
+                    <p class="mb-1"><strong>Phone:</strong> {{ company.phone }}</p>
+                    <p class="mb-1"><strong>Address:</strong> {{ company.address }}</p>
+                    <p class="mb-0"><strong>State:</strong> {{ company.state }}</p>
+                </div>
+
+                <!-- Actions -->
+                <!-- something -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content py-2">
+    <div class="container-fluid">
+
+        <div class="row g-4">
+            {% for catalog in catalogs %}
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <form method="POST" enctype="multipart/form-data"
+                    action="{% url 'store_product_create_or_update' catalog.store_id catalog.inventory_id %}">
+                    {% csrf_token %}
+                    <div class="card shadow-sm border-0 h-100 bg-body-tertiary rounded-4 overflow-hidden transition">
+
+                        <!-- Card Header -->
+                        <div class="bg-gradient p-3 text-white"
+                            style="background: linear-gradient(45deg, #389789, #68baae);">
+                            <h5 class="mb-1">{{ catalog.product }}</h5>
+                            <small class="text-light-emphasis">{{ catalog.category }}</small>
+                        </div>
+
+                        <div>
+                            {% if catalog.in_store %}
+                            <div class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 rounded-end shadow-sm fw-bold"
+                                style="z-index: 2;">
+                                IN STORE
+                            </div>
+                            {% endif %}
+                            <img src="{{ catalog.product_single_img.image.url }}" class="d-block w-100"
+                                style="height: 200px; object-fit: cover;">
+                        </div>
+
+
+                        <!-- Carousel -->
+                        <!-- <div id="carousel-{{ catalog.id }}" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for img in catalog.product_imgs %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <img src="{{ img.image.url }}" class="d-block w-100"
+                                    style="height: 200px; object-fit: cover;">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if catalog.product_imgs|length > 1 %}
+                        <a class="carousel-control-prev" href="#carousel-{{ catalog.id }}" role="button"
+                            data-slide="prev">
+                            <span class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle p-2"
+                                aria-hidden="true"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#carousel-{{ catalog.id }}" role="button"
+                            data-slide="next">
+                            <span class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle p-2"
+                                aria-hidden="true"></span>
+                        </a>
+                        {% endif %}
+                    </div> -->
+
+                        <!-- Card Body -->
+                        <div class="card-body text-center">
+                            <p class="small text-muted">{{ catalog.description|truncatewords:15 }}</p>
+                            <div class="my-2">
+                                <span class="h5 text-success fw-bold">Cost: ₹{{ catalog.price }} / Unit</span>
+                            </div>
+                            <div class="mb-3">Stock: {{ catalog.stock }}</div>
+                            <div class="my-2">
+                                <label for="margin">Margin:</label>
+                                {% if catalog.in_store %}
+                                <input type="number" name="margin" value="{{ catalog.margin }}" min="0" max="100"
+                                    step="1" onkeydown="return false" readonly style="width: 80px; margin-right: 4px;">
+                                <span>%</span>
+                                {% else %}
+                                <input type="number" name="margin" value="{{ catalog.margin }}" min="0" max="100"
+                                    step="1" onkeydown="return false" style="width: 80px; margin-right: 4px;">
+                                <span>%</span>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-around align-items-center">
+                                <a href="{% url 'vendor_catalog_product_detail_view' catalog.inventory_id %}"
+                                    class="btn btn-primary btn-sm"
+                                    style="background: linear-gradient(45deg, #389789, #68baae);" title="View Product">
+                                    <i class="fas fa-eye me-1"></i>
+                                </a>
+                                {% if not catalog.in_store %}
+                                <button type="submit" class="btn btn-primary btn-sm"
+                                    style="background: linear-gradient(45deg, #389789, #68baae);"
+                                    title="Add Update Product to Store">
+                                    Add To Store
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center shadow-sm">
+                    <i class="fas fa-box-open me-2"></i> No products available at the moment.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

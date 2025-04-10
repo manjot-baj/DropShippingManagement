@@ -37,6 +37,36 @@
             }
         }
     </script>
+    <style>
+        /* Maintain aspect ratio for image container */
+        .product-image-container {
+            position: relative;
+            padding-top: 100%;
+            /* 1:1 aspect ratio (adjust as needed) */
+            overflow: hidden;
+        }
+
+        /* Style for main product image */
+        #main-product-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* Maintain aspect ratio while fitting in container */
+        }
+
+        /* Thumbnail images */
+        .product-image-thumbs .thumbnail-img {
+            width: 100%;
+            height: 80px;
+            /* Fixed thumbnail height */
+            object-fit: cover;
+            /* Maintain aspect ratio for thumbnails */
+            cursor: pointer;
+        }
+    </style>
 
 </head>
 
@@ -45,8 +75,8 @@
 
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="{% static 'media/DripShopPro.ico' %}" alt="DripShopPro Logo" height="60"
-                width="60">
+            <img src="{% static 'media/DripShopPro.ico' %}" alt="DripShopPro Logo"
+                class="brand-image img-circle elevation-3 animation__shake" style="opacity: .8">
         </div>
 
         <!-- Navbar -->
@@ -89,40 +119,37 @@
                     </div>
                 </li> -->
 
+                <!-- User Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-user"></i>
-
+                    <a class="nav-link" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">
+                        <i class="far fa-user-circle"></i>
                     </a>
-
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header">Hi, {{ user.role }} {{ user.username }}</span>
+                        <span class="dropdown-item dropdown-header">
+                            Hi, {{ user.role|capfirst }} {{ user.username }}
+                        </span>
 
-                        <!-- Full screen mode -->
                         <div class="dropdown-divider"></div>
 
-                        <div class="dropdown-item d-flex justify-content-between align-items-center">
-                            <!-- Fullscreen Mode Button -->
-                            <button class="btn btn-sm btn-light" data-widget="fullscreen">
-                                <i class="fas fa-expand-arrows-alt"></i>
-                            </button>
+                        <!-- <a href="#" class="dropdown-item">
+                                <i class="fas fa-user-cog mr-2"></i> Profile Settings
+                            </a> -->
 
-                            <!-- Dark Mode Toggle Button -->
-                            <button onclick="toggleTheme()" class="btn btn-sm btn-dark">
-                                <i class="fas fa-moon"></i>
-                            </button>
+                        <a href="#" onclick="toggleTheme()" class="dropdown-item">
+                            <i class="fas fa-moon mr-2"></i> Dark Mode
+                        </a>
 
-                            <!-- Logout Button -->
-                            <a href="{% url 'logout' %}">
-                                <button class="btn btn-sm btn-danger">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                </button>
-                            </a>
-                        </div>
+                        <a href="#" class="dropdown-item" data-widget="fullscreen">
+                            <i class="fas fa-expand-arrows-alt mr-2"></i> Fullscreen
+                        </a>
 
+                        <div class="dropdown-divider"></div>
+
+                        <a href="{% url 'logout' %}" class="dropdown-item text-danger">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        </a>
                     </div>
                 </li>
-
             </ul>
         </nav>
         <!-- /.navbar -->
@@ -146,6 +173,12 @@
                         <!-- Add icons to the links using the .nav-icon class
                      with font-awesome or any other icon font library -->
                         <!-- side menu items here -->
+                        <li class="nav-item">
+                            <a href="{% url 'dashboard' %}" class="nav-link" data-url="{% url 'dashboard' %}">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
 
                     </ul>
                 </nav>
@@ -171,7 +204,48 @@
                     {% block content %}{% endblock %}
                 </div>
             </section>
+            <section class="content">
+                <div class="container-fluid">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        <i
+                            class="icon fas {% if message.tags == 'success' %}fa-check{% elif message.tags == 'error' or message.tags == 'danger' %}fa-ban{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </section>
+
+
+
             <!-- /.content -->
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete this item?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <!-- /.content-wrapper -->
 
@@ -185,6 +259,172 @@
     <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+
+    <!-- datatables -->
+    <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/jszip/jszip.min.js' %}"></script>
+    <script src="{% static 'plugins/pdfmake/pdfmake.min.js' %}"></script>
+    <script src="{% static 'plugins/pdfmake/vfs_fonts.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+    <script>
+        $(function () {
+            $("#example1").DataTable({
+                "lengthChange": false, "autoWidth": false, "scrollX": true,
+                "buttons": ["csv", "excel", "pdf", "print"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "scrollX": true,
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var deleteUrl = "";
+
+            $(document).on("click", ".delete-btn", function () {
+                deleteUrl = $(this).data("url");
+                $("#deleteModal").modal("show");
+            });
+
+            $("#confirmDelete").on("click", function () {
+                if (deleteUrl) {
+                    $.ajax({
+                        url: deleteUrl,
+                        type: "POST", // Change to DELETE if required
+                        data: {
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                $("#deleteModal").modal("hide");
+                                let itemId = deleteUrl.split('/').slice(-2, -1)[0]; // Extract ID
+                                console.log("Deleting row with ID:", itemId);
+
+                                let row = $(`tr[data-id="${itemId}"]`);
+                                if (row.length) {
+                                    row.fadeOut("slow", function () {
+                                        $(this).remove();
+                                    });
+                                } else {
+                                    console.warn("Row not found, reloading page...");
+                                    setTimeout(() => location.reload(), 500);
+                                }
+                            } else {
+                                alert(response.message);
+                            }
+                        },
+                        error: function () {
+                            alert("Error deleting item.");
+                        }
+                    });
+                }
+            });
+        });
+
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let currentUrl = window.location.pathname;
+            let sidebarLinks = document.querySelectorAll(".nav-link");
+
+            sidebarLinks.forEach(link => {
+                if (link.getAttribute("data-url") === currentUrl) {
+                    link.classList.add("active");
+                    // If inside a dropdown, also highlight the parent
+                    let parentItem = link.closest(".nav-item");
+                    if (parentItem) {
+                        parentItem.classList.add("menu-open");
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll("[data-select-all]").forEach(selectAll => {
+                const targetName = selectAll.getAttribute("data-select-all");
+                const checkboxes = document.querySelectorAll(`input[name="${targetName}"]`);
+
+                selectAll.addEventListener("change", function () {
+                    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+                });
+
+                // Optional: Keep "select all" checkbox in sync
+                checkboxes.forEach(cb => {
+                    cb.addEventListener("change", function () {
+                        selectAll.checked = [...checkboxes].every(cb => cb.checked);
+                    });
+                });
+            });
+        });
+
+    </script>
+    <script>
+        // JavaScript to handle image switching
+        function changeMainImage(thumb) {
+            // Get the clicked thumbnail image source
+            const newSrc = thumb.querySelector('img').src;
+
+            // Update main image
+            document.getElementById('main-product-image').src = newSrc;
+
+            // Remove active class from all thumbnails
+            document.querySelectorAll('.product-image-thumb').forEach(element => {
+                element.classList.remove('active');
+            });
+
+            // Add active class to clicked thumbnail
+            thumb.classList.add('active');
+        }
+    </script>
+
+    <script>
+        function goBackAndReload() {
+            // Use the Performance API to detect back navigation
+            sessionStorage.setItem("reloadOnBack", "true");
+            window.history.back();
+        }
+
+        // Check if reload is needed on page load
+        window.addEventListener("pageshow", function (event) {
+            if (sessionStorage.getItem("reloadOnBack")) {
+                sessionStorage.removeItem("reloadOnBack");
+                window.location.reload();
+            }
+        });
+    </script>
+
+    <script>
+        // Auto-dismiss Django messages after 5 seconds
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(function () {
+                document.querySelectorAll(".alert-dismissible").forEach(function (el) {
+                    // Bootstrap fade-out
+                    el.classList.remove("show");
+                    el.classList.add("fade");
+                    // Remove from DOM after transition
+                    setTimeout(() => el.remove(), 500); // Wait for fade transition
+                });
+            }, 3000); // 3000ms = 3 seconds
+        });
+    </script>
+
 </body>
 
 </html>

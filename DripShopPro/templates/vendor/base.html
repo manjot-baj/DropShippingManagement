@@ -119,37 +119,35 @@
                     </div>
                 </li> -->
 
+                <!-- User Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-user"></i>
-
+                    <a class="nav-link" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">
+                        <i class="far fa-user-circle"></i>
                     </a>
-
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header">Hi, {{ user.role }} {{ user.username }}</span>
+                        <span class="dropdown-item dropdown-header">
+                            Hi, {{ user.role|capfirst }} {{ user.username }}
+                        </span>
 
-                        <!-- Full screen mode -->
                         <div class="dropdown-divider"></div>
 
-                        <div class="dropdown-item d-flex justify-content-between align-items-center">
-                            <!-- Fullscreen Mode Button -->
-                            <button class="btn btn-sm btn-light" data-widget="fullscreen">
-                                <i class="fas fa-expand-arrows-alt"></i>
-                            </button>
+                        <!-- <a href="#" class="dropdown-item">
+                                <i class="fas fa-user-cog mr-2"></i> Profile Settings
+                            </a> -->
 
-                            <!-- Dark Mode Toggle Button -->
-                            <button onclick="toggleTheme()" class="btn btn-sm btn-dark">
-                                <i class="fas fa-moon"></i>
-                            </button>
+                        <a href="#" onclick="toggleTheme()" class="dropdown-item">
+                            <i class="fas fa-moon mr-2"></i> Dark Mode
+                        </a>
 
-                            <!-- Logout Button -->
-                            <a href="{% url 'logout' %}">
-                                <button class="btn btn-sm btn-danger">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                </button>
-                            </a>
-                        </div>
+                        <a href="#" class="dropdown-item" data-widget="fullscreen">
+                            <i class="fas fa-expand-arrows-alt mr-2"></i> Fullscreen
+                        </a>
 
+                        <div class="dropdown-divider"></div>
+
+                        <a href="{% url 'logout' %}" class="dropdown-item text-danger">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        </a>
                     </div>
                 </li>
 
@@ -235,6 +233,25 @@
                     {% block content %}{% endblock %}
                 </div>
             </section>
+            <section class="content">
+                <div class="container-fluid">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        <i
+                            class="icon fas {% if message.tags == 'success' %}fa-check{% elif message.tags == 'error' or message.tags == 'danger' %}fa-ban{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </section>
+
+
+
             <!-- /.content -->
             <!-- Delete Confirmation Modal -->
             <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
@@ -271,9 +288,6 @@
     <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-
 
     <!-- datatables -->
     <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
@@ -407,6 +421,37 @@
             // Add active class to clicked thumbnail
             thumb.classList.add('active');
         }
+    </script>
+
+    <script>
+        function goBackAndReload() {
+            // Use the Performance API to detect back navigation
+            sessionStorage.setItem("reloadOnBack", "true");
+            window.history.back();
+        }
+
+        // Check if reload is needed on page load
+        window.addEventListener("pageshow", function (event) {
+            if (sessionStorage.getItem("reloadOnBack")) {
+                sessionStorage.removeItem("reloadOnBack");
+                window.location.reload();
+            }
+        });
+    </script>
+
+    <script>
+        // Auto-dismiss Django messages after 5 seconds
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(function () {
+                document.querySelectorAll(".alert-dismissible").forEach(function (el) {
+                    // Bootstrap fade-out
+                    el.classList.remove("show");
+                    el.classList.add("fade");
+                    // Remove from DOM after transition
+                    setTimeout(() => el.remove(), 500); // Wait for fade transition
+                });
+            }, 3000); // 3000ms = 3 seconds
+        });
     </script>
 
 </body>

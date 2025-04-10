@@ -1,0 +1,171 @@
+{% extends 'merchant/base.html' %}
+
+{% block title %} My Store {% endblock %}
+
+{% block header %}
+<div class="row mb-2">
+    <div class="col-sm-6">
+        <h1 class="m-0">My Store</h1>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+
+        <!-- Store Overview Card -->
+        <div class="card mb-4">
+            {% if store %}
+            <div class="card-body d-flex flex-wrap align-items-center">
+                <!-- Store Logo -->
+                {% if store.logo %}
+                <div class="mr-4 mb-3">
+                    <img src="{{ store.logo.url }}" alt="Store Logo" class="img-thumbnail"
+                        style="height: 120px; width: auto;">
+                </div>
+                {% endif %}
+
+                <!-- Store Info -->
+                <div class="flex-grow-1">
+                    <h3 class="mb-1">{{ store.name }}</h3>
+                    <p class="mb-1"><strong>Email:</strong> {{ store.email }}</p>
+                    <p class="mb-1"><strong>Phone:</strong> {{ store.phone }}</p>
+                    <p class="mb-1"><strong>Address:</strong> {{ store.address }}</p>
+                    <p class="mb-0"><strong>State:</strong> {{ store.state }}</p>
+                </div>
+
+                <!-- Actions -->
+                <div>
+                    <a href="{% url 'store_update' store.id %}" class="btn btn-warning btn-sm mb-2">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <button class="btn btn-danger btn-sm delete-btn mb-2" data-url="{% url 'store_delete' store.id %}">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">No store available. Create Your Store</div>
+            <div class="card-header">
+                <!-- <h3 class="card-title">Create Your Store</h3> -->
+                <div class="card-tools">
+                    <a href="{% url 'store_create' %}" class="btn btn-success btn-sm">
+                        <i class="fas fa-plus"></i> Create Store
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% if store %}
+{% if products %}
+<section class="content py-2">
+    <div class="container-fluid">
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-sm-6 col-md-4 col-lg-3">
+
+                <div class="card shadow-sm border-0 h-100 bg-body-tertiary rounded-4 overflow-hidden transition">
+
+                    <!-- Card Header -->
+                    <div class="bg-gradient p-3 text-white"
+                        style="background: linear-gradient(45deg, #389789, #68baae);">
+                        <h5 class="mb-1">{{ product.product }}</h5>
+                        <small class="text-light-emphasis">{{ product.category }}</small>
+                    </div>
+
+                    <div>
+                        <img src="{{ product.product_single_img.image.url }}" class="d-block w-100"
+                            style="height: 200px; object-fit: cover;">
+                    </div>
+
+
+                    <!-- Carousel -->
+                    <!-- <div id="carousel-{{ product.id }}" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for img in product.product_imgs %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <img src="{{ img.image.url }}" class="d-block w-100"
+                                    style="height: 200px; object-fit: cover;">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if product.product_imgs|length > 1 %}
+                        <a class="carousel-control-prev" href="#carousel-{{ product.id }}" role="button"
+                            data-slide="prev">
+                            <span class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle p-2"
+                                aria-hidden="true"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#carousel-{{ product.id }}" role="button"
+                            data-slide="next">
+                            <span class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle p-2"
+                                aria-hidden="true"></span>
+                        </a>
+                        {% endif %}
+                    </div> -->
+
+                    <!-- Card Body -->
+                    <div class="card-body text-center">
+                        <p class="small text-muted">{{ product.description|truncatewords:15 }}</p>
+                        <div class="my-2">
+                            <span class="h5 text-success fw-bold">Selling Price: ₹{{ product.selling_price }} / Unit
+                            </span>
+                        </div>
+                        <div class="my-2">
+                            <span class="h5 text-success fw-bold">Cost Price: ₹{{ product.cost_price }} / Unit</span>
+                        </div>
+                        <div class="mb-3">Stock: {{ product.stock }}</div>
+                        <form method="POST" enctype="multipart/form-data"
+                            action="{% url 'store_product_create_or_update' store.pk product.inventory_id %}">
+                            {% csrf_token %}
+                            <div class="my-2">
+                                <label for="margin">Margin:</label>
+                                <input type="number" name="margin" value="{{ product.margin }}" min="0" max="100"
+                                    step="1" onkeydown="return false" style="width: 80px; margin-right: 4px;">
+                                <span>%</span>
+                            </div>
+
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-around align-items-center">
+                            <button type="submit" class="btn btn-primary btn-sm"
+                                style="background: linear-gradient(45deg, #389789, #68baae);" title="Update Margin">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            </form>
+                            <a href="{% url 'store_product_detail_view' product.inventory_id %}"
+                                class="btn btn-primary btn-sm"
+                                style="background: linear-gradient(45deg, #389789, #68baae);"
+                                title="View Product Details">
+                                <i class="fas fa-eye me-1"></i>
+                            </a>
+                            <button class="btn btn-danger btn-sm delete-btn mb-2"
+                                data-url="{% url 'remove_store_product' product.store_product_id %}"
+                                title="Remove from Store">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center shadow-sm">
+                    <i class="fas fa-box-open me-2"></i> No products available at the moment.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% else %}
+<div class="alert alert-info">No products available. Start adding products from vendor catalog to
+    showcase in your store.</div>
+{% endif %}
+{% endif %}
+{% endblock %}

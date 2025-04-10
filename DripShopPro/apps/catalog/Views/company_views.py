@@ -4,15 +4,15 @@ from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.db import transaction
+from django.contrib import messages
 from user_profile.middlewares import RoleRequiredMixin
 from catalog.models import Company
 from catalog.Forms.company_forms import CompanyForm
 from user_profile.models import UserProfile
 
-logger = logging.getLogger("error_log")  # Centralized logger
+logger = logging.getLogger("error_log")
 
 
-# List all company (for vendor)
 class CompanyListView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
@@ -27,15 +27,15 @@ class CompanyListView(RoleRequiredMixin, View):
             )
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching companies.")
             return render(
                 request,
                 "vendor/error.html",
-                {"message": "Error fetching company."},
+                {"message": "Error fetching companies."},
                 status=500,
             )
 
 
-# Create a new company
 class CompanyCreateView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
@@ -57,10 +57,15 @@ class CompanyCreateView(RoleRequiredMixin, View):
                     )
                     company.save()
 
+                messages.success(request, "Company created successfully.")
                 return redirect("company_list")
+
+            messages.error(request, "Invalid form submission.")
             return render(request, "vendor/company/company_form.html", {"form": form})
+
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error creating company.")
             return render(
                 request,
                 "vendor/error.html",
@@ -69,23 +74,32 @@ class CompanyCreateView(RoleRequiredMixin, View):
             )
 
 
-# Update an existing company
 class CompanyUpdateView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
     def get(self, request, pk, *args, **kwargs):
-        company = get_object_or_404(
-            Company,
-            pk=pk,
-            owner__user=request.user,
-            is_deleted=False,
-        )
-        form = CompanyForm(instance=company, user=request.user)
-        return render(
-            request,
-            "vendor/company/company_form.html",
-            {"form": form, "company": company},
-        )
+        try:
+            company = get_object_or_404(
+                Company,
+                pk=pk,
+                owner__user=request.user,
+                is_deleted=False,
+            )
+            form = CompanyForm(instance=company, user=request.user)
+            return render(
+                request,
+                "vendor/company/company_form.html",
+                {"form": form, "company": company},
+            )
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching company.")
+            return render(
+                request,
+                "vendor/error.html",
+                {"message": "Error fetching company."},
+                status=500,
+            )
 
     def post(self, request, pk, *args, **kwargs):
         try:
@@ -101,16 +115,21 @@ class CompanyUpdateView(RoleRequiredMixin, View):
 
             if form.is_valid():
                 with transaction.atomic():
-                    company = form.save()
+                    form.save()
 
+                messages.success(request, "Company updated successfully.")
                 return redirect("company_list")
+
+            messages.error(request, "Invalid form submission.")
             return render(
                 request,
                 "vendor/company/company_form.html",
                 {"form": form, "company": company},
             )
+
         except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error updating company.")
             return render(
                 request,
                 "vendor/error.html",
@@ -119,7 +138,6 @@ class CompanyUpdateView(RoleRequiredMixin, View):
             )
 
 
-# Delete a company (and related images)
 class CompanyDeleteView(RoleRequiredMixin, View):
     required_role = "Vendor"
 
@@ -133,11 +151,13 @@ class CompanyDeleteView(RoleRequiredMixin, View):
             )
             company.is_deleted = True
             company.save()
+            messages.success(request, "Company deleted successfully.")
             return JsonResponse(
                 {"success": True, "message": "Company deleted successfully."}
             )
-        except Exception as e:
+        except Exception:
             logger.error(traceback.format_exc())
+            messages.error(request, "Error deleting company.")
             return JsonResponse(
                 {"success": False, "message": "Error deleting company."}, status=500
             )

@@ -4,12 +4,13 @@ from store.Views.store_views import (
     StoreCreateView,
     StoreUpdateView,
     StoreDeleteView,
+    StoreProductCreateOrUpdateView,
+    StoreProductDetailView,
 )
 from store.Views.vendor_catalog_views import (
     VendorCatalogView,
     VendorListView,
     VendorCatalogProductDetailView,
-    StoreProductCreateOrUpdateView,
 )
 
 urlpatterns = [
@@ -36,5 +37,11 @@ urlpatterns = [
         "store/<int:store_id>/inventory/<int:inventory_id>/add_update_product/",
         StoreProductCreateOrUpdateView.as_view(),
         name="store_product_create_or_update",
+    ),
+    # Store Product View
+    path(
+        "store/<int:inventory_id>/product_detail",
+        StoreProductDetailView.as_view(),
+        name="store_product_detail_view",
     ),
 ]

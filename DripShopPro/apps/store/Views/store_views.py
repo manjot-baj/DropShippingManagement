@@ -10,6 +10,7 @@ from store.models import Store, StoreProduct
 from store.Forms.store_forms import StoreForm
 from user_profile.models import UserProfile
 from catalog.models import Company, Inventory, ProductImage
+from store.Utils.middlewares import StoreRequiredMixin
 
 logger = logging.getLogger("error_log")
 
@@ -185,4 +186,84 @@ class StoreDeleteView(RoleRequiredMixin, View):
             messages.error(request, "Error deleting store.")
             return JsonResponse(
                 {"success": False, "message": "Error deleting store."}, status=500
+            )
+
+
+# Add or Update Products to Store
+class StoreProductCreateOrUpdateView(RoleRequiredMixin, StoreRequiredMixin, View):
+    required_role = "Merchant"
+
+    def post(self, request, store_id, inventory_id, *args, **kwargs):
+        try:
+            margin = request.POST.get("margin", 5)
+            store = Store.objects.get(id=store_id)
+            inventory = Inventory.objects.get(id=inventory_id)
+            sp = None
+            with transaction.atomic():
+                if StoreProduct.objects.filter(
+                    store=store,
+                    inventory=inventory,
+                ).exists():
+                    sp = StoreProduct.objects.filter(
+                        store=store, inventory=inventory
+                    ).latest("pk")
+                    sp.margin = int(margin)
+                    sp.save()
+                else:
+                    sp = StoreProduct(
+                        store=store, inventory=inventory, margin=int(margin)
+                    )
+                    sp.save()
+            return redirect("vendor_catalog_view", company_id=sp.inventory.company.pk)
+        except:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error while adding product to store.")
+            return render(
+                request,
+                "merchant/error.html",
+                {"message": "Error while adding product to store."},
+                status=500,
+            )
+
+
+# Store Product Detail View
+class StoreProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View):
+    required_role = "Merchant"
+
+    def get(self, request, inventory_id, *args, **kwargs):
+        try:
+            inventory = get_object_or_404(Inventory, pk=inventory_id, is_deleted=False)
+            store = StoreProduct.objects.filter(inventory=inventory).latest("pk").store
+            context = {
+                "product": inventory.product.name,
+                "description": inventory.product.description,
+                "category": inventory.product.category.name,
+                "price": inventory.price,
+                "stock": inventory.stock,
+                "product_imgs": ProductImage.objects.filter(
+                    product=inventory.product, is_deleted=False
+                ),
+                "product_single_img": ProductImage.objects.filter(
+                    product=inventory.product, is_deleted=False
+                ).first(),
+                "company": inventory.company.name,
+                "company_id": inventory.company.pk,
+                "product_id": inventory.product.pk,
+                "inventory_id": inventory.pk,
+                "store_id": store.pk,
+                "store": store,
+            }
+            return render(
+                request,
+                "merchant/store/store_product_detail_view.html",
+                context,
+            )
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching product details.")
+            return render(
+                request,
+                "merchant/error.html",
+                {"message": "Error fetching product details."},
+                status=500,
             )

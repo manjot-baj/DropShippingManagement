@@ -1,25 +1,56 @@
 {% extends 'merchant/base.html' %}
 {% load static %}
-{% block title %}{{company}} Catalog{% endblock %}
+{% block title %}Vendor Catalog{% endblock %}
 
 {% block header %}
 <div class="row mb-4">
     <div class="col-12">
-        <h1>{{company}}</h1>
-        <h5>Catalog</h5>
+        <h1>Vendor Catalog</h1>
     </div>
 </div>
 {% endblock %}
 
 {% block content %}
+
+<section class="content">
+    <!-- Back Button -->
+    <div class="mb-3">
+        <button class="btn btn-secondary" onclick="goBackAndReload();">
+            &larr; Back
+        </button>
+    </div>
+    <div class="container-fluid">
+
+        <!-- Vendor Company Overview Card -->
+        <div class="card mb-4">
+            <div class="card-body d-flex flex-wrap align-items-center">
+                <!-- Vendor Company Logo -->
+                {% if company.logo %}
+                <div class="mr-4 mb-3">
+                    <img src="{{ company.logo.url }}" alt="Vendor Company Logo" class="img-thumbnail"
+                        style="height: 120px; width: auto;">
+                </div>
+                {% endif %}
+
+                <!-- Vendor Company Info -->
+                <div class="flex-grow-1">
+                    <h3 class="mb-1">{{ company.name }}</h3>
+                    <p class="mb-1"><strong>Email:</strong> {{ company.email }}</p>
+                    <p class="mb-1"><strong>Phone:</strong> {{ company.phone }}</p>
+                    <p class="mb-1"><strong>Address:</strong> {{ company.address }}</p>
+                    <p class="mb-0"><strong>State:</strong> {{ company.state }}</p>
+                </div>
+
+                <!-- Actions -->
+                <!-- something -->
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="content py-2">
     <div class="container-fluid">
-        <!-- Back Button -->
-        <div class="mb-3">
-            <button class="btn btn-secondary" onclick="goBackAndReload();">
-                &larr; Back
-            </button>
-        </div>
+
         <div class="row g-4">
             {% for catalog in catalogs %}
             <div class="col-sm-6 col-md-4 col-lg-3">
@@ -36,6 +67,12 @@
                         </div>
 
                         <div>
+                            {% if catalog.in_store %}
+                            <div class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 rounded-end shadow-sm fw-bold"
+                                style="z-index: 2;">
+                                IN STORE
+                            </div>
+                            {% endif %}
                             <img src="{{ catalog.product_single_img.image.url }}" class="d-block w-100"
                                 style="height: 200px; object-fit: cover;">
                         </div>
@@ -85,11 +122,13 @@
                                     style="background: linear-gradient(45deg, #389789, #68baae);" title="View Product">
                                     <i class="fas fa-eye me-1"></i> View
                                 </a>
+                                {% if not catalog.in_store %}
                                 <button type="submit" class="btn btn-primary btn-sm"
                                     style="background: linear-gradient(45deg, #389789, #68baae);"
                                     title="Add Update Product to Store">
                                     Add To Store
                                 </button>
+                                {% endif %}
                             </div>
                         </div>
 

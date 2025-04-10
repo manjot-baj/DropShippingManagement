@@ -87,7 +87,7 @@ class StoreProduct(BaseModel):
         null=True,
         blank=True,
     )
-    margin = models.PositiveIntegerField(default=1)
+    margin = models.PositiveIntegerField(default=5)
 
     def __str__(self):
         return str(self.pk)

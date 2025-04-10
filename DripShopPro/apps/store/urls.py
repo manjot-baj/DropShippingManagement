@@ -9,6 +9,7 @@ from store.Views.vendor_catalog_views import (
     VendorCatalogView,
     VendorListView,
     VendorCatalogProductDetailView,
+    StoreProductCreateOrUpdateView,
 )
 
 urlpatterns = [
@@ -29,5 +30,11 @@ urlpatterns = [
         "vendor_catalog/<int:inventory_id>/product_detail",
         VendorCatalogProductDetailView.as_view(),
         name="vendor_catalog_product_detail_view",
+    ),
+    # Add or Update Store Product
+    path(
+        "store/<int:store_id>/inventory/<int:inventory_id>/add_update_product/",
+        StoreProductCreateOrUpdateView.as_view(),
+        name="store_product_create_or_update",
     ),
 ]

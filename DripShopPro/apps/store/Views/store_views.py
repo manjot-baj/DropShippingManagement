@@ -6,9 +6,10 @@ from django.http import JsonResponse
 from django.db import transaction
 from django.contrib import messages
 from user_profile.middlewares import RoleRequiredMixin
-from store.models import Store
+from store.models import Store, StoreProduct
 from store.Forms.store_forms import StoreForm
 from user_profile.models import UserProfile
+from catalog.models import Company, Inventory, ProductImage
 
 logger = logging.getLogger("error_log")
 
@@ -18,7 +19,7 @@ class StoreView(RoleRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         try:
-            store = (
+            store_obj = (
                 Store.objects.select_related("owner")
                 .filter(
                     owner__user=request.user,
@@ -27,7 +28,33 @@ class StoreView(RoleRequiredMixin, View):
                 .first()
             )
 
-            return render(request, "merchant/store/store_view.html", {"store": store})
+            products = []
+            store_product_objs = StoreProduct.objects.filter(store=store_obj)
+            for store in store_product_objs:
+                products.append(
+                    {
+                        "product": store.inventory.product.name,
+                        "description": store.inventory.product.description,
+                        "category": store.inventory.product.category.name,
+                        "price": store.inventory.price,
+                        "stock": store.inventory.stock,
+                        "product_imgs": ProductImage.objects.filter(
+                            product=store.inventory.product, is_deleted=False
+                        ),
+                        "product_single_img": ProductImage.objects.filter(
+                            product=store.inventory.product, is_deleted=False
+                        ).first(),
+                        "product_id": store.inventory.product.pk,
+                        "inventory_id": store.inventory.pk,
+                        "store_id": store.pk,
+                    }
+                )
+
+            return render(
+                request,
+                "merchant/store/store_view.html",
+                {"store": store_obj, "products": products},
+            )
         except Exception:
             logger.error(traceback.format_exc())
             messages.error(request, "Error fetching store.")

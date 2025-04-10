@@ -1,11 +1,13 @@
 import logging
 import traceback
 from django.views import View
-from django.shortcuts import render, get_object_or_404
+from django.db import transaction
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from user_profile.middlewares import RoleRequiredMixin
 from store.Utils.middlewares import StoreRequiredMixin
 from catalog.models import Company, Inventory, ProductImage
+from store.models import Store, StoreProduct
 
 logger = logging.getLogger("error_log")
 
@@ -39,6 +41,7 @@ class VendorCatalogView(RoleRequiredMixin, StoreRequiredMixin, View):
 
     def get(self, request, company_id, *args, **kwargs):
         try:
+            store = get_object_or_404(Store, owner__user=request.user)
             company = get_object_or_404(
                 Company,
                 pk=company_id,
@@ -51,23 +54,27 @@ class VendorCatalogView(RoleRequiredMixin, StoreRequiredMixin, View):
                 catalog_display=True,
             )
             for inventory in inventorys:
-                catalogs.append(
-                    {
-                        "product": inventory.product.name,
-                        "description": inventory.product.description,
-                        "category": inventory.product.category.name,
-                        "price": inventory.price,
-                        "stock": inventory.stock,
-                        "product_imgs": ProductImage.objects.filter(
-                            product=inventory.product, is_deleted=False
-                        ),
-                        "product_single_img": ProductImage.objects.filter(
-                            product=inventory.product, is_deleted=False
-                        ).first(),
-                        "product_id": inventory.product.pk,
-                        "inventory_id": inventory.pk,
-                    }
-                )
+                if not StoreProduct.objects.filter(
+                    store=store, inventory=inventory
+                ).exists():
+                    catalogs.append(
+                        {
+                            "product": inventory.product.name,
+                            "description": inventory.product.description,
+                            "category": inventory.product.category.name,
+                            "price": inventory.price,
+                            "stock": inventory.stock,
+                            "product_imgs": ProductImage.objects.filter(
+                                product=inventory.product, is_deleted=False
+                            ),
+                            "product_single_img": ProductImage.objects.filter(
+                                product=inventory.product, is_deleted=False
+                            ).first(),
+                            "product_id": inventory.product.pk,
+                            "inventory_id": inventory.pk,
+                            "store_id": store.pk,
+                        }
+                    )
             return render(
                 request,
                 "merchant/vendor_catalog/catalog.html",
@@ -124,5 +131,41 @@ class VendorCatalogProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View
                 request,
                 "merchant/error.html",
                 {"message": "Error fetching product details."},
+                status=500,
+            )
+
+
+class StoreProductCreateOrUpdateView(RoleRequiredMixin, StoreRequiredMixin, View):
+    required_role = "Merchant"
+
+    def post(self, request, store_id, inventory_id, *args, **kwargs):
+        try:
+            margin = request.POST.get("margin", 5)
+            store = Store.objects.get(id=store_id)
+            inventory = Inventory.objects.get(id=inventory_id)
+            sp = None
+            with transaction.atomic():
+                if StoreProduct.objects.filter(
+                    store=store,
+                    inventory=inventory,
+                ).exists():
+                    sp = StoreProduct.objects.filter(
+                        store=store, inventory=inventory
+                    ).latest("pk")
+                    sp.margin = int(margin)
+                    sp.save()
+                else:
+                    sp = StoreProduct(
+                        store=store, inventory=inventory, margin=int(margin)
+                    )
+                    sp.save()
+            return redirect("vendor_catalog_view", company_id=sp.inventory.company.pk)
+        except:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error while adding product to store.")
+            return render(
+                request,
+                "merchant/error.html",
+                {"message": "Error while adding product to store."},
                 status=500,
             )

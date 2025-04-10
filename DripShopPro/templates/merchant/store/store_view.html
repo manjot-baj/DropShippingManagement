@@ -57,46 +57,102 @@
             </div>
             {% endif %}
         </div>
-
-        <!-- Store Products -->
-        {% if store %}
-        <div class="card">
-            <!-- <div class="card-header">
-                <h3 class="card-title">Products</h3>
-                <div class="card-tools">
-                    <a href="#" class="btn btn-success btn-sm">
-                        <i class="fas fa-plus"></i> Add Product
-                    </a>
-                </div>
-            </div> -->
-            <div class="card-body">
-
-                {% if products %}
-                <div class="row">
-                    {% for product in products %}
-                    <div class="col-md-4">
-                        <div class="card shadow-sm mb-4">
-                            {% if product.image %}
-                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title">{{ product.name }}</h5>
-                                <p class="card-text">{{ product.description|truncatewords:15 }}</p>
-                                <p class="text-muted">Price: ${{ product.price }}</p>
-                                <a href="{% url 'product_detail' product.id %}" class="btn btn-primary btn-sm">View</a>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <div class="alert alert-info">No products available. Start adding products from vendor catalog to
-                    showcase in your store.</div>
-                {% endif %}
-            </div>
-        </div>
-        {% endif %}
-
     </div>
 </section>
+
+{% if store %}
+{% if products %}
+<section class="content py-2">
+    <div class="container-fluid">
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <form method="POST" enctype="multipart/form-data"
+                    action="{% url 'store_product_create_or_update' product.store_id product.inventory_id %}">
+                    {% csrf_token %}
+                    <div class="card shadow-sm border-0 h-100 bg-body-tertiary rounded-4 overflow-hidden transition">
+
+                        <!-- Card Header -->
+                        <div class="bg-gradient p-3 text-white"
+                            style="background: linear-gradient(45deg, #389789, #68baae);">
+                            <h5 class="mb-1">{{ product.product }}</h5>
+                            <small class="text-light-emphasis">{{ product.category }}</small>
+                        </div>
+
+                        <div>
+                            <img src="{{ product.product_single_img.image.url }}" class="d-block w-100"
+                                style="height: 200px; object-fit: cover;">
+                        </div>
+
+
+                        <!-- Carousel -->
+                        <!-- <div id="carousel-{{ product.id }}" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for img in product.product_imgs %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <img src="{{ img.image.url }}" class="d-block w-100"
+                                    style="height: 200px; object-fit: cover;">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if product.product_imgs|length > 1 %}
+                        <a class="carousel-control-prev" href="#carousel-{{ product.id }}" role="button"
+                            data-slide="prev">
+                            <span class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle p-2"
+                                aria-hidden="true"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#carousel-{{ product.id }}" role="button"
+                            data-slide="next">
+                            <span class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle p-2"
+                                aria-hidden="true"></span>
+                        </a>
+                        {% endif %}
+                    </div> -->
+
+                        <!-- Card Body -->
+                        <div class="card-body text-center">
+                            <p class="small text-muted">{{ product.description|truncatewords:15 }}</p>
+                            <div class="my-2">
+                                <span class="h5 text-success fw-bold">₹{{ product.price }}</span>
+                            </div>
+                            <div class="small mb-3">Stock: {{ product.stock }}</div>
+                            <div class="my-2">
+                                <label for="margin">Margin:</label>
+                                <input type="number" name="margin" value="5" min="0" max="100" step="1" required>
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-around align-items-center">
+                                <a href="{% url 'vendor_catalog_product_detail_view' product.inventory_id %}"
+                                    class="btn btn-primary btn-sm"
+                                    style="background: linear-gradient(45deg, #389789, #68baae);" title="View Product">
+                                    <i class="fas fa-eye me-1"></i> View
+                                </a>
+                                <button type="submit" class="btn btn-primary btn-sm"
+                                    style="background: linear-gradient(45deg, #389789, #68baae);"
+                                    title="Add Update Product to Store">
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center shadow-sm">
+                    <i class="fas fa-box-open me-2"></i> No products available at the moment.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% else %}
+<div class="alert alert-info">No products available. Start adding products from vendor catalog to
+    showcase in your store.</div>
+{% endif %}
+{% endif %}
 {% endblock %}

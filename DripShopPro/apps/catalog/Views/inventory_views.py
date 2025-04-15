@@ -71,7 +71,7 @@ class InventoryListView(RoleRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         try:
             inventorys = Inventory.objects.select_related("company", "product").filter(
-                is_deleted=False,
+                is_deleted=False, company__owner__user=request.user
             )
             return render(
                 request,

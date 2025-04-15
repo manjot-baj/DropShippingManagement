@@ -10,7 +10,7 @@ def home(request):
         try:
             profile = UserProfile.objects.get(user=request.user)
             if profile.role in ["Merchant", "Vendor", "Customer"]:
-                return redirect("dashboard")
+                return redirect(f"{profile.role.lower()}_dashboard")
         except:
             pass
     return render(request, "home.html")

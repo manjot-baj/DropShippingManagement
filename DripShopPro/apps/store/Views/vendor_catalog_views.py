@@ -139,9 +139,9 @@ class VendorCatalogProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View
                     "pk"
                 )
                 margin = store_product.margin
-                cost_price = store_product.inventory.price
-                margin_price = cost_price * int(store_product.margin)
-                selling_price = cost_price + (margin_price / 100)
+                cost_price = float(store_product.inventory.price)
+                margin_price = float(cost_price * (int(store_product.margin) / 100))
+                selling_price = cost_price + margin_price
 
                 context["selling_price"] = selling_price
                 context["cost_price"] = cost_price

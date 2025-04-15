@@ -175,7 +175,8 @@
                      with font-awesome or any other icon font library -->
                         <!-- side menu items here -->
                         <li class="nav-item">
-                            <a href="{% url 'vendor_dashboard' %}" class="nav-link" data-url="{% url 'vendor_dashboard' %}">
+                            <a href="{% url 'vendor_dashboard' %}" class="nav-link"
+                                data-url="{% url 'vendor_dashboard' %}">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>Dashboard</p>
                             </a>
@@ -206,6 +207,13 @@
                             <a href="{% url 'inventory_list' %}" class="nav-link" data-url="{% url 'inventory_list' %}">
                                 <i class="nav-icon fas fa-layer-group"></i>
                                 <p>Inventory</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'merchant_list' %}" class="nav-link" data-url="{% url 'merchant_list' %}">
+                                <i class="nav-icon fas fa-store"></i>
+                                <p>Merchants</p>
                             </a>
                         </li>
 

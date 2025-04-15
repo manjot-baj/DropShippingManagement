@@ -6,7 +6,7 @@ from dashboard.views import (
 )
 
 urlpatterns = [
-    path("vendor/", VendorDashboardView.as_view(), name="vendor_dashboard"),
-    path("merchant/", MerchantDashboardView.as_view(), name="merchant_dashboard"),
-    path("customer/", CustomerDashboardView.as_view(), name="customer_dashboard"),
+    path("vendor_dashboard/", VendorDashboardView.as_view(), name="vendor_dashboard"),
+    path("merchant_dashboard/", MerchantDashboardView.as_view(), name="merchant_dashboard"),
+    path("customer_dashboard/", CustomerDashboardView.as_view(), name="customer_dashboard"),
 ]

@@ -174,7 +174,8 @@
                      with font-awesome or any other icon font library -->
                         <!-- side menu items here -->
                         <li class="nav-item">
-                            <a href="{% url 'merchant_dashboard' %}" class="nav-link" data-url="{% url 'merchant_dashboard' %}">
+                            <a href="{% url 'merchant_dashboard' %}" class="nav-link"
+                                data-url="{% url 'merchant_dashboard' %}">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>Dashboard</p>
                             </a>
@@ -188,9 +189,25 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="{% url 'vendor_list' %}" class="nav-link" data-url="{% url 'vendor_list' %}">
+                            <a href="{% url 'store_product_list' %}" class="nav-link"
+                                data-url="{% url 'store_product_list' %}">
+                                <i class="nav-icon fas fa-box"></i>
+                                <p>Products</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'store_vendor_list' %}" class="nav-link"
+                                data-url="{% url 'store_vendor_list' %}">
                                 <i class="nav-icon fas fa-truck"></i>
-                                <p>Explore Catalogs</p>
+                                <p>Vendors</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'vendor_list' %}" class="nav-link" data-url="{% url 'vendor_list' %}">
+                                <i class="nav-icon fas fa-layer-group"></i>
+                                <p>Catalogs</p>
                             </a>
                         </li>
 

@@ -8,6 +8,7 @@ from django.contrib import messages
 from user_profile.middlewares import RoleRequiredMixin
 from catalog.models import Inventory, Company, Product, ProductImage
 from catalog.Forms.inventory_forms import InventoryForm
+from store.models import Store, StoreProduct
 
 logger = logging.getLogger("error_log")
 
@@ -30,29 +31,32 @@ class CompanyProductCatalogView(RoleRequiredMixin, View):
                 catalog_display=True,
             )
             for inventory in inventorys:
-                catalogs.append(
-                    {
-                        "product": inventory.product.name,
-                        "description": inventory.product.description,
-                        "category": inventory.product.category.name,
-                        "price": inventory.price,
-                        "stock": inventory.stock,
-                        "product_imgs": ProductImage.objects.filter(
-                            product=inventory.product, is_deleted=False
-                        ),
-                        "product_single_img": ProductImage.objects.filter(
-                            product=inventory.product, is_deleted=False
-                        ).first(),
-                        "company": inventory.company.name,
-                        "company_id": inventory.company.pk,
-                        "product_id": inventory.product.pk,
-                        "inventory_id": inventory.pk,
-                    }
-                )
+                data = {
+                    "product": inventory.product.name,
+                    "description": inventory.product.description,
+                    "category": inventory.product.category.name,
+                    "price": inventory.price,
+                    "stock": inventory.stock,
+                    "product_imgs": ProductImage.objects.filter(
+                        product=inventory.product, is_deleted=False
+                    ),
+                    "product_single_img": ProductImage.objects.filter(
+                        product=inventory.product, is_deleted=False
+                    ).first(),
+                    "company": inventory.company.name,
+                    "company_id": inventory.company.pk,
+                    "product_id": inventory.product.pk,
+                    "inventory_id": inventory.pk,
+                    "in_store": StoreProduct.objects.filter(
+                        inventory=inventory
+                    ).exists(),
+                }
+
+                catalogs.append(data)
             return render(
                 request,
                 "vendor/catalog/catalog.html",
-                {"catalogs": catalogs},
+                {"catalogs": catalogs, "company": company},
             )
         except Exception:
             logger.error(traceback.format_exc())
@@ -235,7 +239,20 @@ class CatalogProductDetailView(RoleRequiredMixin, View):
                 "company_id": inventory.company.pk,
                 "product_id": inventory.product.pk,
                 "inventory_id": inventory.pk,
+                "inventory": inventory,
+                "in_store": StoreProduct.objects.filter(inventory=inventory).exists(),
+                "merchants": [
+                    {
+                        "name": f"{product.store.owner.first_name} {product.store.owner.last_name }",
+                        "store": product.store.name,
+                        "email": product.store.email,
+                        "phone": product.store.phone,
+                        "state": product.store.state,
+                    }
+                    for product in StoreProduct.objects.filter(inventory=inventory)
+                ],
             }
+
             return render(
                 request,
                 "vendor/catalog/catalog_detail_view.html",

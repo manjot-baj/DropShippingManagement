@@ -25,6 +25,8 @@ from catalog.Views.inventory_views import (
     CatalogProductDetailView,
 )
 
+from catalog.Views.merchant_views import MerchantListView
+
 urlpatterns = [
     # Product URLs
     path(
@@ -40,6 +42,8 @@ urlpatterns = [
     path(
         "products/<int:pk>/delete/", ProductDeleteView.as_view(), name="product_delete"
     ),
+    path("products/merchant_list/", MerchantListView.as_view(), name="merchant_list"),
+    
     # Category URLs
     path("category/", CategoryListView.as_view(), name="category_list"),
     path("category/create/", CategoryCreateView.as_view(), name="category_create"),

@@ -1,0 +1,64 @@
+{% extends 'merchant/base.html' %}
+{% block title %}Store Vendor{% endblock %}
+{% block header %}
+<div class="row mb-2">
+    <div class="col-sm-6">
+        <h1>Store Vendors</h1>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <!-- <h1 class="card-title">Company</h1> -->
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="example1"
+                                class="table table-hover table-bordered table-striped align-middle text-nowrap"
+                                style="min-width: 1000px;">
+                                <thead class="bg-primary text-white">
+                                    <tr>
+                                        <th>Vendor</th>
+                                        <th>Vendor Company</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>State</th>
+                                        <th>Products In Store</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for company in companys %}
+                                    <tr>
+
+                                        <td>{{ company.vendor }}</td>
+                                        <td>{{ company.name }}</td>
+                                        <td>{{ company.email }}</td>
+                                        <td>{{ company.phone }}</td>
+                                        <td>{{ company.state }}</td>
+                                        <td>{{ company.products_in_store }}</td>
+
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+{% endblock %}

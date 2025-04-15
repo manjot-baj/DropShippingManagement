@@ -32,9 +32,9 @@ class StoreView(RoleRequiredMixin, View):
             products = []
             store_product_objs = StoreProduct.objects.filter(store=store_obj)
             for store_product in store_product_objs:
-                cost_price = store_product.inventory.price
-                margin_price = cost_price * int(store_product.margin)
-                selling_price = cost_price + (margin_price / 100)
+                cost_price = float(store_product.inventory.price)
+                margin_price = float(cost_price * (int(store_product.margin) / 100))
+                selling_price = cost_price + margin_price
                 products.append(
                     {
                         "product": store_product.inventory.product.name,
@@ -273,9 +273,9 @@ class StoreProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View):
             }
 
             margin = store_product.margin
-            cost_price = store_product.inventory.price
-            margin_price = cost_price * int(store_product.margin)
-            selling_price = cost_price + (margin_price / 100)
+            cost_price = float(store_product.inventory.price)
+            margin_price = float(cost_price * (int(store_product.margin) / 100))
+            selling_price = cost_price + margin_price
 
             context["selling_price"] = selling_price
             context["cost_price"] = cost_price
@@ -313,5 +313,106 @@ class StoreProductDeleteView(RoleRequiredMixin, StoreRequiredMixin, View):
             messages.error(request, "Error removing product from store.")
             return JsonResponse(
                 {"success": False, "message": "Error removing product from store."},
+                status=500,
+            )
+
+
+class StoreProductListView(RoleRequiredMixin, StoreRequiredMixin, View):
+    required_role = "Merchant"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            store_obj = (
+                Store.objects.select_related("owner")
+                .filter(
+                    owner__user=request.user,
+                    is_deleted=False,
+                )
+                .first()
+            )
+
+            products = []
+            store_product_objs = StoreProduct.objects.filter(store=store_obj)
+            for store_product in store_product_objs:
+                cost_price = float(store_product.inventory.price)
+                margin_price = float(cost_price * (int(store_product.margin) / 100))
+                selling_price = cost_price + margin_price
+                products.append(
+                    {
+                        "store_product_id": store_product.pk,
+                        "vendor": f"{store_product.inventory.company.owner.first_name} {store_product.inventory.company.owner.last_name}",
+                        "vendor_company": f"{store_product.inventory.company.name} {store_product.inventory.company.name}",
+                        "name": store_product.inventory.product.name,
+                        "category": store_product.inventory.product.category.name,
+                        "stock": store_product.inventory.stock,
+                        "cost_price": cost_price,
+                        "margin": int(store_product.margin),
+                        "margin_price": margin_price,
+                        "selling_price": selling_price,
+                    }
+                )
+
+            return render(
+                request,
+                "merchant/store/store_product_list.html",
+                {"products": products},
+            )
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching store.")
+            return render(
+                request,
+                "merchant/error.html",
+                {"message": "Error fetching store."},
+                status=500,
+            )
+
+
+class StoreVendorListView(RoleRequiredMixin, StoreRequiredMixin, View):
+    required_role = "Merchant"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            store_obj = (
+                Store.objects.select_related("owner")
+                .filter(
+                    owner__user=request.user,
+                    is_deleted=False,
+                )
+                .first()
+            )
+
+            company_pks = StoreProduct.objects.filter(store=store_obj).values_list(
+                "inventory__company__pk", flat=True
+            )
+
+            companys = Company.objects.filter(pk__in=company_pks)
+
+            company_list = [
+                {
+                    "name": company.name,
+                    "vendor": f"{company.owner.first_name} {company.owner.last_name }",
+                    "email": company.email,
+                    "phone": company.phone,
+                    "state": company.state,
+                    "products_in_store": StoreProduct.objects.filter(
+                        inventory__company__pk=company.pk
+                    ).count(),
+                }
+                for company in companys
+            ]
+
+            return render(
+                request,
+                "merchant/store/store_vendor_list.html",
+                {"companys": company_list},
+            )
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching store.")
+            return render(
+                request,
+                "merchant/error.html",
+                {"message": "Error fetching store."},
                 status=500,
             )

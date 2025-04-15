@@ -1,5 +1,6 @@
 {% extends 'merchant/base.html' %}
 {% block title %}Vendor Catalogs{% endblock %}
+
 {% block header %}
 <div class="row mb-2">
     <div class="col-sm-6">
@@ -7,59 +8,48 @@
     </div>
 </div>
 {% endblock %}
+
 {% block content %}
 
 <section class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table id="example1"
-                                class="table table-hover table-bordered table-striped align-middle text-nowrap"
-                                style="min-width: 1000px;">
-                                <thead class="bg-primary text-white">
-                                    <tr>
-                                        <th>Company</th>
-                                        <th>Vendor Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>State</th>
-                                        <th>Catalogs</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for vendor in vendors %}
-                                    <tr>
-                                        <td>{{ vendor.name }}</td>
-                                        <td>{{ vendor.owner.first_name }} {{ vendor.owner.last_name }}</td>
-                                        <td>{{ vendor.email }}</td>
-                                        <td>{{ vendor.phone }}</td>
-                                        <td>{{ vendor.state }}</td>
-                                        <td>
-                                            <a href="{% url 'vendor_catalog_view' vendor.id %}"
-                                                class="btn btn-warning btn-sm">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
+            {% for vendor in vendors %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                <!-- Vendor Company Overview Card -->
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <!-- Vendor Company Logo -->
+                        {% if vendor.logo %}
+                        <div class="text-center mb-3">
+                            <img src="{{ vendor.logo.url }}" alt="Vendor Company Logo" class="img-thumbnail"
+                                style="height: 120px; width: auto;">
+                        </div>
+                        {% endif %}
 
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                        <!-- Vendor Company Info -->
+                        <div class="mb-3">
+                            <h5 class="mb-1">{{ vendor.name }}</h5>
+                            <p class="mb-0"><strong>Vendor:</strong> {{ vendor.owner.first_name }}
+                                {{vendor.owner.last_name }}</p>
+                            <p class="mb-0"><strong>Email:</strong> {{ vendor.email }}</p>
+                            <p class="mb-0"><strong>Phone:</strong> {{ vendor.phone }}</p>
+                            <p class="mb-0"><strong>Address:</strong> {{ vendor.address }}</p>
+                            <p class="mb-0"><strong>State:</strong> {{ vendor.state }}</p>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="mt-auto text-center">
+                            <a href="{% url 'vendor_catalog_view' vendor.id %}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-eye"></i> View Catalog
+                            </a>
                         </div>
                     </div>
-                    <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
             </div>
-            <!-- /.col -->
+            {% endfor %}
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </section>
 
 {% endblock %}

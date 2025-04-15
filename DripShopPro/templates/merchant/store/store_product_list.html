@@ -1,0 +1,68 @@
+{% extends 'merchant/base.html' %}
+{% block title %}Store Products{% endblock %}
+{% block header %}
+<div class="row mb-2">
+    <div class="col-sm-6">
+        <h1>Store Products</h1>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="example1"
+                                class="table table-hover table-bordered table-striped align-middle text-nowrap"
+                                style="min-width: 1000px;">
+                                <thead class="bg-primary text-white">
+                                    <tr>
+
+                                        <th>Vendor</th>
+                                        <th>Vendor Company</th>
+                                        <th>Product</th>
+                                        <th>Category</th>
+                                        <th>Stock</th>
+                                        <th>Cost Price</th>
+                                        <th>Margin</th>
+                                        <th>Margin Price</th>
+                                        <th>Selling Price</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in products %}
+                                    <tr>
+
+                                        <td>{{ product.vendor }}</td>
+                                        <td>{{ product.vendor_company }}</td>
+                                        <td>{{ product.name }}</td>
+                                        <td>{{ product.category }}</td>
+                                        <td>{{ product.stock }}</td>
+                                        <td>{{ product.cost_price }}</td>
+                                        <td>{{ product.margin }}</td>
+                                        <td>{{ product.margin_price }}</td>
+                                        <td>{{ product.selling_price }}</td>
+
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

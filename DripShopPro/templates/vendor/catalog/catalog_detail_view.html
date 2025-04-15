@@ -19,10 +19,46 @@
             &larr; Back
         </button>
     </div>
+    <div class="container-fluid">
+
+        <!-- Vendor Company Overview Card -->
+        <div class="card mb-4">
+            <div class="card-body d-flex flex-wrap align-items-center">
+                <!-- Vendor Company Logo -->
+                {% if inventory.company.logo %}
+                <div class="mr-4 mb-3">
+                    <img src="{{ inventory.company.logo.url }}" alt="Vendor Company Logo" class="img-thumbnail"
+                        style="height: 120px; width: auto;">
+                </div>
+                {% endif %}
+
+                <!-- Vendor Company Info -->
+                <div class="flex-grow-1">
+                    <h3 class="mb-1">{{ inventory.company.name }}</h3>
+                    <p class="mb-1"><strong>Email:</strong> {{ inventory.company.email }}</p>
+                    <p class="mb-1"><strong>Phone:</strong> {{ inventory.company.phone }}</p>
+                    <p class="mb-1"><strong>Address:</strong> {{ inventory.company.address }}</p>
+                    <p class="mb-0"><strong>State:</strong> {{ inventory.company.state }}</p>
+                </div>
+
+                <!-- Actions -->
+                <!-- something -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
 
     <!-- Default box -->
     <div class="card card-solid">
         <div class="card-body">
+            {% if in_store %}
+            <div class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 rounded-end shadow-sm fw-bold"
+                style="z-index: 2;">
+                IN MERCHANT STORES
+            </div>
+            {% endif %}
             <div class="row">
                 <div class="col-12 col-sm-6">
 
@@ -74,5 +110,57 @@
     </div>
     <!-- /.card -->
 </section>
+
+{% if in_store %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <!-- <h1 class="card-title">Company</h1> -->
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="example2"
+                                class="table table-hover table-bordered table-striped align-middle text-nowrap"
+                                style="min-width: 1000px;">
+                                <thead class="bg-primary text-white">
+                                    <tr>
+                                        <th>Merchant</th>
+                                        <th>Store</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>State</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for merchant in merchants %}
+                                    <tr>
+
+                                        <td>{{ merchant.name }}</td>
+                                        <td>{{ merchant.store }}</td>
+                                        <td>{{ merchant.email }}</td>
+                                        <td>{{ merchant.phone }}</td>
+                                        <td>{{ merchant.state }}</td>
+
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+{% endif %}
 
 {% endblock %}

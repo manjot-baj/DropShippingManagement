@@ -16,7 +16,7 @@ db.sqlite3
 # files
 # *.img
 # *.png
-# # *.jpg
+# *.jpg
 # *.jpeg
 *.log
 */media/*

@@ -81,40 +81,18 @@
             <!-- Product Listing -->
             <!-- <h5>Featured Products</h5> -->
             <div class="row">
-
+                {% for product in products %}
                 <div class="col-md-4 mb-4">
                     <div class="card product-card">
-                        <img src="https://via.placeholder.com/200?text=Product+1" class="card-img-top" alt="Product 1">
+                        <img src="{{product.main_img.image.url}}" class="card-img-top" alt="{{product.name}}">
                         <div class="card-body">
-                            <h6 class="card-title">Product Name 1</h6>
-                            <p class="card-text text-muted">$49.99</p>
+                            <h6 class="card-title">{{product.name}}</h6>
+                            <p class="card-text text-muted">₹{{product.price}}</p>
                             <button class="btn btn-warning w-100">Add to Cart</button>
                         </div>
                     </div>
                 </div>
-
-                <div class="col-md-4 mb-4">
-                    <div class="card product-card">
-                        <img src="https://via.placeholder.com/200?text=Product+1" class="card-img-top" alt="Product 1">
-                        <div class="card-body">
-                            <h6 class="card-title">Product Name 1</h6>
-                            <p class="card-text text-muted">$49.99</p>
-                            <button class="btn btn-warning w-100">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 mb-4">
-                    <div class="card product-card">
-                        <img src="https://via.placeholder.com/200?text=Product+1" class="card-img-top" alt="Product 1">
-                        <div class="card-body">
-                            <h6 class="card-title">Product Name 1</h6>
-                            <p class="card-text text-muted">$49.99</p>
-                            <button class="btn btn-warning w-100">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-
+                {% endfor %}
             </div>
         </div>
     </div>

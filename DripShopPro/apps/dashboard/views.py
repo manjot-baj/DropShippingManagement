@@ -6,6 +6,8 @@ from catalog.models import Category
 from user_profile.middlewares import RoleRequiredMixin
 from django.views import View
 from django.contrib import messages
+from store.models import StoreProduct
+from catalog.models import ProductImage
 
 logger = logging.getLogger("error_log")
 
@@ -53,10 +55,32 @@ class CustomerDashboardView(RoleRequiredMixin, View):
         try:
             user = UserProfile.objects.get(user=request.user)
             categorys = Category.objects.all()
+            store_products = StoreProduct.objects.filter(is_deleted=False)
+            products = []
+            for store_product in store_products:
+                cost_price = float(store_product.inventory.price)
+                margin_price = float(cost_price * (int(store_product.margin) / 100))
+                selling_price = cost_price + margin_price
+                data = {
+                    "name": store_product.inventory.product.name,
+                    "category": store_product.inventory.product.category.name,
+                    "description": store_product.inventory.product.description,
+                    "price": selling_price,
+                    "stock": store_product.inventory.stock,
+                    "main_img": ProductImage.objects.filter(
+                        product=store_product.inventory.product,
+                        is_deleted=False,
+                    ).latest("pk"),
+                    "imgs": ProductImage.objects.filter(
+                        product=store_product.inventory.product,
+                        is_deleted=False,
+                    ),
+                }
+                products.append(data)
             return render(
                 request,
                 f"customer/dashboard.html",
-                {"user": user, "categorys": categorys},
+                {"user": user, "categorys": categorys, "products": products},
             )
         except Exception:
             logger.error(traceback.format_exc())

@@ -270,6 +270,11 @@ class StoreProductDetailView(RoleRequiredMixin, StoreRequiredMixin, View):
                 "inventory_id": inventory.pk,
                 "store": store,
                 "store_product_id": store_product.pk,
+                "vendor": f"{inventory.company.owner.first_name} {inventory.company.owner.last_name }",
+                "vendor_company": inventory.company.name,
+                "email": inventory.company.email,
+                "phone": inventory.company.phone,
+                "state": inventory.company.state,
             }
 
             margin = store_product.margin

@@ -5,9 +5,6 @@ from user_profile.models import UserProfile
 
 class Category(BaseModel):
     name = models.CharField(max_length=255)
-    vendor = models.ForeignKey(
-        UserProfile, on_delete=models.CASCADE, blank=True, null=True
-    )
 
     def __str__(self):
         return self.name

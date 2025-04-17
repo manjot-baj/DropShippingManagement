@@ -18,6 +18,8 @@ from store.Views.vendor_catalog_views import (
 
 urlpatterns = [
     # Store Product
+    # List
+    path("store_product/", StoreProductListView.as_view(), name="store_product_list"),
     # Add or Update
     path(
         "store/<int:store_id>/inventory/<int:inventory_id>/add_update_product/",
@@ -36,15 +38,13 @@ urlpatterns = [
         StoreProductDeleteView.as_view(),
         name="remove_store_product",
     ),
-    
     # Store URLs
     path("store/", StoreView.as_view(), name="store_view"),
-    path("store_product/", StoreProductListView.as_view(), name="store_product_list"),
-    path("store_vendor/", StoreVendorListView.as_view(), name="store_vendor_list"),
     path("store/create/", StoreCreateView.as_view(), name="store_create"),
     path("store/<int:pk>/update/", StoreUpdateView.as_view(), name="store_update"),
     path("store/<int:pk>/delete/", StoreDeleteView.as_view(), name="store_delete"),
-    
+    # Store Vendors
+    path("store_vendor/", StoreVendorListView.as_view(), name="store_vendor_list"),
     # Catalog
     path("vendor_list/", VendorListView.as_view(), name="vendor_list"),
     path(

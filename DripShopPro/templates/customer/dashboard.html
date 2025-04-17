@@ -44,19 +44,35 @@
         <!-- Sidebar Filters -->
         <div class="col-lg-3">
             <div class="filter-sidebar">
-                <h5>Filters</h5>
+                <h3>Filters</h3>
                 <hr>
-                <h6>Category</h6>
+                <h4>Category</h4>
+                {% for category in categorys %}
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="electronics">
-                    <label class="form-check-label" for="electronics">Electronics</label>
+                    <input class="form-check-input category-checkbox" type="checkbox" id="{{category.name}}">
+                    <label class="form-check-label" for="{{category.name}}">{{category.name}}</label>
                 </div>
+                {% endfor %}
+                <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="clearCategoryFilters()">Clear
+                    Categories</button>
+
+                <hr>
+
+                <!-- Price Filters -->
+                <h4>Price</h4>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="fashion">
-                    <label class="form-check-label" for="fashion">Fashion</label>
+                    <input class="form-check-input" type="radio" name="price_order" id="low_to_high"
+                        value="low_to_high">
+                    <label class="form-check-label" for="low_to_high">Low to High</label>
                 </div>
-                <h6 class="mt-3">Price Range</h6>
-                <input type="range" class="form-range" min="0" max="1000" step="10">
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="price_order" id="high_to_low"
+                        value="high_to_low">
+                    <label class="form-check-label" for="high_to_low">High to Low</label>
+                </div>
+                <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="clearPriceFilters()">Clear
+                    Price</button>
 
             </div>
         </div>

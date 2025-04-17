@@ -2,6 +2,7 @@ import logging
 import traceback
 from django.shortcuts import render
 from user_profile.models import UserProfile
+from catalog.models import Category
 from user_profile.middlewares import RoleRequiredMixin
 from django.views import View
 from django.contrib import messages
@@ -51,7 +52,12 @@ class CustomerDashboardView(RoleRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         try:
             user = UserProfile.objects.get(user=request.user)
-            return render(request, f"customer/dashboard.html", {"user": user})
+            categorys = Category.objects.all()
+            return render(
+                request,
+                f"customer/dashboard.html",
+                {"user": user, "categorys": categorys},
+            )
         except Exception:
             logger.error(traceback.format_exc())
             messages.error(request, "Error fetching companies.")

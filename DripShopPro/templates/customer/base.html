@@ -112,6 +112,16 @@
             backToTop.classList.toggle('d-none', window.scrollY <= 300);
         });
     </script>
+
+    <script>
+        function clearCategoryFilters() {
+            document.querySelectorAll('.category-checkbox').forEach(cb => cb.checked = false);
+        }
+
+        function clearPriceFilters() {
+            document.querySelectorAll('input[name="price_order"]').forEach(rb => rb.checked = false);
+        }
+    </script>
 </body>
 
 </html>

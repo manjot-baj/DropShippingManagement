@@ -27,10 +27,10 @@
                         <form id="bulk-action-form" method="post" action="{% url 'inventory_bulk_catalog_update' %}">
                             {% csrf_token %}
                             <div class="mb-3">
-                                <button type="submit" name="action" value="add" class="btn btn-primary btn-sm">
+                                <button type="submit" name="action" value="add" class="btn btn-primary btn-sm" style="background-color: #68baae;">
                                     Add to Catalog
                                 </button>
-                                <button type="submit" name="action" value="remove" class="btn btn-secondary btn-sm">
+                                <button type="submit" name="action" value="remove" class="btn btn-secondary btn-sm" style="background-color: #68baae;">
                                     Remove from Catalog
                                 </button>
                                 <button type="submit" name="action" value="delete"

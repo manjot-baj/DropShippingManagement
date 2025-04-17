@@ -4,13 +4,14 @@ from django.views import View
 from django.shortcuts import render
 from django.contrib import messages
 from user_profile.middlewares import RoleRequiredMixin
+from catalog.Utils.middlewares import CompanyRequiredMixin
 from store.models import Store, StoreProduct
 from catalog.models import Company
 
 logger = logging.getLogger("error_log")
 
 
-class MerchantListView(RoleRequiredMixin, View):
+class MerchantListView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def get(self, request, *args, **kwargs):

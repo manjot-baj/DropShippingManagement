@@ -25,6 +25,7 @@
                     <!-- /.card-header -->
                     <div class="card-body">
                         <div class="row">
+
                             {% for company in companys %}
                             <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
                                 <div class="card h-100">
@@ -75,6 +76,9 @@
                     </div>
                     <!-- /.card-body -->
                 </div>
+                {% if not companys %}
+                <div class="alert alert-info">No Company available. Add your Company</div>
+                {% endif %}
                 <!-- /.card -->
             </div>
             <!-- /.col -->

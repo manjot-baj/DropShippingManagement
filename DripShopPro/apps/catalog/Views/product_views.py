@@ -7,14 +7,15 @@ from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from user_profile.middlewares import RoleRequiredMixin
-from catalog.models import Product, ProductImage, Category
+from catalog.Utils.middlewares import CompanyRequiredMixin
+from catalog.models import Product, ProductImage
 from catalog.Forms.product_forms import ProductForm
 from user_profile.models import UserProfile
 
 logger = logging.getLogger("error_log")
 
 
-class ProductListView(RoleRequiredMixin, View):
+class ProductListView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def get(self, request, *args, **kwargs):
@@ -36,7 +37,7 @@ class ProductListView(RoleRequiredMixin, View):
             )
 
 
-class ProductCreateView(RoleRequiredMixin, View):
+class ProductCreateView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def validate_images(self, images):
@@ -92,7 +93,7 @@ class ProductCreateView(RoleRequiredMixin, View):
             )
 
 
-class ProductUpdateView(RoleRequiredMixin, View):
+class ProductUpdateView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def validate_images(self, images):
@@ -166,7 +167,7 @@ class ProductUpdateView(RoleRequiredMixin, View):
             )
 
 
-class ProductDeleteView(RoleRequiredMixin, View):
+class ProductDeleteView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def post(self, request, pk, *args, **kwargs):
@@ -188,7 +189,7 @@ class ProductDeleteView(RoleRequiredMixin, View):
             )
 
 
-class ProductImageDeleteView(RoleRequiredMixin, View):
+class ProductImageDeleteView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def post(self, request, image_id, *args, **kwargs):

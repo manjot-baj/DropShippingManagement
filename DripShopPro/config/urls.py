@@ -30,6 +30,7 @@ urlpatterns = [
     path("dashboard/", include("dashboard.urls")),
     path("vendor/", include("catalog.urls")),
     path("merchant/", include("store.urls")),
+    path("customer/", include("order.urls")),
 ]
 
 if settings.DEBUG:

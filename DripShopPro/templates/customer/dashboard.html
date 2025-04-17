@@ -5,7 +5,6 @@
 
 <!-- Hero Carousel -->
 <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-
     <div class="carousel-inner">
         <div class="carousel-item active">
             <img src="{% static 'media/banner1.jpg' %}" class="d-block w-100" alt="Banner 1">
@@ -35,7 +34,6 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
     </button>
-
 </div>
 
 <!-- Main Content -->
@@ -43,51 +41,59 @@
     <div class="row">
         <!-- Sidebar Filters -->
         <div class="col-lg-3">
-            <div class="filter-sidebar">
-                <h3>Filters</h3>
-                <hr>
-                <h4>Category</h4>
-                {% for category in categorys %}
-                <div class="form-check">
-                    <input class="form-check-input category-checkbox" type="checkbox" id="{{category.name}}">
-                    <label class="form-check-label" for="{{category.name}}">{{category.name}}</label>
+            <form method="get" id="filter-form">
+                <div class="filter-sidebar">
+                    <h3>Filters</h3>
+                    <hr>
+
+                    <!-- Category Filters -->
+                    <h4>Category</h4>
+                    {% for category in categorys %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="category" id="{{category.name}}"
+                            value="{{category.name}}" {% if selected_category and category.name == selected_category %}
+                            checked {% endif %}>
+
+                        <label class="form-check-label" for="{{ category.name }}">{{ category.name }}</label>
+                    </div>
+                    {% endfor %}
+                    <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="clearRadio('category')">Clear
+                        Categories</button>
+
+                    <hr>
+
+                    <!-- Name Filter -->
+                    <h4>Product Name</h4>
+                    <input type="text" name="name" class="form-control mb-2" placeholder="Search by name"
+                        value="{{ searched_name|default_if_none:'' }}">
+
+                    <hr>
+
+                    <!-- Price Range -->
+                    <h4>Price Range</h4>
+                    <input type="number" name="price_min" class="form-control mb-2" placeholder="Min Price"
+                        value="{{ price_min|default_if_none:'' }}">
+                    <input type="number" name="price_max" class="form-control mb-2" placeholder="Max Price"
+                        value="{{ price_max|default_if_none:'' }}">
+
+                    <button type="submit" class="btn mt-2" style="background-color: #68baae;">Apply Filters</button>
+                    <a href="{% url 'customer_dashboard' %}" class="btn btn-outline-secondary mt-2">Reset Filters</a>
                 </div>
-                {% endfor %}
-                <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="clearCategoryFilters()">Clear
-                    Categories</button>
-
-                <hr>
-
-                <!-- Price Filters -->
-                <h4>Price</h4>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="price_order" id="low_to_high"
-                        value="low_to_high">
-                    <label class="form-check-label" for="low_to_high">Low to High</label>
-                </div>
-
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="price_order" id="high_to_low"
-                        value="high_to_low">
-                    <label class="form-check-label" for="high_to_low">High to Low</label>
-                </div>
-                <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="clearPriceFilters()">Clear
-                    Price</button>
-
-            </div>
+            </form>
         </div>
+
         <!-- Product Grid -->
         <div class="col-lg-9">
-            <!-- Product Listing -->
-            <!-- <h5>Featured Products</h5> -->
             <div class="row">
                 {% for product in products %}
                 <div class="col-md-4 mb-4">
                     <div class="card product-card">
-                        <img src="{{product.main_img.image.url}}" class="card-img-top" alt="{{product.name}}">
+                        <a href="{% url 'customer_product_detail' product.product_id %}"><img src="{{ product.main_img.image.url }}" class="card-img-top"
+                                alt="{{ product.name }}"></a>
                         <div class="card-body">
-                            <h6 class="card-title">{{product.name}}</h6>
-                            <p class="card-text text-muted">₹{{product.price}}</p>
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <h6 class="card-title">{{ product.category }}</h6>
+                            <p class="--text-primary"><strong>₹{{ product.price }}</strong></p>
                             <button class="btn btn-warning w-100">Add to Cart</button>
                         </div>
                     </div>

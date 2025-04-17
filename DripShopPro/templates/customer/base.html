@@ -13,6 +13,38 @@
     <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
     <!-- Custom Styles -->
     <link href="{% static 'styles.css' %}" rel="stylesheet">
+
+    <style>
+        /* Maintain aspect ratio for image container */
+        .product-image-container {
+            position: relative;
+            padding-top: 100%;
+            /* 1:1 aspect ratio (adjust as needed) */
+            overflow: hidden;
+        }
+
+        /* Style for main product image */
+        #main-product-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* Maintain aspect ratio while fitting in container */
+        }
+
+        /* Thumbnail images */
+        .product-image-thumbs .thumbnail-img {
+            width: 100%;
+            height: 80px;
+            /* Fixed thumbnail height */
+            object-fit: cover;
+            /* Maintain aspect ratio for thumbnails */
+            cursor: pointer;
+        }
+    </style>
+
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -31,10 +63,10 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <!-- Search Bar -->
-                <form class="d-flex search-bar mx-5">
+                <!-- <form class="d-flex search-bar mx-5">
                     <input class="form-control me-1" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn" type="submit"><i class="fas fa-search"></i></button>
-                </form>
+                </form> -->
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -114,12 +146,47 @@
     </script>
 
     <script>
-        function clearCategoryFilters() {
-            document.querySelectorAll('.category-checkbox').forEach(cb => cb.checked = false);
+        function clearRadio(name) {
+            let radios = document.getElementsByName(name);
+            radios.forEach(radio => radio.checked = false);
         }
 
-        function clearPriceFilters() {
-            document.querySelectorAll('input[name="price_order"]').forEach(rb => rb.checked = false);
+        function clearForm() {
+            document.getElementById('filter-form').reset();
+        }
+    </script>
+
+    <script>
+        function goBackAndReload() {
+            // Use the Performance API to detect back navigation
+            sessionStorage.setItem("reloadOnBack", "true");
+            window.history.back();
+        }
+
+        // Check if reload is needed on page load
+        window.addEventListener("pageshow", function (event) {
+            if (sessionStorage.getItem("reloadOnBack")) {
+                sessionStorage.removeItem("reloadOnBack");
+                window.location.reload();
+            }
+        });
+    </script>
+    <script>
+        // JavaScript to handle image switching
+        function changeMainImage(thumb) {
+            // Get the clicked thumbnail image source
+            const newSrc = thumb.querySelector('img').src;
+
+            // Update main image
+            document.getElementById('main-product-image').src = newSrc;
+
+            // Remove active class from all thumbnails
+            document.querySelectorAll('.product-image-thumb').forEach(element => {
+                element.classList.remove('active');
+            });
+
+            // Add active class to clicked thumbnail
+            thumb.classList.add('active');
         }
     </script>
 </body>

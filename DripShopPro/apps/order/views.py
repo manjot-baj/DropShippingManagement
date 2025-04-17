@@ -1,3 +1,57 @@
-from django.shortcuts import render
+import logging
+import traceback
+from django.shortcuts import render, get_object_or_404
+from user_profile.middlewares import RoleRequiredMixin
+from django.views import View
+from django.contrib import messages
+from store.models import StoreProduct
+from catalog.models import ProductImage
 
-# Create your views here.
+logger = logging.getLogger("error_log")
+
+
+class CustomerProductDetailView(RoleRequiredMixin, View):
+    required_role = "Customer"
+
+    def get(self, request, product_id, *args, **kwargs):
+        try:
+            store_product = get_object_or_404(
+                StoreProduct, pk=product_id, is_deleted=False
+            )
+
+            cost_price = float(store_product.inventory.price)
+            margin_price = float(cost_price * (int(store_product.margin) / 100))
+            selling_price = cost_price + margin_price
+
+            data = {
+                "name": store_product.inventory.product.name,
+                "category": store_product.inventory.product.category.name,
+                "description": store_product.inventory.product.description,
+                "price": selling_price,
+                "stock": store_product.inventory.stock,
+                "main_img": ProductImage.objects.filter(
+                    product=store_product.inventory.product,
+                    is_deleted=False,
+                ).latest("pk"),
+                "imgs": ProductImage.objects.filter(
+                    product=store_product.inventory.product,
+                    is_deleted=False,
+                ),
+                "product_id": store_product.pk,
+            }
+
+            return render(
+                request,
+                "customer/product_detail.html",
+                data,
+            )
+
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching products.")
+            return render(
+                request,
+                "customer/error.html",
+                {"message": "Error fetching products."},
+                status=500,
+            )

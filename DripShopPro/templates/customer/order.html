@@ -1,0 +1,46 @@
+{% extends 'customer/base.html' %}
+{% load static %}
+{% block title %}Order{% endblock %}
+{% block content %}
+
+<div class="container my-5">
+    <h2 class="mb-4">Your Orders</h2>
+
+    {% if products %}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <div class="row justify-content-between mb-3">
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>Order Placed:</strong> April 10, 2025</p>
+                    <p class="mb-1"><strong>Total:</strong> ₹{{ total }}</p>
+                    <p class="mb-1"><strong>Order #:</strong> 123-4567890-1234567</p>
+                </div>
+                <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                    <a href="order-summary.html" class="btn btn-primary me-2">View Order Details</a>
+                    <a href="#" class="btn btn-outline-secondary">Track Package</a>
+                </div>
+            </div>
+            <hr>
+
+            {% for product in products %}
+            <div class="row align-items-center mb-4">
+                <div class="col-3 col-md-2">
+                    <img src="{{ product.main_img.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+                </div>
+                <div class="col-9 col-md-10">
+                    <h6 class="mb-1">{{ product.name }}</h6>
+                    <p class="mb-1 text-muted">Qty: 1 | Price: ₹{{ product.price }} each</p>
+                    <p class="mb-0 text-success">Delivered on April 12, 2025</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        You have no orders yet.
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -467,6 +467,29 @@
         });
     </script>
 
+    <script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
+    <script>
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: [2500, 3400, 4100, 4600],
+                    backgroundColor: 'rgba(60,141,188,0.2)',
+                    borderColor: 'rgba(60,141,188,1)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+
 </body>
 
 </html>

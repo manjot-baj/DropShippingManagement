@@ -22,6 +22,7 @@ from catalog.Views.inventory_views import (
 )
 
 from catalog.Views.merchant_views import MerchantListView
+from catalog.Views.invoice_views import VendorInvoiceView
 
 urlpatterns = [
     # Product URLs
@@ -71,5 +72,10 @@ urlpatterns = [
         "inventory/bulk-catalog-update/",
         InventoryBulkCatalogUpdateView.as_view(),
         name="inventory_bulk_catalog_update",
+    ),
+    path(
+        "invoice/",
+        VendorInvoiceView.as_view(),
+        name="invoice",
     ),
 ]

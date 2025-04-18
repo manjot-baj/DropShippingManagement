@@ -78,8 +78,8 @@
                             <span class="dropdown-item dropdown-header">
                                 Hi, {{ user.username }}
                             </span>
-                            <li><a class="dropdown-item" href="#">Your Wishlist</a></li>
-                            <li><a class="dropdown-item" href="#">Your Orders</a></li>
+                            <li><a class="dropdown-item" href="{% url 'wishlist' %}">Your Wishlist</a></li>
+                            <li><a class="dropdown-item" href="{% url 'order' %}">Your Orders</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -91,7 +91,7 @@
                         <a class="nav-link" href="#"><i class="fas fa-box"></i> Orders</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link cart-icon" href="#">
+                        <a class="nav-link cart-icon" href="{% url 'cart' %}">
                             <i class="fas fa-shopping-cart"></i>
                             <span class="badge rounded-pill">3</span>
                         </a>

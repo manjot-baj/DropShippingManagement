@@ -7,6 +7,7 @@ from django.views import View
 from django.contrib import messages
 from store.models import StoreProduct
 from catalog.models import Category, ProductImage
+from order.models import Cart
 
 logger = logging.getLogger("error_log")
 
@@ -106,6 +107,9 @@ class CustomerDashboardView(RoleRequiredMixin, View):
                 }
                 products.append(data)
 
+            cart_item_count = Cart.objects.filter(
+                is_deleted=False, owner__user=request.user
+            ).count()
             return render(
                 request,
                 "customer/dashboard.html",
@@ -117,6 +121,7 @@ class CustomerDashboardView(RoleRequiredMixin, View):
                     "searched_name": name_filter,
                     "price_min": price_min,
                     "price_max": price_max,
+                    "cart_item_count": cart_item_count,
                 },
             )
 

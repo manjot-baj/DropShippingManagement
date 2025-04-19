@@ -88,13 +88,15 @@
                 {% for product in products %}
                 <div class="col-md-4 mb-4">
                     <div class="card product-card">
-                        <a href="{% url 'customer_product_detail' product.product_id %}"><img src="{{ product.main_img.image.url }}" class="card-img-top"
+                        <a href="{% url 'customer_product_detail' product.product_id %}"><img
+                                src="{{ product.main_img.image.url }}" class="card-img-top"
                                 alt="{{ product.name }}"></a>
                         <div class="card-body">
                             <h5 class="card-title">{{ product.name }}</h5>
                             <h6 class="card-title">{{ product.category }}</h6>
                             <p class="--text-primary"><strong>₹{{ product.price }}</strong></p>
-                            <button class="btn btn-warning w-100">Add to Cart</button>
+                            <a href="{% url 'add_to_cart' product.product_id %}"><button class="btn btn-warning w-100">Add to
+                                    Cart</button></a>
                         </div>
                     </div>
                 </div>

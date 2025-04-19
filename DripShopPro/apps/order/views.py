@@ -6,6 +6,7 @@ from django.views import View
 from django.contrib import messages
 from store.models import StoreProduct
 from catalog.models import ProductImage
+from order.models import Cart, WishList
 
 logger = logging.getLogger("error_log")
 
@@ -18,6 +19,12 @@ class CustomerProductDetailView(RoleRequiredMixin, View):
             store_product = get_object_or_404(
                 StoreProduct, pk=product_id, is_deleted=False
             )
+            in_cart = Cart.objects.filter(
+                product=store_product, owner__user=request.user
+            ).exists()
+            in_wishlist = WishList.objects.filter(
+                product=store_product, owner__user=request.user
+            ).exists()
 
             cost_price = float(store_product.inventory.price)
             margin_price = float(cost_price * (int(store_product.margin) / 100))
@@ -38,6 +45,8 @@ class CustomerProductDetailView(RoleRequiredMixin, View):
                     is_deleted=False,
                 ),
                 "product_id": store_product.pk,
+                "in_cart": in_cart,
+                "in_wishlist": in_wishlist,
             }
 
             return render(
@@ -160,7 +169,7 @@ class CustomerCartView(RoleRequiredMixin, View):
                 {"message": "Error fetching products."},
                 status=500,
             )
-        
+
 
 class CustomerOrderView(RoleRequiredMixin, View):
     required_role = "Customer"

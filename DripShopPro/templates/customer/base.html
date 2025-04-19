@@ -93,7 +93,7 @@
                     <li class="nav-item">
                         <a class="nav-link cart-icon" href="{% url 'cart' %}">
                             <i class="fas fa-shopping-cart"></i>
-                            <span class="badge rounded-pill">3</span>
+                            <span class="badge rounded-pill">{% if cart_item_count %}{{cart_item_count}}{% endif %}</span>
                         </a>
                     </li>
                     <!-- Theme Toggle -->

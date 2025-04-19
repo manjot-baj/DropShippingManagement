@@ -54,13 +54,20 @@
                         </div>
 
                         <div class="d-flex gap-3 flex-wrap">
-                            <button type="button" class="btn btn-primary btn-lg">
-                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
-                            </button>
-
-                            <button type="button" class="btn btn-outline-danger btn-lg">
-                                <i class="fas fa-heart me-2"></i>Add to Wishlist
-                            </button>
+                            {% if not in_cart %}
+                            <a href="{% url 'add_to_cart' product_id %}">
+                                <button type="button" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </a>
+                            {% endif %}
+                            {% if not in_wishlist %}
+                            <a href="{% url 'add_to_wishlist' product_id %}">
+                                <button type="button" class="btn btn-outline-danger btn-lg">
+                                    <i class="fas fa-heart me-2"></i>Add to Wishlist
+                                </button>
+                            </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

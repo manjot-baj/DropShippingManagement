@@ -10,6 +10,7 @@ from order.views import (
     AddProductQtyToCartView,
     OrderCreateView,
     OrderListView,
+    OrderSummaryView,
 )
 
 urlpatterns = [
@@ -48,6 +49,7 @@ urlpatterns = [
         AddProductQtyToCartView.as_view(),
         name="add_qty_to_cart_product",
     ),
+    # Order Placement
     path(
         "checkout/",
         OrderCreateView.as_view(),
@@ -62,5 +64,10 @@ urlpatterns = [
         "order/",
         OrderListView.as_view(),
         name="order",
+    ),
+    path(
+        "order_detail/<int:order_id>/",
+        OrderSummaryView.as_view(),
+        name="order_detail",
     ),
 ]

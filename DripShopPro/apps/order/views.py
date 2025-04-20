@@ -470,7 +470,8 @@ class OrderListView(RoleRequiredMixin, View):
                 order_data.append(
                     {
                         "order_date": str(order.created_at.date()),
-                        "order_id": order.order_id,
+                        "order_id": order.pk,
+                        "order_no": order.order_id,
                         "grand_total": float(order.grand_total),
                         "products": products,
                     }
@@ -478,6 +479,82 @@ class OrderListView(RoleRequiredMixin, View):
             return render(
                 request,
                 "customer/order.html",
+                {
+                    "order_data": order_data,
+                },
+            )
+
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error fetching products.")
+            return render(
+                request,
+                "customer/error.html",
+                {"message": "Error fetching products."},
+                status=500,
+            )
+
+
+class OrderSummaryView(RoleRequiredMixin, View):
+    required_role = "Customer"
+
+    def get(self, request, order_id, *args, **kwargs):
+        try:
+            order = Order.objects.get(pk=order_id)
+            order_items = OrderItem.objects.filter(parent=order)
+            products = []
+            for order_item in order_items:
+                total_amount = float(order_item.total_amount)
+                products.append(
+                    {
+                        "name": order_item.product.inventory.product.name,
+                        "quantity": int(order_item.quantity),
+                        "total_amount": total_amount,
+                        "price": order_item.store_price,
+                        "main_img": ProductImage.objects.filter(
+                            product=order_item.product.inventory.product,
+                            is_deleted=False,
+                        ).latest("pk"),
+                        "status": order_item.status,
+                        "order_item_id": order_item.pk,
+                        "confirmed_date": (
+                            str(order_item.confirmed_date.date())
+                            if order_item.confirmed_date
+                            else None
+                        ),
+                        "shipping_date": (
+                            str(order_item.shipping_date.date())
+                            if order_item.shipping_date
+                            else None
+                        ),
+                        "arrival_date": (
+                            str(order_item.arrival_date.date())
+                            if order_item.arrival_date
+                            else None
+                        ),
+                        "delivery_date": (
+                            str(order_item.delivery_date.date())
+                            if order_item.delivery_date
+                            else None
+                        ),
+                    }
+                )
+                order_data = {
+                    "order_date": str(order.created_at.date()),
+                    "order_id": order.pk,
+                    "order_no": order.order_id,
+                    "grand_total": float(order.grand_total),
+                    "products": products,
+                    "address": order.address,
+                    "city": order.city,
+                    "state": order.state,
+                    "postal_code": order.postal_code,
+                    "country": order.country,
+                    "item_count": order_items.count(),
+                }
+            return render(
+                request,
+                "customer/order_summary.html",
                 {
                     "order_data": order_data,
                 },

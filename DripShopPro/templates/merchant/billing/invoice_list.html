@@ -1,0 +1,74 @@
+{% extends 'merchant/base.html' %}
+{% block title %}Invoices{% endblock %}
+{% block header %}
+<div class="row mb-2">
+    <div class="col-sm-6">
+        <h1>Invoices</h1>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="example1"
+                                class="table table-hover table-bordered table-striped align-middle text-nowrap"
+                                style="min-width: 1000px;">
+                                <thead class="text-white" style="background-color: #68baae;">
+                                    <tr>
+                                        <th>Invoice No</th>
+                                        <th>Invoice Date</th>
+                                        <th>Vendor</th>
+                                        <th>Vendor Company</th>
+                                        <th>Vendor Payment</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for each in invoice_list %}
+                                    <tr>
+                                        <td>{{ each.invoice_no }}</td>
+                                        <td>{{ each.invoice_date }}</td>
+                                        <td>{{ each.vendor_name }}</td>
+                                        <td>{{ each.vendor_company_name }}</td>
+                                        <td>₹ {{ each.vendor_payment_amount }}</td>
+                                        <td>
+                                            <span
+                                                style="background-color: {{ each.status_color }}; color: white; padding: 4px 8px; border-radius: 5px; font-weight: bold;">
+                                                {{ each.status }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <a href="{% url 'merchant_invoice_detail' each.invoice_id %}"
+                                                class="btn btn-warning btn-sm">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+
+
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

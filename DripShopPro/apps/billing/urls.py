@@ -9,6 +9,11 @@ from billing.views import (
     ShipProductView,
     MarkProductDeliveredView,
     RaiseInvoiceView,
+    MerchantInvoiceDetailView,
+    MerchantInvoiceListView,
+    InvoicePaymentView,
+    VendorInvoiceDetailView,
+    VendorInvoiceListView,
 )
 
 urlpatterns = [
@@ -26,6 +31,21 @@ urlpatterns = [
         "merchant_po_detail/<int:po_id>/",
         MerchantPODetailView.as_view(),
         name="merchant_po_detail",
+    ),
+    path(
+        "merchant_invoice_list/",
+        MerchantInvoiceListView.as_view(),
+        name="merchant_invoice_list",
+    ),
+    path(
+        "make_invoice_payment/<int:invoice_id>/",
+        InvoicePaymentView.as_view(),
+        name="make_invoice_payment",
+    ),
+    path(
+        "merchant_invoice_detail/<int:invoice_id>/",
+        MerchantInvoiceDetailView.as_view(),
+        name="merchant_invoice_detail",
     ),
     path(
         "vendor_purchase_order_list/",
@@ -56,5 +76,15 @@ urlpatterns = [
         "raise_invoice/<int:po_id>/",
         RaiseInvoiceView.as_view(),
         name="raise_invoice",
+    ),
+    path(
+        "vendor_invoice_list/",
+        VendorInvoiceListView.as_view(),
+        name="vendor_invoice_list",
+    ),
+    path(
+        "vendor_invoice_detail/<int:invoice_id>/",
+        VendorInvoiceDetailView.as_view(),
+        name="vendor_invoice_detail",
     ),
 ]

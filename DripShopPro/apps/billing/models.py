@@ -43,6 +43,7 @@ class PurchaseOrderInvoice(BaseModel):
     )
     is_payment_done = models.BooleanField(default=False)
     is_invoiced = models.BooleanField(default=False)
+    invoice_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return str(self.pk)

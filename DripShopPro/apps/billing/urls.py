@@ -1,5 +1,9 @@
 from django.urls import path
-from billing.views import CreatePurchaseOrderView, MerchantPurchaseOrderListView
+from billing.views import (
+    CreatePurchaseOrderView,
+    MerchantPurchaseOrderListView,
+    MerchantPODetailView,
+)
 
 urlpatterns = [
     path(
@@ -11,5 +15,10 @@ urlpatterns = [
         "merchant_purchase_order_list/",
         MerchantPurchaseOrderListView.as_view(),
         name="merchant_purchase_order_list",
+    ),
+    path(
+        "merchant_po_detail/<int:po_id>/",
+        MerchantPODetailView.as_view(),
+        name="merchant_po_detail",
     ),
 ]

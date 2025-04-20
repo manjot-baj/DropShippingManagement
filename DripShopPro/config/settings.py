@@ -52,6 +52,7 @@ MY_APPS = [
     "catalog",
     "store",
     "order",
+    "billing",
 ]
 
 THIRD_PARTY_APPS = []

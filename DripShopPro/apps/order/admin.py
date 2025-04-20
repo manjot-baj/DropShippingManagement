@@ -61,6 +61,8 @@ class OrderItemAdmin(BaseAdmin):
         "shipping_date",
         "arrival_date",
         "delivery_date",
+        "merchant",
+        "vendor",
     )
     search_fields = BaseAdmin.search_fields + (
         "parent__order_id",

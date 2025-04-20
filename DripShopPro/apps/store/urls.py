@@ -15,6 +15,10 @@ from store.Views.vendor_catalog_views import (
     VendorListView,
     VendorCatalogProductDetailView,
 )
+from store.Views.customer_order_views import (
+    CustomerOrderListView,
+    CustomerOrderDetailView,
+)
 
 urlpatterns = [
     # Store URLs
@@ -56,5 +60,12 @@ urlpatterns = [
         "vendor_catalog/<int:inventory_id>/product_detail",
         VendorCatalogProductDetailView.as_view(),
         name="vendor_catalog_product_detail_view",
+    ),
+    # Customer Orders
+    path("customer_orders/", CustomerOrderListView.as_view(), name="customer_orders"),
+    path(
+        "customer_order_detail/<int:order_item_id>",
+        CustomerOrderDetailView.as_view(),
+        name="customer_order_detail",
     ),
 ]

@@ -5,6 +5,7 @@
 <div class="container my-4">
     <h2>Your Wishlist</h2>
     <div class="row">
+        {% if products %}
         {% for product in products %}
         <div class="col-md-4 mb-4">
             <div class="card product-card">
@@ -26,6 +27,12 @@
             </div>
         </div>
         {% endfor %}
+        {% else %}
+        <div class="alert alert-info" role="alert">
+            <p>Your wishlist is currently empty.</p>
+        </div>
+
+        {% endif %}
     </div>
 </div>
 {% endblock %}

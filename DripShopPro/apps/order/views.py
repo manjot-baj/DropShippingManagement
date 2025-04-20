@@ -1,5 +1,3 @@
-import random
-import string
 import logging
 import traceback
 from django.db import transaction
@@ -12,6 +10,7 @@ from catalog.models import ProductImage
 from order.models import Cart, WishList, Order, OrderItem
 from user_profile.models import UserProfile
 from order.forms import OrderForm
+from common.functions import generate_order_id
 
 logger = logging.getLogger("error_log")
 
@@ -303,11 +302,6 @@ class DeleteProductFromWishlistView(RoleRequiredMixin, View):
             )
 
 
-def generate_order_id(length=12):
-    chars = string.ascii_uppercase + string.digits
-    return "".join(random.choices(chars, k=length))
-
-
 class OrderCreateView(RoleRequiredMixin, View):
     required_role = "Customer"
 
@@ -382,6 +376,17 @@ class OrderCreateView(RoleRequiredMixin, View):
                         total = selling_price * int(cart_product.quantity)
                         grand_total = grand_total + total
 
+                        vendor = cart_product.product.inventory.company.owner
+                        merchant = cart_product.product.store.owner
+
+                        tracking_id = None
+                        while True:
+                            tracking_id = generate_order_id()
+                            if not OrderItem.objects.filter(
+                                tracking_id=tracking_id
+                            ).exists():
+                                break
+
                         if not OrderItem.objects.filter(
                             parent=order,
                             product=cart_product.product,
@@ -391,6 +396,9 @@ class OrderCreateView(RoleRequiredMixin, View):
                             merchant_margin=int(cart_product.product.margin),
                             quantity=cart_product.quantity,
                             total_amount=total,
+                            tracking_id=tracking_id,
+                            merchant=merchant,
+                            vendor=vendor,
                         ).exists():
                             order_item = OrderItem(
                                 parent=order,
@@ -401,6 +409,9 @@ class OrderCreateView(RoleRequiredMixin, View):
                                 merchant_margin=int(cart_product.product.margin),
                                 quantity=cart_product.quantity,
                                 total_amount=total,
+                                tracking_id=tracking_id,
+                                merchant=merchant,
+                                vendor=vendor,
                             )
                             order_item.save()
                             cart_product.delete()

@@ -5,6 +5,10 @@ from billing.views import (
     MerchantPODetailView,
     VendorPODetailView,
     VendorPurchaseOrderListView,
+    ApprovePOView,
+    ShipProductView,
+    MarkProductDeliveredView,
+    RaiseInvoiceView,
 )
 
 urlpatterns = [
@@ -32,5 +36,25 @@ urlpatterns = [
         "vendor_po_detail/<int:po_id>/",
         VendorPODetailView.as_view(),
         name="vendor_po_detail",
+    ),
+    path(
+        "approve_purchase_order/<int:po_id>/",
+        ApprovePOView.as_view(),
+        name="approve_purchase_order",
+    ),
+    path(
+        "update_arrival_date/<int:po_id>/",
+        ShipProductView.as_view(),
+        name="update_arrival_date",
+    ),
+    path(
+        "mark_delivered/<int:po_id>/",
+        MarkProductDeliveredView.as_view(),
+        name="mark_delivered",
+    ),
+    path(
+        "raise_invoice/<int:po_id>/",
+        RaiseInvoiceView.as_view(),
+        name="raise_invoice",
     ),
 ]

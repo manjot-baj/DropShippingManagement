@@ -1,5 +1,6 @@
 import logging
 import traceback
+import datetime
 from django.shortcuts import render, redirect
 from user_profile.middlewares import RoleRequiredMixin
 from store.Utils.middlewares import StoreRequiredMixin
@@ -267,6 +268,7 @@ class VendorPurchaseOrderListView(RoleRequiredMixin, CompanyRequiredMixin, View)
                         "status_color": PO_STATUS_COLORS[each.status],
                         "order_status": order_item.status,
                         "order_status_color": ORDER_STATUS_COLORS[order_item.status],
+                        "is_invoiced": "Yes" if each.is_invoiced else "No",
                     }
                 )
 
@@ -283,7 +285,7 @@ class VendorPurchaseOrderListView(RoleRequiredMixin, CompanyRequiredMixin, View)
             messages.error(request, "Error while listing PO.")
             return render(
                 request,
-                "merchant/error.html",
+                "vendor/error.html",
                 {"message": "Error while listing PO."},
                 status=500,
             )
@@ -375,6 +377,7 @@ class VendorPODetailView(RoleRequiredMixin, CompanyRequiredMixin, View):
                 "vendor_email": vendor_email,
                 "po_status": po.status,
                 "po_status_color": PO_STATUS_COLORS[po.status],
+                "po_id": po.pk,
                 # "confirmed_date": (
                 #     str(order_item.confirmed_date.date())
                 #     if order_item.confirmed_date
@@ -409,7 +412,109 @@ class VendorPODetailView(RoleRequiredMixin, CompanyRequiredMixin, View):
             messages.error(request, "Error fetching Po details.")
             return render(
                 request,
-                "merchant/error.html",
+                "vendor/error.html",
                 {"message": "Error fetching Po details."},
+                status=500,
+            )
+
+
+class ApprovePOView(RoleRequiredMixin, CompanyRequiredMixin, View):
+    required_role = "Vendor"
+
+    def get(self, request, po_id, *args, **kwargs):
+        try:
+            po = PurchaseOrderInvoice.objects.get(pk=po_id)
+            po.status = "Approved"
+            po.save()
+            po.order_item.status = "Confirmed"
+            po.order_item.save()
+            po.order_item.confirmed_date = po.order_item.updated_at
+            po.order_item.save()
+            return redirect("vendor_purchase_order_list")
+
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error while updating PO.")
+            return render(
+                request,
+                "vendor/error.html",
+                {"message": "Error while updating PO."},
+                status=500,
+            )
+
+
+class ShipProductView(RoleRequiredMixin, CompanyRequiredMixin, View):
+    required_role = "Vendor"
+
+    def post(self, request, po_id, *args, **kwargs):
+        try:
+            po = PurchaseOrderInvoice.objects.get(pk=po_id)
+            arrival_date_str = request.POST.get("arrival_date")
+            arrival_date = datetime.datetime.strptime(
+                arrival_date_str, "%Y-%m-%d"
+            ).date()
+            po.status = "In-Progress"
+            po.save()
+            po.order_item.status = "Shipped"
+            po.order_item.save()
+            po.order_item.shipping_date = po.order_item.updated_at
+            po.order_item.arrival_date = arrival_date
+            po.order_item.save()
+            return redirect("vendor_purchase_order_list")
+
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error while updating PO.")
+            return render(
+                request,
+                "vendor/error.html",
+                {"message": "Error while updating PO."},
+                status=500,
+            )
+
+
+class MarkProductDeliveredView(RoleRequiredMixin, CompanyRequiredMixin, View):
+    required_role = "Vendor"
+
+    def get(self, request, po_id, *args, **kwargs):
+        try:
+            po = PurchaseOrderInvoice.objects.get(pk=po_id)
+            po.status = "Fulfilled"
+            po.save()
+            po.order_item.status = "Delivered"
+            po.order_item.save()
+            po.order_item.delivery_date = po.order_item.updated_at
+            po.order_item.save()
+            return redirect("vendor_purchase_order_list")
+
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error while updating PO.")
+            return render(
+                request,
+                "vendor/error.html",
+                {"message": "Error while updating PO."},
+                status=500,
+            )
+
+
+class RaiseInvoiceView(RoleRequiredMixin, CompanyRequiredMixin, View):
+    required_role = "Vendor"
+
+    def get(self, request, po_id, *args, **kwargs):
+        try:
+            po = PurchaseOrderInvoice.objects.get(pk=po_id)
+            po.status = "Payment_Pending"
+            po.is_invoiced = True
+            po.save()
+            return redirect("vendor_purchase_order_list")
+
+        except Exception:
+            logger.error(traceback.format_exc())
+            messages.error(request, "Error while updating PO.")
+            return render(
+                request,
+                "vendor/error.html",
+                {"message": "Error while updating PO."},
                 status=500,
             )

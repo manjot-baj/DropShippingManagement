@@ -129,6 +129,59 @@
     <!-- /.row -->
 
     <!-- this row will not appear when printing -->
+    <div class="row no-print">
+        <div class="col-12">
+            <!-- <a href="#" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a> -->
+            <!-- <button type="button" class="btn btn-success float-right"><i class="far fa-credit-card"></i> Submit
+                Payment
+            </button> -->
+
+            {% if data.status == "Placed" %}
+            <a href="{% url 'approve_purchase_order' data.po_id  %}">
+                <button type="button" class="btn btn-primary float-right"
+                    style="margin-right: 5px; background-color: {{ data.po_status_color }}; color: white; padding: 4px 8px; border-radius: 5px; font-weight: bold;">
+                    Approve PO
+                </button>
+            </a>
+            {% endif %}
+
+            {% if data.status == "Confirmed" %}
+            <form method="POST" action="{% url 'update_arrival_date' data.po_id %}" class="mt-4">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <label for="arrival_date" class="col-sm-3 col-form-label"><strong>Estimated Delivery
+                            Date:</strong></label>
+                    <div class="col-sm-6">
+                        <input type="date" class="form-control" id="arrival_date" name="arrival_date" required>
+                    </div>
+                    <div class="col-sm-3">
+                        <button type="submit" class="btn btn-success">Submit</button>
+                    </div>
+                </div>
+            </form>
+            {% endif %}
+
+            {% if data.status == "Shipped" %}
+            <a href="{% url 'mark_delivered' data.po_id  %}">
+                <button type="button" class="btn btn-primary float-right"
+                    style="margin-right: 5px; background-color: {{ data.po_status_color }}; color: white; padding: 4px 8px; border-radius: 5px; font-weight: bold;">
+                    Mark Delivered
+                </button>
+            </a>
+            {% endif %}
+
+            {% if data.po_status == "Fulfilled" %}
+            <a href="{% url 'raise_invoice' data.po_id  %}">
+                <button type="button" class="btn btn-primary float-right"
+                    style="margin-right: 5px; background-color: {{ data.po_status_color }}; color: white; padding: 4px 8px; border-radius: 5px; font-weight: bold;">
+                    Raise Invoice
+                </button>
+            </a>
+            {% endif %}
+
+        </div>
+    </div>
+
 </div>
 
 {% endblock %}

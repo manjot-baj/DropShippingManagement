@@ -17,7 +17,8 @@
                     <p class="mb-1"><strong>Order #:</strong> {{order.order_no}}</p>
                 </div>
                 <div class="col-md-6 text-md-end mt-3 mt-md-0">
-                    <a href="{% url 'order_detail' order.order_id %}" class="btn btn-primary me-2">View Order Details</a>
+                    <a href="{% url 'order_detail' order.order_id %}" class="btn btn-primary me-2">View Order
+                        Details</a>
                     <!-- <a href="#" class="btn btn-outline-secondary">Track Package</a> -->
                 </div>
             </div>
@@ -31,7 +32,10 @@
                 <div class="col-9 col-md-10">
                     <h6 class="mb-1">{{ product.name }}</h6>
                     <p class="mb-1 text-muted">Qty: {{product.quantity}} | Price: ₹{{ product.price }} each</p>
-                    <p class="mb-0 text-success">{{product.status}}</p>
+                    <p class="mb-0 text-success">{{product.status}} on {{product.show_date}}</p>
+                    {% if not product.status == "Delivered" %}
+                    <p class="mb-0 text-muted">Estimated Arrival: {{product.arrival_date}}</p>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}

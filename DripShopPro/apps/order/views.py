@@ -444,40 +444,45 @@ class OrderListView(RoleRequiredMixin, View):
                 products = []
                 for order_item in order_items:
                     total_amount = float(order_item.total_amount)
-                    products.append(
-                        {
-                            "name": order_item.product.inventory.product.name,
-                            "quantity": int(order_item.quantity),
-                            "total_amount": total_amount,
-                            "price": order_item.store_price,
-                            "main_img": ProductImage.objects.filter(
-                                product=order_item.product.inventory.product,
-                                is_deleted=False,
-                            ).latest("pk"),
-                            "status": order_item.status,
-                            "order_item_id": order_item.pk,
-                            "confirmed_date": (
-                                str(order_item.confirmed_date.date())
-                                if order_item.confirmed_date
-                                else None
-                            ),
-                            "shipping_date": (
-                                str(order_item.shipping_date.date())
-                                if order_item.shipping_date
-                                else None
-                            ),
-                            "arrival_date": (
-                                str(order_item.arrival_date.date())
-                                if order_item.arrival_date
-                                else None
-                            ),
-                            "delivery_date": (
-                                str(order_item.delivery_date.date())
-                                if order_item.delivery_date
-                                else None
-                            ),
-                        }
-                    )
+                    data = {
+                        "name": order_item.product.inventory.product.name,
+                        "quantity": int(order_item.quantity),
+                        "total_amount": total_amount,
+                        "price": order_item.store_price,
+                        "main_img": ProductImage.objects.filter(
+                            product=order_item.product.inventory.product,
+                            is_deleted=False,
+                        ).latest("pk"),
+                        "status": order_item.status,
+                        "order_item_id": order_item.pk,
+                        "confirmed_date": (
+                            str(order_item.confirmed_date.date())
+                            if order_item.confirmed_date
+                            else None
+                        ),
+                        "shipping_date": (
+                            str(order_item.shipping_date.date())
+                            if order_item.shipping_date
+                            else None
+                        ),
+                        "delivery_date": (
+                            str(order_item.delivery_date.date())
+                            if order_item.delivery_date
+                            else None
+                        ),
+                    }
+
+                    if order_item.status == "Placed":
+                        data["show_date"] = str(order_item.created_at.date())
+                    if order_item.status == "Confirmed":
+                        data["show_date"] = str(order_item.confirmed_date.date())
+                    if order_item.status == "Shipped":
+                        data["show_date"] = str(order_item.shipping_date.date())
+                        data["arrival_date"] = str(order_item.arrival_date)
+                    if order_item.status == "Delivered":
+                        data["show_date"] = str(order_item.delivery_date.date())
+
+                    products.append(data)
                 order_data.append(
                     {
                         "order_date": str(order.created_at.date()),
@@ -516,40 +521,46 @@ class OrderSummaryView(RoleRequiredMixin, View):
             products = []
             for order_item in order_items:
                 total_amount = float(order_item.total_amount)
-                products.append(
-                    {
-                        "name": order_item.product.inventory.product.name,
-                        "quantity": int(order_item.quantity),
-                        "total_amount": total_amount,
-                        "price": order_item.store_price,
-                        "main_img": ProductImage.objects.filter(
-                            product=order_item.product.inventory.product,
-                            is_deleted=False,
-                        ).latest("pk"),
-                        "status": order_item.status,
-                        "order_item_id": order_item.pk,
-                        "confirmed_date": (
-                            str(order_item.confirmed_date.date())
-                            if order_item.confirmed_date
-                            else None
-                        ),
-                        "shipping_date": (
-                            str(order_item.shipping_date.date())
-                            if order_item.shipping_date
-                            else None
-                        ),
-                        "arrival_date": (
-                            str(order_item.arrival_date.date())
-                            if order_item.arrival_date
-                            else None
-                        ),
-                        "delivery_date": (
-                            str(order_item.delivery_date.date())
-                            if order_item.delivery_date
-                            else None
-                        ),
-                    }
-                )
+                data = {
+                    "name": order_item.product.inventory.product.name,
+                    "quantity": int(order_item.quantity),
+                    "total_amount": total_amount,
+                    "price": order_item.store_price,
+                    "main_img": ProductImage.objects.filter(
+                        product=order_item.product.inventory.product,
+                        is_deleted=False,
+                    ).latest("pk"),
+                    "status": order_item.status,
+                    "order_item_id": order_item.pk,
+                    "confirmed_date": (
+                        str(order_item.confirmed_date.date())
+                        if order_item.confirmed_date
+                        else None
+                    ),
+                    "shipping_date": (
+                        str(order_item.shipping_date.date())
+                        if order_item.shipping_date
+                        else None
+                    ),
+                    "delivery_date": (
+                        str(order_item.delivery_date.date())
+                        if order_item.delivery_date
+                        else None
+                    ),
+                }
+
+                if order_item.status == "Placed":
+                    data["show_date"] = str(order_item.created_at.date())
+                if order_item.status == "Confirmed":
+                    data["show_date"] = str(order_item.confirmed_date.date())
+                if order_item.status == "Shipped":
+                    data["show_date"] = str(order_item.shipping_date.date())
+                    data["arrival_date"] = str(order_item.arrival_date)
+                if order_item.status == "Delivered":
+                    data["show_date"] = str(order_item.delivery_date.date())
+
+                products.append(data)
+
                 order_data = {
                     "order_date": str(order.created_at.date()),
                     "order_id": order.pk,

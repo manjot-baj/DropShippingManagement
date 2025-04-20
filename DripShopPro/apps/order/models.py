@@ -147,7 +147,7 @@ class OrderItem(BaseModel):
 
     confirmed_date = models.DateTimeField(null=True, blank=True)
     shipping_date = models.DateTimeField(null=True, blank=True)
-    arrival_date = models.DateTimeField(null=True, blank=True)
+    arrival_date = models.DateField(null=True, blank=True)
     delivery_date = models.DateTimeField(null=True, blank=True)
 
     merchant = models.ForeignKey(

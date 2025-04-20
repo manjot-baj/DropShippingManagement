@@ -7,8 +7,6 @@ from store.models import Store
 class StoreRequiredMixin:
     """Base Mixin for store-based access control in CBVs."""
 
-    required_role = None  # To be set in subclasses
-
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             messages.error(request, "You must be logged in to access this page.")

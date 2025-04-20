@@ -5,10 +5,6 @@ from catalog.Views.product_views import (
     ProductUpdateView,
     ProductDeleteView,
     ProductImageDeleteView,
-    CategoryListView,
-    CategoryCreateView,
-    CategoryUpdateView,
-    CategoryDeleteView,
 )
 from catalog.Views.company_views import (
     CompanyListView,
@@ -26,6 +22,7 @@ from catalog.Views.inventory_views import (
 )
 
 from catalog.Views.merchant_views import MerchantListView
+from catalog.Views.invoice_views import VendorInvoiceView
 
 urlpatterns = [
     # Product URLs
@@ -43,20 +40,6 @@ urlpatterns = [
         "products/<int:pk>/delete/", ProductDeleteView.as_view(), name="product_delete"
     ),
     path("products/merchant_list/", MerchantListView.as_view(), name="merchant_list"),
-    
-    # Category URLs
-    path("category/", CategoryListView.as_view(), name="category_list"),
-    path("category/create/", CategoryCreateView.as_view(), name="category_create"),
-    path(
-        "category/<int:pk>/update/",
-        CategoryUpdateView.as_view(),
-        name="category_update",
-    ),
-    path(
-        "category/<int:pk>/delete/",
-        CategoryDeleteView.as_view(),
-        name="category_delete",
-    ),
     # Company URLs
     path("company/", CompanyListView.as_view(), name="company_list"),
     path("company/create/", CompanyCreateView.as_view(), name="company_create"),
@@ -89,5 +72,10 @@ urlpatterns = [
         "inventory/bulk-catalog-update/",
         InventoryBulkCatalogUpdateView.as_view(),
         name="inventory_bulk_catalog_update",
+    ),
+    path(
+        "invoice/",
+        VendorInvoiceView.as_view(),
+        name="invoice",
     ),
 ]

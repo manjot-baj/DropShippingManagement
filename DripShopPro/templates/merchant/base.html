@@ -66,6 +66,16 @@
             /* Maintain aspect ratio for thumbnails */
             cursor: pointer;
         }
+
+        .nav-link.active {
+            color: #68baae !important;
+        }
+
+        .nav-link.active {
+            background-color: #68baae !important;
+            color: #fff !important;
+            /* Optional for contrast */
+        }
     </style>
 
 </head>
@@ -76,7 +86,8 @@
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
             <img src="{% static 'media/DripShopPro.ico' %}" alt="DripShopPro Logo"
-                class="brand-image img-circle elevation-3 animation__shake" style="opacity: .8">
+                class="brand-image img-circle elevation-3 animation__shake"
+                style="border-radius: 50%; width: 160px; height: 160px; object-fit: cover; margin-right: 10px;">
         </div>
 
         <!-- Navbar -->
@@ -159,7 +170,7 @@
             <!-- Brand Logo -->
             <a href="{% url 'merchant_dashboard' %}" class="brand-link">
                 <img src="{% static 'media/DripShopPro.ico' %}" alt="DripShopPro Logo"
-                    class="brand-image img-circle elevation-3" style="opacity: .8">
+                    style="border-radius: 50%; width: 60px; height: 60px; object-fit: cover; margin-right: 10px;">
                 <span class="brand-text font-weight-light">Drip$hop<sup><small>PRO</small></sup></span>
             </a>
 
@@ -453,6 +464,29 @@
                     setTimeout(() => el.remove(), 500); // Wait for fade transition
                 });
             }, 3000); // 3000ms = 3 seconds
+        });
+    </script>
+
+    <script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
+    <script>
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: [2500, 3400, 4100, 4600],
+                    backgroundColor: 'rgba(60,141,188,0.2)',
+                    borderColor: 'rgba(60,141,188,1)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
         });
     </script>
 

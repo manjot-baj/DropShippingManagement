@@ -27,10 +27,10 @@
                         <form id="bulk-action-form" method="post" action="{% url 'inventory_bulk_catalog_update' %}">
                             {% csrf_token %}
                             <div class="mb-3">
-                                <button type="submit" name="action" value="add" class="btn btn-primary btn-sm">
+                                <button type="submit" name="action" value="add" class="btn btn-primary btn-sm" style="background-color: #68baae;">
                                     Add to Catalog
                                 </button>
-                                <button type="submit" name="action" value="remove" class="btn btn-secondary btn-sm">
+                                <button type="submit" name="action" value="remove" class="btn btn-secondary btn-sm" style="background-color: #68baae;">
                                     Remove from Catalog
                                 </button>
                                 <button type="submit" name="action" value="delete"
@@ -43,7 +43,7 @@
                                 <table id="example1"
                                     class="table table-hover table-bordered table-striped align-middle text-nowrap"
                                     style="min-width: 1000px;">
-                                    <thead class="bg-primary text-white">
+                                    <thead class="text-white" style="background-color: #68baae;">
                                         <tr>
                                             <!-- Updated: using data-select-all -->
                                             <th><input type="checkbox" data-select-all="inventory_ids"></th>

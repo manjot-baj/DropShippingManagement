@@ -7,156 +7,15 @@ from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from user_profile.middlewares import RoleRequiredMixin
-from catalog.models import Product, ProductImage, Category
-from catalog.Forms.product_forms import ProductForm, CategoryForm
+from catalog.Utils.middlewares import CompanyRequiredMixin
+from catalog.models import Product, ProductImage
+from catalog.Forms.product_forms import ProductForm
 from user_profile.models import UserProfile
 
 logger = logging.getLogger("error_log")
 
 
-class CategoryListView(RoleRequiredMixin, View):
-    required_role = "Vendor"
-
-    def get(self, request, *args, **kwargs):
-        try:
-            categorys = Category.objects.select_related("vendor").filter(
-                vendor__user=request.user, is_deleted=False
-            )
-            return render(
-                request, "vendor/products/category_list.html", {"categorys": categorys}
-            )
-        except Exception:
-            logger.error(traceback.format_exc())
-            messages.error(request, "Error fetching categories.")
-            return render(
-                request,
-                "vendor/error.html",
-                {"message": "Error fetching categories."},
-                status=500,
-            )
-
-
-class CategoryCreateView(RoleRequiredMixin, View):
-    required_role = "Vendor"
-
-    def get(self, request, *args, **kwargs):
-        try:
-            form = CategoryForm(user=request.user)
-            return render(request, "vendor/products/category_form.html", {"form": form})
-        except:
-            logger.error(traceback.format_exc())
-            messages.error(request, "Error fetching category form.")
-            return render(
-                request,
-                "vendor/error.html",
-                {"message": "Error fetching category form."},
-                status=500,
-            )
-
-    def post(self, request, *args, **kwargs):
-        try:
-            form = CategoryForm(request.POST, user=request.user)
-
-            if form.is_valid():
-                with transaction.atomic():
-                    category = form.save(commit=False)
-                    category.vendor = get_object_or_404(
-                        UserProfile, user=request.user, role="Vendor"
-                    )
-                    category.save()
-                messages.success(request, "Category created successfully.")
-                return redirect("category_list")
-
-            messages.error(request, "Invalid form submission.")
-            return render(request, "vendor/products/category_form.html", {"form": form})
-        except Exception:
-            logger.error(traceback.format_exc())
-            messages.error(request, "Error creating category.")
-            return render(
-                request,
-                "vendor/error.html",
-                {"message": "Error creating category."},
-                status=500,
-            )
-
-
-class CategoryUpdateView(RoleRequiredMixin, View):
-    required_role = "Vendor"
-
-    def get(self, request, pk, *args, **kwargs):
-        try:
-            category = get_object_or_404(
-                Category, pk=pk, vendor__user=request.user, is_deleted=False
-            )
-            form = CategoryForm(instance=category, user=request.user)
-            return render(
-                request,
-                "vendor/products/category_form.html",
-                {"form": form, "category": category},
-            )
-        except:
-            logger.error(traceback.format_exc())
-            messages.error(request, "Error fetching category.")
-            return render(
-                request,
-                "vendor/error.html",
-                {"message": "Error fetching category."},
-                status=500,
-            )
-
-    def post(self, request, pk, *args, **kwargs):
-        try:
-            category = get_object_or_404(
-                Category, pk=pk, vendor__user=request.user, is_deleted=False
-            )
-            form = CategoryForm(request.POST, instance=category, user=request.user)
-
-            if form.is_valid():
-                with transaction.atomic():
-                    category = form.save()
-                messages.success(request, "Category updated successfully.")
-                return redirect("category_list")
-
-            messages.error(request, "Invalid form submission.")
-            return render(
-                request,
-                "vendor/products/category_form.html",
-                {"form": form, "category": category},
-            )
-        except Exception:
-            logger.error(traceback.format_exc())
-            messages.error(request, "Error updating category.")
-            return render(
-                request,
-                "vendor/error.html",
-                {"message": "Error updating category."},
-                status=500,
-            )
-
-
-class CategoryDeleteView(RoleRequiredMixin, View):
-    required_role = "Vendor"
-
-    def post(self, request, pk, *args, **kwargs):
-        try:
-            category = get_object_or_404(
-                Category, pk=pk, vendor__user=request.user, is_deleted=False
-            )
-            category.is_deleted = True
-            category.save()
-            messages.success(request, "Category deleted successfully.")
-            return JsonResponse(
-                {"success": True, "message": "Category deleted successfully."}
-            )
-        except Exception:
-            logger.error(traceback.format_exc())
-            messages.error(request, "Error deleting category.")
-            return JsonResponse(
-                {"success": False, "message": "Error deleting category."}, status=500
-            )
-
-
-class ProductListView(RoleRequiredMixin, View):
+class ProductListView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def get(self, request, *args, **kwargs):
@@ -178,7 +37,7 @@ class ProductListView(RoleRequiredMixin, View):
             )
 
 
-class ProductCreateView(RoleRequiredMixin, View):
+class ProductCreateView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def validate_images(self, images):
@@ -234,7 +93,7 @@ class ProductCreateView(RoleRequiredMixin, View):
             )
 
 
-class ProductUpdateView(RoleRequiredMixin, View):
+class ProductUpdateView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def validate_images(self, images):
@@ -308,7 +167,7 @@ class ProductUpdateView(RoleRequiredMixin, View):
             )
 
 
-class ProductDeleteView(RoleRequiredMixin, View):
+class ProductDeleteView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def post(self, request, pk, *args, **kwargs):
@@ -330,7 +189,7 @@ class ProductDeleteView(RoleRequiredMixin, View):
             )
 
 
-class ProductImageDeleteView(RoleRequiredMixin, View):
+class ProductImageDeleteView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def post(self, request, image_id, *args, **kwargs):

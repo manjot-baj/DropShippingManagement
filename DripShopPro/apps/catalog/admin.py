@@ -18,8 +18,8 @@ class ProductImageInline(admin.TabularInline):
 
 @admin.register(Category)
 class CategoryAdmin(BaseAdmin):
-    list_display = BaseAdmin.list_display + ("name", "vendor")
-    search_fields = BaseAdmin.search_fields + ("name", "vendor")
+    list_display = BaseAdmin.list_display + ("name",)
+    search_fields = BaseAdmin.search_fields + ("name",)
 
 
 @admin.register(Product)

@@ -1,6 +1,162 @@
 {% extends 'merchant/base.html' %}
+
 {% block title %}Merchant Dashboard{% endblock %}
 {% block header %}Merchant Dashboard{% endblock %}
+
 {% block content %}
-<h2>Welcome, {{ user.username }}!</h2>
+<div class="container-fluid">
+
+  <!-- Welcome -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h4>Welcome</h4>
+      <p class="text-muted">Here’s your store summary.</p>
+    </div>
+  </div>
+
+  <!-- Info Boxes -->
+  <div class="row">
+    <div class="col-md-3 col-sm-6 col-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-info"><i class="fas fa-shopping-cart"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Total Orders</span>
+          <span class="info-box-number">128</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-success"><i class="fas fa-dollar-sign"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Revenue</span>
+          <span class="info-box-number">$14,560</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-warning"><i class="fas fa-clock"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Pending Approvals</span>
+          <span class="info-box-number">5</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-primary"><i class="fas fa-star"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Customer Reviews</span>
+          <span class="info-box-number">34</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts and Top Products -->
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Monthly Sales Overview</h3>
+        </div>
+        <div class="card-body">
+          <canvas id="salesChart" style="height:250px;"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Top Products</h3>
+        </div>
+        <div class="card-body p-0">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Wireless Mouse
+              <span class="badge badge-primary badge-pill">45</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Bluetooth Headphones
+              <span class="badge badge-primary badge-pill">37</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              USB-C Charger
+              <span class="badge badge-primary badge-pill">29</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Mechanical Keyboard
+              <span class="badge badge-primary badge-pill">22</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Orders -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Recent Orders</h3>
+        </div>
+        <div class="card-body table-responsive p-0">
+          <table class="table table-hover text-nowrap">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#1021</td>
+                <td>John Doe</td>
+                <td>Bluetooth Headphones</td>
+                <td><span class="badge badge-success">Shipped</span></td>
+                <td>Apr 15, 2025</td>
+                <td><button class="btn btn-sm btn-info">View</button></td>
+              </tr>
+              <tr>
+                <td>#1020</td>
+                <td>Jane Smith</td>
+                <td>Wireless Mouse</td>
+                <td><span class="badge badge-warning">Pending</span></td>
+                <td>Apr 14, 2025</td>
+                <td><button class="btn btn-sm btn-info">View</button></td>
+              </tr>
+              <tr>
+                <td>#1019</td>
+                <td>Ali Khan</td>
+                <td>USB-C Charger</td>
+                <td><span class="badge badge-danger">Cancelled</span></td>
+                <td>Apr 13, 2025</td>
+                <td><button class="btn btn-sm btn-info">View</button></td>
+              </tr>
+              <tr>
+                <td>#1018</td>
+                <td>Sara Liu</td>
+                <td>Mechanical Keyboard</td>
+                <td><span class="badge badge-success">Delivered</span></td>
+                <td>Apr 12, 2025</td>
+                <td><button class="btn btn-sm btn-info">View</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chart Script -->
+
 {% endblock %}

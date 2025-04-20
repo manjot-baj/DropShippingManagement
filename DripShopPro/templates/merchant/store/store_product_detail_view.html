@@ -112,4 +112,50 @@
     <!-- /.card -->
 </section>
 
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <!-- <h1 class="card-title">Company</h1> -->
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="example2"
+                                class="table table-hover table-bordered table-striped align-middle text-nowrap"
+                                style="min-width: 1000px;">
+                                <thead class="text-white" style="background-color: #68baae;">
+                                    <tr>
+                                        <th>Vendor</th>
+                                        <th>Vendor Company</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>State</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ vendor }}</td>
+                                        <td>{{ vendor_company }}</td>
+                                        <td>{{ email }}</td>
+                                        <td>{{ phone }}</td>
+                                        <td>{{ state }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
 {% endblock %}

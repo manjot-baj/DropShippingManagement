@@ -51,6 +51,7 @@ MY_APPS = [
     "dashboard",
     "catalog",
     "store",
+    "order",
 ]
 
 THIRD_PARTY_APPS = []

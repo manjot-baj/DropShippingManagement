@@ -2,18 +2,18 @@ import logging
 import traceback
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
 from django.db import transaction
 from django.contrib import messages
 from user_profile.middlewares import RoleRequiredMixin
-from catalog.models import Inventory, Company, Product, ProductImage
+from catalog.Utils.middlewares import CompanyRequiredMixin
+from catalog.models import Inventory, Company, ProductImage
 from catalog.Forms.inventory_forms import InventoryForm
-from store.models import Store, StoreProduct
+from store.models import StoreProduct
 
 logger = logging.getLogger("error_log")
 
 
-class CompanyProductCatalogView(RoleRequiredMixin, View):
+class CompanyProductCatalogView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def get(self, request, company_id, *args, **kwargs):
@@ -69,7 +69,7 @@ class CompanyProductCatalogView(RoleRequiredMixin, View):
             )
 
 
-class InventoryListView(RoleRequiredMixin, View):
+class InventoryListView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def get(self, request, *args, **kwargs):
@@ -93,7 +93,7 @@ class InventoryListView(RoleRequiredMixin, View):
             )
 
 
-class InventoryCreateView(RoleRequiredMixin, View):
+class InventoryCreateView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def get(self, request, *args, **kwargs):
@@ -128,7 +128,7 @@ class InventoryCreateView(RoleRequiredMixin, View):
             )
 
 
-class InventoryUpdateView(RoleRequiredMixin, View):
+class InventoryUpdateView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def get(self, request, pk, *args, **kwargs):
@@ -180,7 +180,7 @@ class InventoryUpdateView(RoleRequiredMixin, View):
             )
 
 
-class InventoryBulkCatalogUpdateView(RoleRequiredMixin, View):
+class InventoryBulkCatalogUpdateView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def post(self, request, *args, **kwargs):
@@ -217,7 +217,7 @@ class InventoryBulkCatalogUpdateView(RoleRequiredMixin, View):
             return redirect("inventory_list")
 
 
-class CatalogProductDetailView(RoleRequiredMixin, View):
+class CatalogProductDetailView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def get(self, request, inventory_id, *args, **kwargs):

@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.db import transaction
 from django.contrib import messages
 from user_profile.middlewares import RoleRequiredMixin
+from catalog.Utils.middlewares import CompanyRequiredMixin
 from catalog.models import Company
 from catalog.Forms.company_forms import CompanyForm
 from user_profile.models import UserProfile
@@ -74,7 +75,7 @@ class CompanyCreateView(RoleRequiredMixin, View):
             )
 
 
-class CompanyUpdateView(RoleRequiredMixin, View):
+class CompanyUpdateView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def get(self, request, pk, *args, **kwargs):
@@ -138,7 +139,7 @@ class CompanyUpdateView(RoleRequiredMixin, View):
             )
 
 
-class CompanyDeleteView(RoleRequiredMixin, View):
+class CompanyDeleteView(RoleRequiredMixin, CompanyRequiredMixin, View):
     required_role = "Vendor"
 
     def post(self, request, pk, *args, **kwargs):

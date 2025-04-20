@@ -49,10 +49,18 @@ class InventoryForm(forms.ModelForm):
             self.fields["company"].queryset = Company.objects.filter(
                 owner__user=self.user, is_deleted=False
             )
-            self.fields["product"].queryset = Product.objects.filter(
-                vendor__user=self.user,
-                is_deleted=False,
-            )
+
+            if kwargs.get("instance"):
+                self.fields["product"].queryset = Product.objects.filter(
+                    vendor__user=self.user,
+                    is_deleted=False,
+                )
+            else:
+                self.fields["product"].queryset = Product.objects.filter(
+                    vendor__user=self.user,
+                    is_deleted=False,
+                    inside_inventory=False,
+                )
 
         # Apply consistent Bootstrap styling to all fields
         for field in self.fields:

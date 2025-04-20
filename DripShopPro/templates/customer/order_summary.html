@@ -1,0 +1,59 @@
+{% extends 'customer/base.html' %}
+{% load static %}
+{% block title %}Order{% endblock %}
+{% block content %}
+<!-- Back Button -->
+<div class="mb-3">
+    <button class="btn btn-outline-secondary" onclick="goBackAndReload();">
+        <i class="fas fa-arrow-left me-1"></i> Back
+    </button>
+</div>
+<div class="container my-4">
+    <h2>Order Summary</h2>
+    <div class="my-4">
+        <h5>Order Status</h5>
+
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <p><strong>Order #:</strong> {{order_data.order_no}}</p>
+                    <p><strong>Order Placed:</strong> {{order_data.order_date}}</p>
+                    <p><strong>Order Total:</strong> ₹{{ order_data.grand_total }}</p>
+                </div>
+            </div>
+            <hr>
+            <h5>Items</h5>
+            {% for product in order_data.products %}
+            <div class="d-flex mb-3">
+                <img src="{{ product.main_img.image.url }}" class="img-thumbnail me-2"
+                    style="width: 120px; height: auto; object-fit: cover;" alt="{{ product.name }}">
+                <div>
+                    <h6>{{ product.name }}</h6>
+                    <p class="text-muted">Qty: {{product.quantity}} | Price: ₹{{ product.price }} each</p>
+                    <p class="text-success">{{product.status}}</p>
+                </div>
+            </div>
+            {% endfor %}
+            <hr>
+            <h5>Shipping Address</h5>
+            <p>{{order_data.address}}<br>{{order_data.city}}, {{order_data.postal_code}}<br>{{order_data.state}},
+                {{order_data.country}}</p>
+            <hr>
+            <h5>Payment Method</h5>
+            <p>Cash On Delivery</p>
+            <hr>
+            <h5>Order Summary</h5>
+            <div class="d-flex justify-content-between">
+                <span>Items ({{order_data.item_count}}):</span>
+                <span>₹{{order_data.grand_total}}</span>
+            </div>
+            <div class="d-flex justify-content-between fw-bold">
+                <span>Total:</span>
+                <span>₹{{order_data.grand_total}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

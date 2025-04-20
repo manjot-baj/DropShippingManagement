@@ -24,32 +24,33 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table id="example1"
-                                class="table table-hover table-bordered table-striped align-middle text-nowrap"
-                                style="min-width: 1000px;">
-                                <thead class="bg-primary text-white">
-                                    <tr>
-                                        <th>Created on</th>
-                                        <!-- <th>Updated on</th> -->
-                                        <th>Company Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>State</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for company in companys %}
-                                    <tr>
-                                        <td>{{ company.created_at }}</td>
-                                        <!-- <td>{{ company.updated_at }}</td> -->
-                                        <td>{{ company.name }}</td>
-                                        <td>{{ company.email }}</td>
-                                        <td>{{ company.phone }}</td>
-                                        <td>{{ company.state }}</td>
-                                        <td>
-                                            <!-- Edit Button -->
+                        <div class="row">
+
+                            {% for company in companys %}
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <!-- Vendor Company Logo -->
+                                        {% if company.logo %}
+                                        <div class="text-center mb-3">
+                                            <img src="{{ company.logo.url }}" alt="Vendor Company Logo"
+                                                class="img-thumbnail" style="height: 120px; width: auto;">
+                                        </div>
+                                        {% endif %}
+
+                                        <!-- Vendor Company Info -->
+                                        <div class="mb-3">
+                                            <h5 class="mb-1">{{ company.name }}</h5>
+                                            <p class="mb-0"><strong>Vendor:</strong> {{ company.owner.first_name }}
+                                                {{company.owner.last_name }}</p>
+                                            <p class="mb-0"><strong>Email:</strong> {{ company.email }}</p>
+                                            <p class="mb-0"><strong>Phone:</strong> {{ company.phone }}</p>
+                                            <p class="mb-0"><strong>Address:</strong> {{ company.address }}</p>
+                                            <p class="mb-0"><strong>State:</strong> {{ company.state }}</p>
+                                        </div>
+
+                                        <!-- Actions -->
+                                        <div class="mt-auto text-center">
                                             <a href="{% url 'catalog_view' company.id %}"
                                                 class="btn btn-warning btn-sm">
                                                 <i class="fas fa-eye"></i>
@@ -65,15 +66,19 @@
                                                 data-url="{% url 'company_delete' company.id %}">
                                                 <i class="fas fa-trash"></i>
                                             </button>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
+
                     </div>
                     <!-- /.card-body -->
                 </div>
+                {% if not companys %}
+                <div class="alert alert-info">No Company available. Add your Company</div>
+                {% endif %}
                 <!-- /.card -->
             </div>
             <!-- /.col -->

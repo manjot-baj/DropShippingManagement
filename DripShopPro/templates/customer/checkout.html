@@ -1,0 +1,116 @@
+{% extends 'customer/base.html' %}
+{% load static %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+
+<div class="container my-4">
+    <h2>Checkout</h2>
+    <form method="POST" enctype="multipart/form-data" action="{% url 'create_order' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5>Shipping Address</h5>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label class="font-weight-bold">Address</label>
+                                {{ form.address }}
+                                {% if form.address.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.address.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="font-weight-bold">City</label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.city.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="font-weight-bold">State</label>
+                                {{ form.state }}
+                                {% if form.state.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.state.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="font-weight-bold">Postal Code</label>
+                                {{ form.postal_code }}
+                                {% if form.postal_code.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.postal_code.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5>Payment Method</h5>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="payment" id="card" checked>
+                            <label class="form-check-label" for="card">Cash On Delivery</label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Order Summary</h5>
+                        <div class="d-flex justify-content-between">
+                            <span>Items (2):</span>
+                            <span>₹{{ grand_total }}</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between fw-bold">
+                            <span>Total:</span>
+                            <span>₹{{ grand_total }}</span>
+                        </div>
+                        <a href="{% url 'create_order' %}"><button class="btn btn-warning w-100 mt-3"
+                                type="submit">Place Your
+                                Order</button></a>
+                    </div>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5>Items</h5>
+                        {% for product in products %}
+                        <div class="d-flex mb-3">
+                            <img src="{{ product.main_img.image.url }}" class="img-thumbnail me-2"
+                                style="width: 120px; height: auto; object-fit: cover;" alt="{{ product.name }}">
+                            <div>
+                                <p class="mb-0">{{ product.name }}</p>
+                                <p class="text-muted mb-0">Qty: {{ product.quantity }} | ₹{{ product.total_amount }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

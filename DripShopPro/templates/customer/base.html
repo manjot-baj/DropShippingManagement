@@ -88,19 +88,19 @@
 
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-box"></i> Orders</a>
+                        <a class="nav-link" href="{% url 'order' %}"><i class="fas fa-box"></i> Orders</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link cart-icon" href="{% url 'cart' %}">
                             <i class="fas fa-shopping-cart"></i>
-                            <span class="badge rounded-pill">{% if cart_item_count %}{{cart_item_count}}{% endif %}</span>
+                            <span class="badge rounded-pill">{% if cart_item_count %}{{cart_item_count}}{% endif%}</span>
                         </a>
                     </li>
                     <!-- Theme Toggle -->
-                    <li class="nav-item theme-toggle">
+                    <!-- <li class="nav-item theme-toggle">
                         <input type="checkbox" id="themeToggle">
                         <label class="theme-toggle-label" for="themeToggle"></label>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </div>
@@ -125,7 +125,7 @@
 
     <!-- JS Scripts -->
     <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script>
+    <!-- <script>
         const themeToggle = document.getElementById('themeToggle');
         const htmlElement = document.documentElement;
         const backToTop = document.querySelector('.back-to-top');
@@ -143,7 +143,7 @@
         window.addEventListener('scroll', () => {
             backToTop.classList.toggle('d-none', window.scrollY <= 300);
         });
-    </script>
+    </script> -->
 
     <script>
         function clearRadio(name) {

@@ -1,18 +1,15 @@
 from django.urls import path
 from order.views import (
     CustomerProductDetailView,
-    CustomerOrderView,
-)
-
-from order.Views.wishlist_view import (
     WishlistProductListView,
     AddProductToWishlistView,
     DeleteProductFromWishlistView,
-)
-from order.Views.cart_views import (
     CartProductListView,
     AddProductToCartView,
     DeleteProductFromCartView,
+    AddProductQtyToCartView,
+    OrderCreateView,
+    OrderListView,
 )
 
 urlpatterns = [
@@ -46,5 +43,24 @@ urlpatterns = [
         DeleteProductFromCartView.as_view(),
         name="remove_from_cart",
     ),
-    path("order/", CustomerOrderView.as_view(), name="order"),
+    path(
+        "add_qty_to_cart_product/<int:cart_item_id>/",
+        AddProductQtyToCartView.as_view(),
+        name="add_qty_to_cart_product",
+    ),
+    path(
+        "checkout/",
+        OrderCreateView.as_view(),
+        name="checkout",
+    ),
+    path(
+        "create_order/",
+        OrderCreateView.as_view(),
+        name="create_order",
+    ),
+    path(
+        "order/",
+        OrderListView.as_view(),
+        name="order",
+    ),
 ]

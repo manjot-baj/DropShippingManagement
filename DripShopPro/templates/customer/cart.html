@@ -20,12 +20,18 @@
                         <h5 class="mb-1">{{ product.name }}</h5>
                         <p class="text-muted mb-2">₹{{ product.price }}</p>
                         <div class="d-flex align-items-center mb-2">
-                            <label for="qty-{{ forloop.counter }}" class="me-2 mb-0">Qty:</label>
-                            <select id="qty-{{ forloop.counter }}" class="form-select form-select-sm w-auto me-3">
-                                {% for i in "12345" %}
-                                <option value="{{ i }}">{{ i }}</option>
-                                {% endfor %}
-                            </select>
+                            <form method="POST" enctype="multipart/form-data"
+                                action="{% url 'add_qty_to_cart_product' product.cart_item_id %}">
+                                {% csrf_token %}
+                                <label for="qty">Qty:</label>
+                                <input type="number" name="qty" value="{{ product.quantity }}" min="0" max="100"
+                                    step="1" onkeydown="return false" style="width: 80px; margin-right: 4px;">
+
+                                <button type="submit" class="text-success me-3 small" title="Save Qty">
+                                    Save Qty
+                                </button>
+                            </form>
+
                             <a href="{% url 'remove_from_cart' product.cart_item_id %}"
                                 class="text-danger me-3 small">Delete</a>
                             <a href="{% url 'add_to_wishlist' product.product_id %}" class="text-secondary small">Save
@@ -58,7 +64,7 @@
                         <strong>Total:</strong>
                         <strong>₹{{ total }}</strong>
                     </div>
-                    <a href="#" class="btn btn-warning w-100">Proceed to Checkout</a>
+                    <a href="{% url 'checkout' %}" class="btn btn-warning w-100">Proceed to Checkout</a>
                 </div>
             </div>
         </div>

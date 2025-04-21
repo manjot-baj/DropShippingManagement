@@ -1,6 +1,174 @@
 {% extends 'vendor/base.html' %}
+
 {% block title %}Vendor Dashboard{% endblock %}
 {% block header %}Vendor Dashboard{% endblock %}
+
 {% block content %}
-<h2>Welcome, {{ user.username }}!</h2>
+<div class="container-fluid">
+
+  <!-- Welcome -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h4>Welcome, {{user}}</h4>
+      <p class="text-muted">Here’s your summary.</p>
+    </div>
+  </div>
+
+  <!-- Info Boxes -->
+  <div class="row">
+    <div class="col-md-3 col-sm-6 col-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-info"><i class="fas fa-shopping-cart"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Total Orders</span>
+          <span class="info-box-number">{{total_orders}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-info"><i class="fas fa-shopping-cart"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">New Orders</span>
+          <span class="info-box-number">{{new_orders}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6 col-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-info"><i class="fas fa-shopping-cart"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Orders InProgress</span>
+          <span class="info-box-number">{{orders_in_progress}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-info"><i class="fas fa-shopping-cart"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Orders Delivered</span>
+          <span class="info-box-number">{{orders_delivered}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-success"><i class="fas fa-dollar-sign"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Revenue</span>
+          <span class="info-box-number">₹ {{revenue}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-success"><i class="fas fa-dollar-sign"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Pending Payment Due</span>
+          <span class="info-box-number">₹ {{payment_dues}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-warning"><i class="fas fa-clock"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Pending PO Approval</span>
+          <span class="info-box-number">{{approval_pending}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-primary"><i class="fas fa-store"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Catalog Products</span>
+          <span class="info-box-number">{{catalog_products}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts and Top Products -->
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Monthly Sales Overview</h3>
+        </div>
+        <div class="card-body">
+          <canvas id="salesChart" style="height:250px;"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Top Products</h3>
+        </div>
+        <div class="card-body p-0">
+          <ul class="list-group list-group-flush">
+            {% for each in catalog_product_list %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{each.product.name}}
+              <!-- <span class="badge badge-primary badge-pill">45</span> -->
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Orders -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Recent Orders</h3>
+        </div>
+        <div class="card-body table-responsive p-0">
+          <table class="table table-hover text-nowrap">
+            <thead>
+              <tr>
+                <th>Tracking Id</th>
+                <th>Order Date</th>
+                <th>Product</th>
+                <th>Status</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Total Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order_item in customer_order_data %}
+              <tr>
+                <td>{{ order_item.tracking_id }}</td>
+                <td>{{ order_item.order_date }}</td>
+                <td>{{ order_item.product }}</td>
+                <td>
+                  <span
+                    style="background-color: {{ order_item.status_color }}; color: white; padding: 4px 8px; border-radius: 5px; font-weight: bold;">
+                    {{ order_item.status }}
+                  </span>
+                </td>
+                <td>{{ order_item.store_price }}</td>
+                <td>{{ order_item.quantity }}</td>
+                <td>{{ order_item.total_amount }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chart Script -->
+
 {% endblock %}

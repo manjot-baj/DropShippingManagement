@@ -222,9 +222,17 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="{% url 'invoice' %}" class="nav-link" data-url="{% url 'invoice' %}">
-                                <i class="nav-icon fas fa-store"></i>
-                                <p>Invoice</p>
+                            <a href="{% url 'vendor_purchase_order_list' %}" class="nav-link"
+                                data-url="{% url 'vendor_purchase_order_list' %}">
+                                <i class="nav-icon fas fa-book"></i>
+                                <p>Purchase Orders</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'vendor_invoice_list' %}" class="nav-link"
+                                data-url="{% url 'vendor_invoice_list' %}">
+                                <i class="nav-icon fas fa-book"></i>
+                                <p>Invoices</p>
                             </a>
                         </li>
 
@@ -470,6 +478,29 @@
                     setTimeout(() => el.remove(), 500); // Wait for fade transition
                 });
             }, 3000); // 3000ms = 3 seconds
+        });
+    </script>
+
+    <script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
+    <script>
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: [2500, 3400, 4100, 4600],
+                    backgroundColor: 'rgba(60,141,188,0.2)',
+                    borderColor: 'rgba(60,141,188,1)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
         });
     </script>
 

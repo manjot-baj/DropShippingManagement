@@ -100,12 +100,14 @@ class Order(BaseModel):
         null=True,
         blank=True,
     )
+    is_closed = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.pk)
 
 
 class OrderItem(BaseModel):
+    
     ORDER_STATUS = [
         ("Placed", "Placed"),
         ("Confirmed", "Confirmed"),
@@ -126,6 +128,7 @@ class OrderItem(BaseModel):
         null=True,
         blank=True,
     )
+    tracking_id = models.CharField(max_length=255, blank=True, null=True)
     total_amount = models.DecimalField(
         max_digits=10, decimal_places=2, default=float(0)
     )
@@ -144,8 +147,23 @@ class OrderItem(BaseModel):
 
     confirmed_date = models.DateTimeField(null=True, blank=True)
     shipping_date = models.DateTimeField(null=True, blank=True)
-    arrival_date = models.DateTimeField(null=True, blank=True)
+    arrival_date = models.DateField(null=True, blank=True)
     delivery_date = models.DateTimeField(null=True, blank=True)
+
+    merchant = models.ForeignKey(
+        UserProfile,
+        on_delete=models.CASCADE,
+        related_name="order_item_merchant",
+        null=True,
+        blank=True,
+    )
+    vendor = models.ForeignKey(
+        UserProfile,
+        on_delete=models.CASCADE,
+        related_name="order_item_vendor",
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return str(self.pk)

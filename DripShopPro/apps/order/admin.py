@@ -1,74 +1,74 @@
 from django.contrib import admin
-from common.admin import BaseAdmin
 from .models import WishList, Cart, Order, OrderItem
 
 
 @admin.register(WishList)
-class WishListAdmin(BaseAdmin):
-    list_display = BaseAdmin.list_display + ("product", "owner")
-    search_fields = BaseAdmin.search_fields + (
-        "product__name",
-        "owner__user__email",
-    )
-    list_filter = BaseAdmin.list_filter + ("product",)
+class WishListAdmin(admin.ModelAdmin):
+    list_display = ("id", "product", "owner", "created_at", "updated_at")
+    search_fields = ("owner__user__email", "product__name")
+    list_filter = ("created_at",)
+    readonly_fields = ("created_at", "updated_at")
 
 
 @admin.register(Cart)
-class CartAdmin(BaseAdmin):
-    list_display = BaseAdmin.list_display + ("product", "owner", "quantity")
-    search_fields = BaseAdmin.search_fields + (
-        "product__name",
-        "owner__user__email",
-    )
-    list_filter = BaseAdmin.list_filter + ("product",)
+class CartAdmin(admin.ModelAdmin):
+    list_display = ("id", "product", "owner", "quantity", "created_at", "updated_at")
+    search_fields = ("owner__user__email", "product__name")
+    list_filter = ("created_at",)
+    readonly_fields = ("created_at", "updated_at")
 
 
 @admin.register(Order)
-class OrderAdmin(BaseAdmin):
-    list_display = BaseAdmin.list_display + (
+class OrderAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
         "order_id",
         "owner",
         "grand_total",
         "city",
         "state",
         "postal_code",
-        "country",
+        "is_closed",
+        "created_at",
+        "updated_at",
     )
-    search_fields = BaseAdmin.search_fields + (
-        "order_id",
-        "owner__user__email",
-        "city",
-        "state",
-        "postal_code",
-    )
-    list_filter = BaseAdmin.list_filter + ("state", "country")
-    readonly_fields = BaseAdmin.readonly_fields + ("order_id",)
+    search_fields = ("order_id", "owner__user__email", "city", "state")
+    list_filter = ("state", "is_closed", "created_at")
+    ordering = ("-created_at",)
+    readonly_fields = ("created_at", "updated_at")
 
 
 @admin.register(OrderItem)
-class OrderItemAdmin(BaseAdmin):
-    list_display = BaseAdmin.list_display + (
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
         "parent",
         "product",
-        "store_price",
-        "vendor_price",
-        "merchant_margin_price",
-        "merchant_margin",
+        "merchant",
+        "vendor",
         "status",
-        "quantity",
         "total_amount",
+        "quantity",
         "confirmed_date",
         "shipping_date",
         "arrival_date",
         "delivery_date",
+        "created_at",
+        "updated_at",
     )
-    search_fields = BaseAdmin.search_fields + (
+    search_fields = (
         "parent__order_id",
         "product__name",
+        "merchant__user__email",
+        "vendor__user__email",
     )
-    list_filter = BaseAdmin.list_filter + ("status",)
-    readonly_fields = BaseAdmin.readonly_fields + (
-        "store_price",
-        "vendor_price",
-        "merchant_margin_price",
-    )
+    list_filter = ("status", "confirmed_date", "shipping_date", "delivery_date")
+    ordering = ("-created_at",)
+    readonly_fields = ("created_at", "updated_at")
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("parent", "product", "merchant", "vendor")
+        )
